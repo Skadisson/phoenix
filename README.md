@@ -10,17 +10,23 @@ Seamless Collection and Search of Tickets, Hotfixes, Patches and Mini-Documentat
 Versioning of content, authors and editors. Referencing towards Jira, Git and Confluence - basically building a connecting hub between those worlds. Everything combined and sorted under three aspects: 
 
 ###Popularity
+
 How frequented is the entity, commit, documentation or ticket?
 ###Context 
+
 What similar entities, commits, documentations or tickets exist?
 ###Relevancy
+
 How relevant are the entities to a search request, commit, documentation or ticket?
 
 ##UI Flow
+
 ![alt text](src/ui_flow.png "UI Flow")
 
 ##Flow diagram
+
 ![alt text](src/flow_diagram.png "Flow Diagram")
 
 ##Wireframe
+
 ![alt text](src/wireframe.png "Wireframe")
