@@ -1,0 +1,131 @@
+/* Color Theme Swatches in Hex */
+.Petrus-1-hex { color: #5DC4DC; }
+.Petrus-2-hex { color: #635C3B; }
+.Petrus-3-hex { color: #F1B94A; }
+.Petrus-4-hex { color: #14121F; }
+.Petrus-5-hex { color: #FCF7E0; }
+
+/* Color Theme Swatches in RGBA */
+.Petrus-1-rgba { color: rgba(93, 196, 220, 1); }
+.Petrus-2-rgba { color: rgba(99, 92, 59, 1); }
+.Petrus-3-rgba { color: rgba(241, 185, 74, 1); }
+.Petrus-4-rgba { color: rgba(20, 18, 31, 1); }
+.Petrus-5-rgba { color: rgba(252, 247, 224, 1); }
+
+/* Color Theme Swatches in HSLA */
+.Petrus-1-hsla { color: hsla(191, 64, 61, 1); }
+.Petrus-2-hsla { color: hsla(49, 25, 30, 1); }
+.Petrus-3-hsla { color: hsla(39, 85, 61, 1); }
+.Petrus-4-hsla { color: hsla(249, 26, 9, 1); }
+.Petrus-5-hsla { color: hsla(49, 82, 93, 1); }
+
+/* Color Theme Swatches in Hex */
+.Petrus-Dark-1-hex { color: #F1ECDF; }
+.Petrus-Dark-2-hex { color: #652A8C; }
+.Petrus-Dark-3-hex { color: #271959; }
+.Petrus-Dark-4-hex { color: #070E26; }
+.Petrus-Dark-5-hex { color: #E94792; }
+
+/* Color Theme Swatches in RGBA */
+.Petrus-Dark-1-rgba { color: rgba(241, 236, 223, 1); }
+.Petrus-Dark-2-rgba { color: rgba(101, 42, 140, 1); }
+.Petrus-Dark-3-rgba { color: rgba(39, 25, 89, 1); }
+.Petrus-Dark-4-rgba { color: rgba(7, 14, 38, 1); }
+.Petrus-Dark-5-rgba { color: rgba(233, 71, 146, 1); }
+
+/* Color Theme Swatches in HSLA */
+.Petrus-Dark-1-hsla { color: hsla(43, 39, 90, 1); }
+.Petrus-Dark-2-hsla { color: hsla(276, 53, 35, 1); }
+.Petrus-Dark-3-hsla { color: hsla(253, 56, 22, 1); }
+.Petrus-Dark-4-hsla { color: hsla(226, 68, 8, 1); }
+.Petrus-Dark-5-hsla { color: hsla(332, 78, 59, 1); }
+
+body {
+    background-color:white;
+    background-image:url(calm-body-of-water-1363876.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    font-family: 'Montserrat', sans-serif;
+    color: #FCF7E0;
+}
+a, a:active, a:link, a:visited, a:hover {
+    color:#FCF7E0;
+    text-decoration:none;
+}
+h1 {
+    width:100%;
+    text-align:center;
+    font-size:36px;
+    line-height:36px;
+}
+form {
+    width:800px;
+    height:180px;
+    position:absolute;
+    left:50%;
+    margin-left:-400px;
+    top:20px;
+    display:block;
+    text-align:center;
+}
+form.center {
+    top:50%;
+    margin-top:-90px;
+}
+button[type=submit] {
+    margin-left: -50px;
+    width: 50px;
+    border: none;
+    background: transparent;
+    color:#E3DECA;
+}
+input[type=text] {
+    border:none;
+    border-color:#ccc;
+    border-radius:15px;
+    height:20px;
+    width:700px;
+    padding:8px 13px;
+    outline-width: 0;
+    font-size:16px;
+    line-height:18px;
+    color:#635C3B;
+    box-shadow: 1px 1px 5px #635C3B;
+}
+.cards {
+    position: absolute;
+    left:50%;
+    margin-left:-400px;
+    top:200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 800px;
+    border: 1px solid black;
+    background: darkgrey;
+}
+.card {
+    flex-grow: 1;
+    border: 1px solid black;
+    width: 200px;
+    min-height:200px;
+    margin: 10px;
+    padding: 5px;
+    background: white;
+}
+#image-copyright {
+    position:fixed;
+    bottom:10px;
+    right:20px;
+    font-size:13px;
+    line-height:14px;
+    text-align:right;
+}
+#phoenix-info {
+    position:fixed;
+    bottom:10px;
+    left:10px;
+    font-size:13px;
+    line-height:14px;
+    text-align:left;
+}
