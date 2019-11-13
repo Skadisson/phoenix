@@ -9,33 +9,34 @@
     <link rel="stylesheet" href="view/fontawesome-free-5.11.2-web/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="color-text">
 
     <form id="search" class="" action="index.html" method="GET" autocomplete="off">
-        <h1>Phoenix</h1>
+        <h1 class="color-murky">Phoenix</h1>
         <input type="text" name="keywords" id="keywords" placeholder="Enter keywords, users, Jira keys or dates" value="" />
         <button type="submit" class="fa fa-search"></button>
     </form>
 
     <section class="cards">
-        <div class="card">
-            <h3>Dummy Card</h3>
-            <span class="change">2019/10/12 14:20</span>
-            <p>Auszug aus Beschreibung</p>
-            <span class="keywords">matching, key, word, list</span>
+        <div class="card background">
+            <h3 class="color-dark">Dummy Card</h3>
+            <span class="change color-dark">2019/10/12 14:20</span>
+            <p class="color-dark">Auszug aus Beschreibung</p>
+            <span class="keywords color-dark">matching, key, word, list</span>
             <div class="users">
-                <div class="user">@schulz</div>
+                <div class="user color-dark">@schulz</div>
             </div>
         </div>
-        <div class="card">2</div>
-        <div class="card">3</div>
-        <div class="card">4</div>
-        <div class="card">5</div>
-        <div class="card">6</div>
+        <div class="card background">2</div>
+        <div class="card background">3</div>
+        <div class="card background">4</div>
+        <div class="card background">5</div>
+        <div class="card background">6</div>
     </section>
 
-    <div id="phoenix-info"><a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="report a bug"><span class="fab fa-github">&nbsp;</span></a></div>
-    <div id="image-copyright"><a href="https://www.pexels.com/photo/calm-body-of-water-1363876/" target="_blank">Photo by <b>travis blessing</b> from <b>Pexels</b></a></div>
+    <div id="phoenix-info"><a href="https://github.com/Skadisson/phoenix/issues" class="color-constantly-bright" target="_blank" title="report a bug"><span class="fab fa-github">&nbsp;</span></a> <a href="javascript:return false;" target="_blank" class="color-constantly-bright" title="toggle dark mode" onclick="phoenix.darkmode();return false;"><span class="fas fa-moon">&nbsp;</span></a></div>
+    <div id="image-copyright"><a href="https://www.pexels.com/photo/silhouette-of-mountains-1323550/" class="color-constantly-bright" target="_blank">Photo by <b>Simon Matzinger</b> from <b>Pexels</b></a></div>
+    <div id="image-copyright-dark"><a href="https://www.pexels.com/photo/calm-body-of-water-1363876/" class="color-constantly-bright" target="_blank">Photo by <b>travis blessing</b> from <b>Pexels</b></a></div>
 
 </body>
 </html>

@@ -9,16 +9,17 @@
     <link rel="stylesheet" href="view/fontawesome-free-5.11.2-web/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="color-text">
 
     <form id="search" class="center" action="list.html" method="GET" autocomplete="off">
-        <h1>Phoenix</h1>
+        <h1 class="color-murky">Phoenix</h1>
         <input type="text" name="keywords" id="keywords" placeholder="Enter keywords, users, Jira keys or dates" value="" />
         <button type="submit" class="fa fa-search"></button>
     </form>
 
-    <div id="phoenix-info"><a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="report a bug"><span class="fab fa-github">&nbsp;</span></a></div>
-    <div id="image-copyright"><a href="https://www.pexels.com/photo/calm-body-of-water-1363876/" target="_blank">Photo by <b>travis blessing</b> from <b>Pexels</b></a></div>
+    <div id="phoenix-info"><a href="https://github.com/Skadisson/phoenix/issues" class="color-constantly-bright" target="_blank" title="report a bug"><span class="fab fa-github">&nbsp;</span></a> <a href="javascript:return false;" target="_blank" class="color-constantly-bright" title="toggle dark mode" onclick="phoenix.darkmode();return false;"><span class="fas fa-moon">&nbsp;</span></a></div>
+    <div id="image-copyright"><a href="https://www.pexels.com/photo/silhouette-of-mountains-1323550/" class="color-constantly-bright" target="_blank">Photo by <b>Simon Matzinger</b> from <b>Pexels</b></a></div>
+    <div id="image-copyright-dark"><a href="https://www.pexels.com/photo/calm-body-of-water-1363876/" class="color-constantly-bright" target="_blank">Photo by <b>travis blessing</b> from <b>Pexels</b></a></div>
 
 </body>
 </html>
