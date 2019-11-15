@@ -8,6 +8,11 @@
 .color-dark { color: #14121F; }
 .color-bright { color: #FCF7E0; }
 .background { background-color: #FCF7E0; }
+.background-strong { background-color: #5DC4DC; }
+.gradient {
+    background: rgb(199,194,170);
+    background: linear-gradient(130deg, rgba(199,194,170,1) 0%, rgba(252,247,224,1) 8%, rgba(252,247,224,1) 100%);
+}
 
 /* Dark Theme */
 .dark .color-strong { color: #271959; }
@@ -16,6 +21,11 @@
 .dark .color-dark { color: #F1ECDF; }
 .dark .color-bright { color: #070E26; }
 .dark .background { background-color: #271959; }
+.dark .background-strong { background-color: #E94792; }
+.dark .gradient {
+    background: rgb(59,24,83);
+    background: linear-gradient(130deg, rgba(59,24,83,1) 0%, rgba(101,42,140,1) 8%, rgba(101,42,140,1) 100%);
+}
 
 body {
     background-color:white;
@@ -114,8 +124,8 @@ input[type=text] {
 }
 .card .users {
     position:absolute;
-    right:10px;
-    bottom:10px;
+    right:5px;
+    bottom:5px;
     max-width:90px;
     font-size:10px;
     line-height:10px;
