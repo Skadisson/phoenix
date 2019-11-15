@@ -127,9 +127,7 @@ input[type=text] {
     right:5px;
     bottom:5px;
     max-width:90px;
-    font-size:10px;
-    line-height:10px;
-    font-size: 8px;
+    font-size:12px;
     line-height: 40px;
     text-align: center;
 }
