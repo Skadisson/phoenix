@@ -10,7 +10,9 @@
 .background { background-color: #FCF7E0; }
 .background-strong { background-color: #5DC4DC; }
 .gradient {
-    background: rgb(199,194,170);
+    background: rgba(252,247,224,1);
+}
+.gradient:hover {
     background: linear-gradient(130deg, rgba(199,194,170,1) 0%, rgba(252,247,224,1) 8%, rgba(252,247,224,1) 100%);
 }
 
@@ -23,6 +25,9 @@
 .dark .background { background-color: #271959; }
 .dark .background-strong { background-color: #E94792; }
 .dark .gradient {
+    background: rgba(101,42,140,1);
+}
+.dark .gradient:hover {
     background: rgb(59,24,83);
     background: linear-gradient(130deg, rgba(59,24,83,1) 0%, rgba(101,42,140,1) 8%, rgba(101,42,140,1) 100%);
 }
