@@ -34,7 +34,7 @@ if file_exists:
     tfidf_transformer = feature_extraction.text.TfidfTransformer()
     X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
     clf = naive_bayes.MultinomialNB().fit(X_train_tfidf, keys)
-    docs_new = ['Ich hab da mal ein Problem mit SMTP auf Rancher', 'Hilfe der Server geht nicht', 'Arvato Mwst', 'Bei Frank-Flechtwaren stimmen die Bilder nicht']
+    docs_new = ['Wie konfiguriere ich die Rechte in brandbox 5 korrekt?', 'Der Flash Upload hat eine Macke', 'Ich hab da mal ein Problem mit SMTP auf Rancher', 'Hilfe der Server geht nicht', 'Arvato Mwst', 'Bei Frank-Flechtwaren stimmen die Bilder nicht']
     X_new_counts = count_vectorizer.transform(docs_new)
     X_new_tfidf = tfidf_transformer.transform(X_new_counts)
     predicted = clf.predict(X_new_tfidf)
