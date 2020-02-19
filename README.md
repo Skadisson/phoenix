@@ -6,6 +6,10 @@ Neural Network Bulletin Board System using SciKit-Learn
 
 _Alpha Phase_
 
+https://developer.atlassian.com/server/confluence/confluence-rest-api-examples/
+https://developer.atlassian.com/cloud/jira/service-desk/rest/
+https://docs.gitlab.com/ee/api/README.html
+
 ## Purpose
 
 Seamless Collection and Search of Tickets, Hotfixes, Patches and Mini-Documentations. With close ties to [Petrus](https://github.com/Skadisson/petrus) and it's logic. Using [Jira Service Desk](https://docs.atlassian.com/jira-servicedesk/REST/3.9.1/) and [Confluence](https://docs.atlassian.com/ConfluenceServer/rest/7.0.3/) APIs.
