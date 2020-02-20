@@ -1,0 +1,282 @@
+/* Color Theme Swatches in Hex */
+.Petrus-1-hex { color: #5DC4DC; }
+.Petrus-2-hex { color: #635C3B; }
+.Petrus-3-hex { color: #F1B94A; }
+.Petrus-4-hex { color: #14121F; }
+.Petrus-5-hex { color: #FCF7E0; }
+
+/* Color Theme Swatches in RGBA */
+.Petrus-1-rgba { color: rgba(93, 196, 220, 1); }
+.Petrus-2-rgba { color: rgba(99, 92, 59, 1); }
+.Petrus-3-rgba { color: rgba(241, 185, 74, 1); }
+.Petrus-4-rgba { color: rgba(20, 18, 31, 1); }
+.Petrus-5-rgba { color: rgba(252, 247, 224, 1); }
+
+/* Color Theme Swatches in HSLA */
+.Petrus-1-hsla { color: hsla(191, 64, 61, 1); }
+.Petrus-2-hsla { color: hsla(49, 25, 30, 1); }
+.Petrus-3-hsla { color: hsla(39, 85, 61, 1); }
+.Petrus-4-hsla { color: hsla(249, 26, 9, 1); }
+.Petrus-5-hsla { color: hsla(49, 82, 93, 1); }
+
+/* Color Theme Swatches in Hex */
+.Petrus-Dark-1-hex { color: #F1ECDF; }
+.Petrus-Dark-2-hex { color: #652A8C; }
+.Petrus-Dark-3-hex { color: #271959; }
+.Petrus-Dark-4-hex { color: #070E26; }
+.Petrus-Dark-5-hex { color: #E94792; }
+
+/* Color Theme Swatches in RGBA */
+.Petrus-Dark-1-rgba { color: rgba(241, 236, 223, 1); }
+.Petrus-Dark-2-rgba { color: rgba(101, 42, 140, 1); }
+.Petrus-Dark-3-rgba { color: rgba(39, 25, 89, 1); }
+.Petrus-Dark-4-rgba { color: rgba(7, 14, 38, 1); }
+.Petrus-Dark-5-rgba { color: rgba(233, 71, 146, 1); }
+
+/* Color Theme Swatches in HSLA */
+.Petrus-Dark-1-hsla { color: hsla(43, 39, 90, 1); }
+.Petrus-Dark-2-hsla { color: hsla(276, 53, 35, 1); }
+.Petrus-Dark-3-hsla { color: hsla(253, 56, 22, 1); }
+.Petrus-Dark-4-hsla { color: hsla(226, 68, 8, 1); }
+.Petrus-Dark-5-hsla { color: hsla(332, 78, 59, 1); }
+
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    color:#FCF7E0;
+}
+body {
+    background-color:white;
+    background-image:url(image/people-throwing-blue-powder-at-daytime-1157557.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+}
+body.dark {
+    background-image:url(image/calm-body-of-water-1363876.jpg);
+}
+a, a:active, a:link, a:visited, a:hover {
+    color:#FCF7E0;
+    text-decoration:none;
+}
+h1 {
+    width:100%;
+    text-align:center;
+    font-size:36px;
+    line-height:36px;
+    color:#635C3B;
+}
+body.dark h1 {
+    color:#FCF7E0;
+}
+h3 {
+    color:beige;
+}
+body.dark h3 {
+    color:magenta;
+}
+form {
+    width:800px;
+    height:200px;
+    position:absolute;
+    left:50%;
+    margin-left:-400px;
+    top:50%;
+    margin-top:-100px;
+    display:block;
+    text-align:center;
+}
+button[type=submit] {
+    margin-left: -50px;
+    width: 50px;
+    border: none;
+    background: transparent;
+    color:#E3DECA;
+}
+input[type=text] {
+    border:none;
+    border-color:#ccc;
+    border-radius:15px;
+    height:20px;
+    width:700px;
+    padding:8px 13px;
+    outline-width: 0;
+    font-size:16px;
+    line-height:18px;
+    color:#635C3B;
+    box-shadow: 1px 1px 5px #635C3B;
+}
+#image-copyright,
+#image-copyright-dark {
+    position:fixed;
+    bottom:10px;
+    right:20px;
+    font-size:13px;
+    line-height:14px;
+    text-align:right;
+}
+#phoenix-info {
+    position:fixed;
+    bottom:10px;
+    left:10px;
+    font-size:13px;
+    line-height:14px;
+    text-align:left;
+}
+#link-list {
+    padding-bottom: 10px;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+}
+#link-list > a {
+    max-width: 31%;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    position:relative;
+    margin-right: 2%;
+}
+#link-list p {
+    display: block;
+    background: #FCF7E0;
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: #635C3B;
+    box-shadow: 1px 1px 3px grey;
+    overflow: hidden;
+    position:relative;
+}
+#link-list p#single {
+    margin-right:0;
+    width: 100%;
+}
+#link-list p span {
+    display:inline-block;
+    width: 100%;
+}
+#link-list p span.date {
+    font-weight:bold;
+    font-size:10px;
+    line-height:10px;
+}
+#link-list p span.title {
+    font-weight:bold;
+    font-size:14px;
+    line-height:16px;
+    margin: 20px 0 10px;
+    min-height: 50px;
+    padding:5px 0;
+    background: white;
+}
+body.dark #link-list p span.title {
+    background: black;
+}
+#link-list p span.id {
+    font-weight:bold;
+    font-size:10px;
+    line-height:10px;
+}
+#link-list p span.relevancy {
+    font-weight:bold;
+    font-size:14px;
+    line-height:15px;
+}
+#link-list p span.keywords {
+    font-weight:bold;
+    font-size:12px;
+    line-height:12px;
+}
+body.dark #link-list p {
+    background: #271959;
+    color: #FCF7E0;
+    box-shadow: 1px 1px 3px #E94792;
+}
+#link-list p:hover {
+    background: white;
+}
+body.dark #link-list p:hover {
+    background: black;
+}
+#link-list p a, #link-list p a:link, #link-list p a:visited, #link-list p a:hover, #link-list p a:active {
+    color:#635C3B;
+    width: 100%;
+    display:inline-block;
+}
+body.dark #link-list p a, body.dark #link-list p a:link, body.dark #link-list p a:visited, body.dark #link-list p a:hover, body.dark #link-list p a:active {
+    color: #FCF7E0;
+}
+#link-list p span.corner {
+    position: absolute;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    border: 1px solid #635C3B;
+}
+.corner.green {
+    background: lime;
+    box-shadow: 0 0 10px lime;
+}
+.corner.yellow {
+    background: yellow;
+    box-shadow: 0 0 10px yellow;
+}
+.corner.red {
+    background: red;
+    box-shadow: 0 0 10px red;
+}
+body #image-copyright-dark {
+    display:none;
+}
+body.dark #image-copyright-dark {
+    display:inline;
+}
+body.dark #image-copyright {
+    display:none;
+}
+#graph {
+    opacity:0.25;
+    position:relative;
+    width:800px;
+    overflow:hidden;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+#graph:hover {
+    opacity:0.5;
+}
+#diagram {
+    position:relative;
+    width:600px;
+    float:left;
+}
+#stats {
+    position:relative;
+    width:200px;
+    float:right;
+}
+#graph-options,
+#graph-modes {
+    position:absolute;
+    right:10px;
+    top:10px;
+    font-size:12px;
+    line-height:13px;
+    color:beige;
+}
+#graph-modes {
+    right:auto;
+    left:10px;
+}
+.dark #graph-options,
+.dark #graph-modes {
+    color:magenta;
+}
+#graph-options .selected,
+#graph-modes .selected {
+    font-weight:bold;
+    cursor:auto;
+}
+#graph-options span,
+#graph-modes span {
+    cursor:pointer;
+}
