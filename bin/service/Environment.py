@@ -23,9 +23,13 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['port']
 
-    def get_path_test_data(self):
+    def get_path_jira_test_data(self):
         path_yaml = self.load_yaml('path')
-        return path_yaml['test_data']
+        return path_yaml['jira_test_data']
+
+    def get_path_confluence_test_data(self):
+        path_yaml = self.load_yaml('path')
+        return path_yaml['confluence_test_data']
 
     def get_path_jira_cache(self):
         path_yaml = self.load_yaml('path')

@@ -1,7 +1,8 @@
-from bin.sub_module import TestLibrary, TestRelevancy, TestCardTransfer
+from bin.sub_module import TestCardTransfer, TestInfo, TestOwnership, TestContextSearch
 from bin.service import Environment
 from bin.service import Logger
-import os, pickle
+import os
+import pickle
 
 
 class Test:
@@ -9,6 +10,7 @@ class Test:
     def __init__(self):
         self.environment = Environment.Environment()
         self.logger = Logger.Logger()
+        self.test_path = 'tmp/card_test'
 
     def run(self):
         result = {
@@ -17,25 +19,37 @@ class Test:
             'error': None
         }
         try:
-            test_data = self.load_test_data()
+            jira_test_data = self.load_jira_test_data()
+            confluence_test_data = self.load_confluence_test_data()
 
-            """success = self.test_library(test_data)
-            result['items'].append({
-                'test': 'Library',
-                'success': success
-            })"""
+            success = True
+            if success:
+                success = self.test_card_transfer(jira_test_data, confluence_test_data)
+                result['items'].append({
+                    'test': 'CardTransfer',
+                    'success': success
+                })
 
-            """success = self.test_relevancy(test_data)
-            result['items'].append({
-                'test': 'Relevancy',
-                'success': success
-            })"""
+            if success:
+                success = self.test_ownership()
+                result['items'].append({
+                    'test': 'Ownership',
+                    'success': success
+                })
 
-            success = self.test_card_transfer(test_data)
-            result['items'].append({
-                'test': 'CardTransfer',
-                'success': success
-            })
+            if success:
+                success = self.test_info(1)
+                result['items'].append({
+                    'test': 'Info',
+                    'success': success
+                })
+
+            if success:
+                success = self.test_context_search()
+                result['items'].append({
+                    'test': 'ContextSearch',
+                    'success': success
+                })
 
         except Exception as e:
             result['error'] = str(e)
@@ -44,9 +58,9 @@ class Test:
 
         return result
 
-    def load_test_data(self):
+    def load_jira_test_data(self):
         test_data = None
-        test_data_path = self.environment.get_path_test_data()
+        test_data_path = self.environment.get_path_jira_test_data()
         file_exists = os.path.isfile(test_data_path)
         if file_exists:
             file = open(test_data_path, "rb")
@@ -54,17 +68,32 @@ class Test:
             file.close()
         return test_data
 
-    def test_library(self, test_data):
-        test_library = TestLibrary.TestLibrary(test_data)
-        result = test_library.run()
-        return result
+    def load_confluence_test_data(self):
+        test_data = None
+        test_data_path = self.environment.get_path_confluence_test_data()
+        file_exists = os.path.isfile(test_data_path)
+        if file_exists:
+            file = open(test_data_path, "rb")
+            test_data = pickle.load(file)
+            file.close()
+        return test_data
 
-    def test_relevancy(self, test_data):
-        test_relevancy = TestRelevancy.TestRelevancy(test_data)
-        result = test_relevancy.run()
-        return result
-
-    def test_card_transfer(self, test_data):
-        test_transfer = TestCardTransfer.TestCardTransfer(test_data)
+    def test_card_transfer(self, jira_test_data, confluence_test_data):
+        test_transfer = TestCardTransfer.TestCardTransfer(jira_test_data, confluence_test_data, self.test_path)
         result = test_transfer.run()
+        return result
+
+    def test_ownership(self):
+        test_ownership = TestOwnership.TestOwnership(self.test_path)
+        result = test_ownership.run()
+        return result
+
+    def test_info(self, owned_count):
+        test_info = TestInfo.TestInfo(self.test_path, owned_count)
+        result = test_info.run()
+        return result
+
+    def test_context_search(self):
+        test_context_search = TestContextSearch.TestContextSearch(self.test_path)
+        result = test_context_search.run()
         return result

@@ -8,12 +8,6 @@ PS = (function(window, document, $) {
 
     var construct = function() {
         self = this;
-        weeks = {
-            'year': 53,
-            'quarter': 13,
-            'month': 4
-        };
-        mode = 'opened';
         self.init();
     };
 

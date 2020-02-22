@@ -15,8 +15,9 @@ class CardTransfer:
 
     def run(self, jira_tickets=None, confluence_entries=None):
         created_jira_card_ids = self.transfer_jira(jira_tickets)
+        created_confluence_card_ids = self.transfer_confluence(confluence_entries)
 
-        return created_jira_card_ids
+        return created_jira_card_ids + created_confluence_card_ids
 
     def transfer_jira(self, jira_tickets):
         created_jira_card_ids = []
@@ -33,6 +34,21 @@ class CardTransfer:
 
         return created_jira_card_ids
 
+    def transfer_confluence(self, confluence_entries):
+        created_confluence_card_ids = []
+        if confluence_entries is not None:
+            for confluence_id in confluence_entries:
+                confluence_card = self.storage.get_confluence_card(confluence_id)
+                if confluence_card is None:
+                    card_id = self.storage.get_next_card_id()
+                    confluence_card = self.create_confluence_card(confluence_id, confluence_entries[confluence_id], card_id)
+                    self.storage.add_card(confluence_card)
+                    created_confluence_card_ids.append(confluence_card.id)
+                elif confluence_card.author is None:
+                    self.update_confluence_card(confluence_entries[confluence_id], confluence_card)
+
+        return created_confluence_card_ids
+
     @staticmethod
     def create_jira_card(ticket_id, ticket, card_id):
         jira_card = Card.Card()
@@ -42,20 +58,60 @@ class CardTransfer:
         jira_card.type = 'idea'
         jira_card.created = time.time()
         jira_card.changed = time.time()
-        jira_card.text = ticket['Text']
-        jira_card.title = ticket['Title']
-        jira_card.keywords = ticket['Keywords']
+        if 'Text' in ticket:
+            jira_card.text = ticket['Text']
+        if 'Comments' in ticket:
+            jira_card.text += ' ' + ' '.join(ticket['Comments'])
+        if 'Title' in ticket:
+            jira_card.title = ticket['Title']
+        if 'Keywords' in ticket:
+            jira_card.keywords = ticket['Keywords']
         jira_card.versions = []
 
         return jira_card
 
     @staticmethod
     def update_jira_card(ticket, jira_card):
-        got_changes = jira_card.text != ticket['Text'] or jira_card.title != ticket['Title'] or jira_card.keywords != ticket['Keywords']
+        text_and_comments = ''
+        if 'Text' in ticket:
+            text_and_comments += ticket['Text']
+        if 'Comments' in ticket:
+            text_and_comments += ' ' + ' '.join(ticket['Comments'])
+        got_changes = (text_and_comments != ticket['Text']) \
+                      or ('Title' in ticket and jira_card.title != ticket['Title']) \
+                      or ('Keywords' in ticket and jira_card.keywords != ticket['Keywords'])
         if got_changes:
             jira_card.versions.append(jira_card)
             updated_jira_card = copy.deepcopy(jira_card)
             updated_jira_card.title = ticket['Title']
             updated_jira_card.text = ticket['Text']
             updated_jira_card.keywords = ticket['Keywords']
+            updated_jira_card.changed = time.time()
+
+    @staticmethod
+    def create_confluence_card(confluence_id, confluence_entry, card_id):
+        jira_card = Card.Card()
+        jira_card.id = card_id
+        jira_card.relation_id = confluence_id
+        jira_card.relation_type = 'confluence'
+        jira_card.type = 'idea'
+        jira_card.created = time.time()
+        jira_card.changed = time.time()
+        if 'text' in confluence_entry:
+            jira_card.text = confluence_entry['text']
+        if 'title' in confluence_entry:
+            jira_card.title = confluence_entry['title']
+        jira_card.versions = []
+
+        return jira_card
+
+    @staticmethod
+    def update_confluence_card(confluence_entry, confluence_card):
+        got_changes = ('text' in confluence_entry and confluence_card.text != confluence_entry['text']) \
+                      or ('title' in confluence_entry and confluence_card.title != confluence_entry['title'])
+        if got_changes:
+            confluence_card.versions.append(confluence_card)
+            updated_jira_card = copy.deepcopy(confluence_card)
+            updated_jira_card.title = confluence_entry['title']
+            updated_jira_card.text = confluence_entry['text']
             updated_jira_card.changed = time.time()
