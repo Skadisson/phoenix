@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Phoenix</title>
+    <script src="https://d3js.org/d3.v4.js" type="text/javascript"></script>
+    <script src="jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="jquery.modal.min.js"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="jquery.modal.min.css" />
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="fontawesome-free-5.11.2-web/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="overlay">
+<form id="search" action="" method="GET" autocomplete="off" onsubmit="main.search();return false;">
+    <h1>Phoenix</h1>
+    <h3 id="info">Checking ...</h3>
+    <input type="text" name="keywords" id="keywords" placeholder="What do you want to know?" value="" />
+    <button type="submit" class="fa fa-search"></button>
+    <div id="link-list">
+
+        <!-- DUMMY ENTRIES -->
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="fact"><span class="date">2019/9/3</span><span class="title">This is a Fact</span><span class="type"><i class="fas fa-check-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="fact"><span class="date">2019/9/3</span><span class="title">This is another Fact</span><span class="type"><i class="fas fa-check-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="fact"><span class="date">2019/9/3</span><span class="title">This is the next Fact</span><span class="type"><i class="fas fa-check-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="fact"><span class="date">2019/9/3</span><span class="title">This is the last found Fact</span><span class="type"><i class="fas fa-check-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="idea"><span class="date">2019/9/3</span><span class="title">This is the first Idea</span><span class="type"><i class="fas fa-question-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="idea"><span class="date">2019/9/3</span><span class="title">This is the next Idea</span><span class="type"><i class="fas fa-question-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="https://jira.konmedia.com/browse/KMSERVICE-3065" target="_blank"><p data-card-id="31676" data-card-type="idea"><span class="date">2019/9/3</span><span class="title">This is the last found Idea</span><span class="type"><i class="fas fa-question-circle"></i></span><span class="relevancy">100%</span><span class="keywords"></span></p></a>
+        <a href="#ex1" target="_self" rel="modal:open"><p data-card-id="0" data-card-type="create"><span class="title">Did not find what you are looking for?<br />Create a new Fact.</span><span class="plus"><i class="fas fa-plus-circle">&nbsp;</i></span><span class="keywords"></span></p></a>
+
+    </div>
+</form>
+
+<div id="ex1" class="modal">
+  <p>Thanks for clicking. That felt good.</p>
+  <a href="#" rel="modal:close">Close</a>
+</div>
+
+<div id="phoenix-info"><a href="https://confluence.konmedia.com/display/PE/Phoenix" target="_blank" title="information"><span class="fa fa-info-circle">&nbsp;</span></a></div>
+<div id="image-copyright"><a href="https://www.pexels.com/photo/bird-s-eye-view-of-seashore-during-daytime-3426868/" target="_blank">Photo by <b>Asad Photo Maldives</b> from <b>Pexels</b></a></div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from bin.sub_module import TestLibrary, TestRelevancy
+from bin.sub_module import TestLibrary, TestRelevancy, TestCardTransfer
 from bin.service import Environment
 from bin.service import Logger
 import os, pickle
@@ -19,15 +19,21 @@ class Test:
         try:
             test_data = self.load_test_data()
 
-            success = self.test_library(test_data)
+            """success = self.test_library(test_data)
             result['items'].append({
                 'test': 'Library',
                 'success': success
-            })
+            })"""
 
-            success = self.test_relevancy(test_data)
+            """success = self.test_relevancy(test_data)
             result['items'].append({
                 'test': 'Relevancy',
+                'success': success
+            })"""
+
+            success = self.test_card_transfer(test_data)
+            result['items'].append({
+                'test': 'CardTransfer',
                 'success': success
             })
 
@@ -56,4 +62,9 @@ class Test:
     def test_relevancy(self, test_data):
         test_relevancy = TestRelevancy.TestRelevancy(test_data)
         result = test_relevancy.run()
+        return result
+
+    def test_card_transfer(self, test_data):
+        test_transfer = TestCardTransfer.TestCardTransfer(test_data)
+        result = test_transfer.run()
         return result

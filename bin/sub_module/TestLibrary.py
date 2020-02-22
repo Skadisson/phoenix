@@ -15,6 +15,6 @@ class TestLibrary:
         if actual_length != self.expected_length:
             raise Exception("Library failed to accumulate test words ({} != {})".format(actual_length, self.expected_length))
         actual_index = self.library.get_index('Sebastian')
-        if actual_index != 22:
+        if actual_index != self.expected_index:
             raise Exception("Library failed to locate test word ({} != {})".format(actual_index, self.expected_index))
         return True

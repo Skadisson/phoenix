@@ -35,6 +35,10 @@ class Environment:
         path_yaml = self.load_yaml('path')
         return path_yaml['confluence_cache']
 
+    def get_path_card_cache(self):
+        path_yaml = self.load_yaml('path')
+        return path_yaml['card_cache']
+
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']

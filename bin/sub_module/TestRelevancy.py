@@ -14,9 +14,6 @@ class TestRelevancy:
     def run(self):
 
         result_one = self.relevancy.assertain_tickets(self.test_keywords['Test One'].split(), self.test_data)
-        print(result_one)
-
         result_two = self.relevancy.assertain_tickets(self.test_keywords['Test Two'].split(), self.test_data)
-        print(result_two)
 
-        return True
+        return len(result_one) > 0 and len(result_two) > 0

@@ -1,0 +1,201 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    color:#FCF7E0;
+    height:100%;
+}
+body {
+    background-color:white;
+    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868-reversed.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    margin:0;
+}
+.blocker {
+    background-color:rgba(255, 255, 255, 0.75);
+}
+.modal {
+    background: rgba(0,212,255,1);
+}
+#overlay {
+    width:100%;
+    height:100%;
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(9,9,121,0) 33%, rgba(3,151,215,0) 88%, rgba(0,212,255,1) 100%);
+}
+a, a:active, a:link, a:visited, a:hover {
+    color:#FCF7E0;
+    text-decoration:none;
+}
+h1 {
+    width:100%;
+    text-align:center;
+    font-size:36px;
+    line-height:36px;
+    color:#16BAE7;
+}
+h3 {
+    width:100%;
+    margin-top: -20px;
+    font-style: italic;
+    color:#16BAE7;
+}
+form {
+    width:800px;
+    position:absolute;
+    left:50%;
+    margin-left:-400px;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    text-align:center;
+}
+button[type=submit] {
+    margin-left: -50px;
+    width: 50px;
+    border: none;
+    background: transparent;
+    color:#E3DECA;
+}
+input[type=text] {
+    border:none;
+    border-color:#ccc;
+    border-radius:15px;
+    height:20px;
+    width:750px;
+    padding:8px 13px;
+    outline-width: 0;
+    font-size:16px;
+    line-height:18px;
+    color:#635C3B;
+    box-shadow: 1px 1px 5px grey;
+}
+#image-copyright {
+    position:fixed;
+    bottom:10px;
+    right:20px;
+    font-size:13px;
+    line-height:14px;
+    text-align:right;
+}
+#phoenix-info {
+    position:fixed;
+    bottom:10px;
+    left:10px;
+    font-size:13px;
+    line-height:14px;
+    text-align:left;
+}
+#link-list {
+    padding-bottom: 10px;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+}
+#link-list > a {
+    display: flex;
+    justify-content: space-between;
+    position:relative;
+    margin-right: 2%;
+}
+#link-list p {
+    display: block;
+    background: #16BAE7;
+    border-radius: 10px;
+    padding: 5px 10px;
+    color:beige;
+    box-shadow: 1px 1px 3px grey;
+    overflow: hidden;
+    position:relative;
+}
+p .type {
+    position:absolute;
+    right:10px;
+    top:10px;
+    max-width:20px;
+}
+#link-list p[data-card-type=idea] {
+    opacity:0.88;
+}
+#link-list p[data-card-type=create] {
+    opacity:0.77;
+    width:100%;
+}
+#link-list p:hover {
+    opacity:1;
+    box-shadow: 0px 0px 2px grey;
+}
+#link-list p#single {
+    margin-right:0;
+    width: 100%;
+}
+#link-list p span {
+    display:inline-block;
+    width: 100%;
+}
+#link-list p span.date {
+    font-weight:bold;
+    font-size:10px;
+    line-height:10px;
+}
+#link-list p span.title {
+    font-weight:bold;
+    font-size:14px;
+    line-height:16px;
+    margin: 20px 0 10px;
+    padding:5px 0;
+}
+#link-list p span.id {
+    font-weight:bold;
+    font-size:10px;
+    line-height:10px;
+}
+#link-list p span.relevancy {
+    font-weight:bold;
+    font-size:14px;
+    line-height:15px;
+}
+#link-list p span.keywords {
+    font-weight:bold;
+    font-size:12px;
+    line-height:12px;
+}
+#link-list p a, #link-list p a:link, #link-list p a:visited, #link-list p a:hover, #link-list p a:active {
+    color:#635C3B;
+    width: 100%;
+    display:inline-block;
+}
+#link-list p span.corner {
+    position: absolute;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    border: 1px solid #635C3B;
+}
+#link-list .plus {
+    font-size:32px;
+    line-height:32px;
+}
+.corner.green {
+    background: lime;
+    box-shadow: 0 0 10px lime;
+}
+.corner.yellow {
+    background: yellow;
+    box-shadow: 0 0 10px yellow;
+}
+.corner.red {
+    background: red;
+    box-shadow: 0 0 10px red;
+}
+
+@media only screen and (max-width: 800px) {
+    html, body {
+        height:auto;
+    }
+    form {
+        width:100%;
+        left:0;
+        margin-left:0;
+    }
+}
