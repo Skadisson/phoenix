@@ -1,4 +1,6 @@
 from bin.service import Environment
+from bin.entity import Card
+from shutil import copyfile
 import pickle
 import os
 import time
@@ -123,3 +125,44 @@ class CardStorage:
         if editor not in card.editors:
             card.editors.append(editor)
         self.update_card(card)
+
+    def get_latest_cards(self, count):
+        latest_cards = []
+
+        cards = list(self.get_all_cards().values())
+
+        valid_cards = []
+        for check_card in cards:
+            len_title = len(check_card.title)
+            len_text = len(check_card.text)
+            if len_title > 0 and len_text > 0:
+                valid_cards.append(check_card)
+
+        cards_by_date = sorted(valid_cards, key=lambda card: card.changed, reverse=True)
+        cards_by_click = sorted(cards_by_date, key=lambda card: card.clicks, reverse=True)
+        cards_by_type = sorted(cards_by_click, key=lambda card: card.type, reverse=False)
+        limited_cards_by_date = cards_by_type[:count]
+        for sorted_card in limited_cards_by_date:
+            sorted_card.versions = None
+            latest_cards.append(sorted_card.__dict__)
+
+        return latest_cards
+
+    def backup(self):
+        copyfile(self.cache_path, "{}.backup".format(self.cache_path))
+
+    def create_card(self, title, text, keywords):
+        card = Card.Card()
+        card.id = self.get_next_card_id()
+        card.title = title
+        card.text = text
+        card.keywords = keywords.split(',')
+        card.created = time.time()
+        card.changed = time.time()
+        card.type = 'fact'
+        """TODO: user handling"""
+        card.author = 'ses'
+        card.editors = ['ses']
+        self.store_card(card)
+
+        return card.id

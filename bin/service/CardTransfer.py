@@ -3,6 +3,7 @@ from bin.service import CardStorage
 from bin.service import Environment
 import time
 import copy
+import datetime
 
 
 class CardTransfer:
@@ -49,33 +50,39 @@ class CardTransfer:
 
         return created_confluence_card_ids
 
-    @staticmethod
-    def create_jira_card(ticket_id, ticket, card_id):
+    def create_jira_card(self, ticket_id, ticket, card_id):
         jira_card = Card.Card()
         jira_card.id = card_id
         jira_card.relation_id = ticket_id
         jira_card.relation_type = 'jira'
         jira_card.type = 'idea'
-        jira_card.created = time.time()
-        jira_card.changed = time.time()
-        if 'Text' in ticket:
-            jira_card.text = ticket['Text']
-        if 'Comments' in ticket:
+        jira_card.created = self.timestamp_from_ticket_time(ticket['Created'])
+        jira_card.changed = self.timestamp_from_ticket_time(ticket['Updated'])
+        jira_card.text = ''
+        if 'Text' in ticket and ticket['Text'] is not None:
+            jira_card.text += ticket['Text']
+        if 'Comments' in ticket and ticket['Comments'] is not None:
             jira_card.text += ' ' + ' '.join(ticket['Comments'])
-        if 'Title' in ticket:
+        if 'Title' in ticket and ticket['Title'] is not None:
             jira_card.title = ticket['Title']
-        if 'Keywords' in ticket:
+        if 'Keywords' in ticket and ticket['Keywords'] is not None:
             jira_card.keywords = ticket['Keywords']
         jira_card.versions = []
 
         return jira_card
 
     @staticmethod
+    def timestamp_from_ticket_time(ticket_time):
+        if ticket_time is None:
+            return 0
+        return time.mktime(datetime.datetime.strptime(ticket_time, "%Y-%m-%dT%H:%M:%S.%f%z").timetuple())
+
+    @staticmethod
     def update_jira_card(ticket, jira_card):
         text_and_comments = ''
-        if 'Text' in ticket:
+        if 'Text' in ticket and ticket['Text'] is not None:
             text_and_comments += ticket['Text']
-        if 'Comments' in ticket:
+        if 'Comments' in ticket and ticket['Comments'] is not None:
             text_and_comments += ' ' + ' '.join(ticket['Comments'])
         got_changes = (text_and_comments != ticket['Text']) \
                       or ('Title' in ticket and jira_card.title != ticket['Title']) \
@@ -95,11 +102,11 @@ class CardTransfer:
         jira_card.relation_id = confluence_id
         jira_card.relation_type = 'confluence'
         jira_card.type = 'idea'
-        jira_card.created = time.time()
-        jira_card.changed = time.time()
-        if 'text' in confluence_entry:
+        jira_card.created = 0
+        jira_card.changed = 0
+        if 'text' in confluence_entry and confluence_entry['text'] is not None:
             jira_card.text = confluence_entry['text']
-        if 'title' in confluence_entry:
+        if 'title' in confluence_entry and confluence_entry['title'] is not None:
             jira_card.title = confluence_entry['title']
         jira_card.versions = []
 

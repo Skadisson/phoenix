@@ -1,6 +1,5 @@
-from bin.sub_module import TestCardTransfer, TestInfo, TestOwnership, TestContextSearch
-from bin.service import Environment
-from bin.service import Logger
+from bin.tests import TestCardTransfer, TestInfo, TestOwnership, TestContextSearch
+from bin.service import Environment, Logger
 import os
 import pickle
 

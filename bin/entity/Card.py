@@ -13,3 +13,5 @@ class Card:
         self.versions = None
         self.editors = None
         self.keywords = None
+        self.clicks = 0
+        self.likes = 0
