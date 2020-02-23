@@ -72,6 +72,9 @@ input[type=text] {
     line-height:14px;
     text-align:right;
 }
+#image-copyright a {
+    color:#16BAE7;
+}
 #phoenix-info {
     position:fixed;
     bottom:10px;
@@ -111,11 +114,7 @@ p .type {
     max-width:20px;
 }
 .link-list p[data-card-type=idea] {
-    opacity:0.88;
-}
-.link-list p[data-card-type=create] {
-    opacity:0.77;
-    width:100%;
+    background: #16DDE7;
 }
 .link-list p:hover {
     opacity:1;
@@ -161,29 +160,9 @@ p .type {
     width: 100%;
     display:inline-block;
 }
-.link-list p span.corner {
-    position: absolute;
-    right: 5px;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    border: 1px solid #635C3B;
-}
 .link-list .plus {
     font-size:32px;
     line-height:32px;
-}
-.corner.green {
-    background: lime;
-    box-shadow: 0 0 10px lime;
-}
-.corner.yellow {
-    background: yellow;
-    box-shadow: 0 0 10px yellow;
-}
-.corner.red {
-    background: red;
-    box-shadow: 0 0 10px red;
 }
 .jquery-modal fieldset {
     border:none;

@@ -29,7 +29,7 @@ PS = (function(window, document, $) {
                     $('#keywords').attr('placeholder', '');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].idea_count != 'undefined' && typeof result.items[0].fact_count != 'undefined') {
-                        $('#keywords').attr('placeholder', "Search a topic from " + result.items[0].idea_count + " ideas and " + result.items[0].fact_count + " facts");
+                        $('#keywords').attr('placeholder', "Suche Dein Thema in " + result.items[0].idea_count + " Ideen und " + result.items[0].fact_count + " Fakten");
                     }
                 }
             };
@@ -99,9 +99,9 @@ PS = (function(window, document, $) {
         var title = card['title'];
         var author = !card['author'] ? '-' : card['author'];
         if(card['relation_type'] == 'confluence' && card['type'] == 'idea') {
-            title = 'Confluence:<br />' + title
+            title = 'Aus Confluence:<br />' + title
         } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
-            title = 'Jira:<br />' + title
+            title = 'Aus Jira:<br />' + title
         }
         var date = new Date(card['changed'] * 1000)
         var $template = $('.card-template').clone();

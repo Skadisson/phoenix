@@ -15,7 +15,7 @@ class Latest:
         }
         try:
 
-            cards = self.storage.get_latest_cards(20)
+            cards = self.storage.get_latest_cards(9)
             result['items'].append({
                 'cards': cards
             })
