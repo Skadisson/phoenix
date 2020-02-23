@@ -65,6 +65,27 @@ PS = (function(window, document, $) {
         }
     };
 
+    function keywords(title, text, $keyword_field) {
+        var getUrl = 'http://localhost:1352/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0].suggested_keywords != 'undefined') {
+                        $keyword_field.val(result.items[0].suggested_keywords);
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            console.log(e.message);
+        }
+    };
+
     function search() {
         $('body').css('cursor', 'wait');
         var keywords = $('#keywords').val();
@@ -103,6 +124,7 @@ PS = (function(window, document, $) {
         } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
             title = 'Aus Jira:<br />' + title
         }
+        var external_link = card['external_link']
         var date = new Date(card['changed'] * 1000)
         var $template = $('.card-template').clone();
         var keywords = !card['keywords'] ? '' : card['keywords'].join(',')
@@ -130,12 +152,38 @@ PS = (function(window, document, $) {
             $('[name=title]', '#detail').val(title);
             $('[name=text]', '#detail').text(card['text']);
             $('[name=keywords]', '#detail').val(keywords);
+            $('[name=external_link]', '#detail').val(external_link);
+            $('.fa-external-link-square-alt', '#detail').off('click');
+            $('.fa-external-link-square-alt', '#detail').on('click', function(event) {
+                var external_link = $('[name=external_link]', $(this).parent()).val();
+                if(external_link != '') {
+                    window.open(external_link);
+                }
+            });
+            $('.fa-bullseye', '#detail').off('click');
+            $('.fa-bullseye', '#detail').on('click', function(event) {
+                var $keyword_field = $('[name=keywords]', $(this).parent());
+                self.keywords(title, card['text'], $keyword_field);
+            });
             $('.edit', '#detail').click(function(event) {
                 $('#edit').modal();
                 $('[name=card_id]', '#edit').val(card['id']);
                 $('[name=title]', '#edit').val(card['title']);
                 $('[name=text]', '#edit').text(card['text']);
                 $('[name=keywords]', '#edit').val(keywords);
+                $('[name=external_link]', '#edit').val(external_link);
+                $('.fa-external-link-square-alt', '#edit').off('click');
+                $('.fa-external-link-square-alt', '#edit').on('click', function(event) {
+                    var external_link = $('[name=external_link]', $(this).parent()).val();
+                    if(external_link != '') {
+                        window.open(external_link);
+                    }
+                });
+                $('.fa-bullseye', '#edit').off('click');
+                $('.fa-bullseye', '#edit').on('click', function(event) {
+                    var $keyword_field = $('[name=keywords]', $(this).parent());
+                    self.keywords(title, card['text'], $keyword_field);
+                });
             });
             return false;
         });
@@ -148,16 +196,20 @@ PS = (function(window, document, $) {
             var title = $('[name=title]', '#edit').val();
             var text = $('[name=text]', '#edit').val();
             var keywords = $('[name=keywords]', '#edit').val();
+            var external_link = $('[name=external_link]', '#edit').val();
             var card_id = $('[name=card_id]', '#edit').val();
             var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
                         + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords)
+                        + '&external_link=' + encodeURIComponent(external_link) +
                         + '&card_id=' + encodeURIComponent(card_id);
         } else {
             var title = $('[name=title]', '#create').val();
             var text = $('[name=text]', '#create').val();
             var keywords = $('[name=keywords]', '#create').val();
+            var external_link = $('[name=external_link]', '#create').val();
             var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
-                        + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords);
+                        + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords)
+                        + '&external_link=' + encodeURIComponent(external_link);
         }
 
         if(title == '' || text == '') {
@@ -182,7 +234,8 @@ PS = (function(window, document, $) {
         info: info,
         latest_cards: latest_cards,
         render_card: render_card,
-        store_card: store_card
+        store_card: store_card,
+        keywords: keywords
     };
 
     return construct;

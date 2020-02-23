@@ -15,3 +15,4 @@ class Card:
         self.keywords = None
         self.clicks = 0
         self.likes = 0
+        self.external_link = None

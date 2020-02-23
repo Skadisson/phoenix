@@ -99,6 +99,7 @@ class CardStorage:
             existing_card.author = card.author
             existing_card.keywords = card.keywords
             existing_card.editors = card.editors
+            existing_card.external_link = card.external_link
 
             if existing_card.versions is None:
                 existing_card.versions = []
@@ -151,7 +152,7 @@ class CardStorage:
     def backup(self):
         copyfile(self.cache_path, "{}.backup".format(self.cache_path))
 
-    def create_card(self, title, text, keywords):
+    def create_card(self, title, text, keywords, external_link):
         card = Card.Card()
         card.id = self.get_next_card_id()
         card.title = title
@@ -159,6 +160,7 @@ class CardStorage:
         card.keywords = keywords.split(',')
         card.created = time.time()
         card.changed = time.time()
+        card.external_link = external_link
         card.type = 'fact'
         """TODO: user handling"""
         card.author = 'ses'

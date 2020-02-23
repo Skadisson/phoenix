@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Test, Ping, Update, Latest, Search, Backup, Click, Store
+from bin.module import Test, Ping, Update, Latest, Search, Backup, Click, Store, Keywords
 from bin.service import Environment
 import json
 
@@ -35,8 +35,14 @@ def phoenix(request):
         text = str(request.args.get('text', ''))
         keywords = str(request.args.get('keywords', ''))
         card_id = int(request.args.get('card_id', 0))
+        external_link = str(request.args.get('external_link', ''))
         store = Store.Store()
-        response = store.run(title, text, keywords, card_id)
+        response = store.run(title, text, keywords, external_link, card_id)
+    elif function == 'Keywords':
+        title = str(request.args.get('title', ''))
+        text = str(request.args.get('text', ''))
+        keywords = Keywords.Keywords()
+        response = keywords.run(title, text)
     else:
         response = {'error': 'unknown function'}
 

@@ -8,7 +8,7 @@ class Store:
         self.storage = CardStorage.CardStorage()
         self.logger = Logger.Logger()
 
-    def run(self, title, text, keywords, card_id):
+    def run(self, title, text, keywords, external_link, card_id):
 
         result = {
             'items': [],
@@ -31,6 +31,7 @@ class Store:
                 card = self.storage.get_card(card_id)
                 card.title = title
                 card.text = text
+                card.external_link = external_link
                 card.keywords = keywords.split(',')
                 """TODO: User Handling"""
                 if card.editors is None:
@@ -42,7 +43,7 @@ class Store:
                 card.type = 'fact'
                 self.storage.update_card(card)
             else:
-                card_id = self.storage.create_card(title, text, keywords)
+                card_id = self.storage.create_card(title, text, keywords, external_link)
 
             result['items'].append({
                 'card_id': card_id

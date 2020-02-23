@@ -59,6 +59,7 @@ class CardTransfer:
         jira_card.created = self.timestamp_from_ticket_time(ticket['Created'])
         jira_card.changed = self.timestamp_from_ticket_time(ticket['Updated'])
         jira_card.text = ''
+        jira_card.external_link = 'https://jira.konmedia.com/browse/' + ticket['Key']
         if 'Text' in ticket and ticket['Text'] is not None:
             jira_card.text += ticket['Text']
         if 'Comments' in ticket and ticket['Comments'] is not None:
@@ -104,6 +105,7 @@ class CardTransfer:
         jira_card.type = 'idea'
         jira_card.created = 0
         jira_card.changed = 0
+        jira_card.external_link = confluence_entry['link']
         if 'text' in confluence_entry and confluence_entry['text'] is not None:
             jira_card.text = confluence_entry['text']
         if 'title' in confluence_entry and confluence_entry['title'] is not None:
