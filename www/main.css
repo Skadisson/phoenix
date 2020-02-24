@@ -19,6 +19,20 @@ body {
     display:none;
     visibility:hidden;
 }
+@keyframes blink {
+  50% {
+    opacity: 0.0;
+  }
+}
+@-webkit-keyframes blink {
+  50% {
+    opacity: 0.0;
+  }
+}
+.blink {
+  animation: blink 1s step-start 0s infinite;
+  -webkit-animation: blink 1s step-start 0s infinite;
+}
 a, a:active, a:link, a:visited, a:hover {
     color:#FCF7E0;
     text-decoration:none;
@@ -43,6 +57,42 @@ form {
     display: flex;
     flex-wrap: wrap;
     text-align:center;
+}
+#log {
+    position:fixed;
+    right:5%;
+    top:10%;
+    overflow:hidden;
+    display:block;
+    z-index:100;
+}
+#log p {
+    color:#16BAE7;
+}
+#log .notification {
+    opacity:0;
+    background:white;
+    border-radius:5px;
+    padding:0 10px;
+    text-align:right;
+    width:200px;
+}
+#log .error {
+    opacity:0;
+    background:white;
+    border-radius:5px;
+    padding:0 10px;
+    text-align:right;
+    width:200px;
+}
+#log .error p {
+    color:red;
+}
+.loading {
+    color:#16BAE7;
+    top:5%;
+    right:5%;
+    position:fixed;
 }
 button[type=submit] {
     margin-left: -50px;

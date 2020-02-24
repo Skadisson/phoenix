@@ -13,6 +13,11 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <div id="log">
+        <div class="loading">l&auml;dt <i class="far fa-lightbulb blink"></i></div>
+    </div>
+
     <form id="search" action="" method="GET" autocomplete="off" onsubmit="main.search();return false;">
         <h1>Phoenix</h1>
         <input type="text" name="keywords" id="keywords" placeholder="lade ..." value="" />
@@ -103,6 +108,8 @@
     <div id="image-copyright"><a href="https://www.pexels.com/photo/bird-s-eye-view-of-seashore-during-daytime-3426868/" target="_blank">Photo by <b>Asad Photo Maldives</b> from <b>Pexels</b></a></div>
 
     <a href="#" target="_blank" class="hidden card-template"><p data-card-id="" data-card-type=""><span class="date"></span><span class="title"></span><span class="type"><i class="fas"></i></span><span class="author">-</span><span class="keywords"></span></p></a>
+    <div class="hidden notification-template"><p><span class="notification-info"></span> <i class="fas fa-check-circle"></i></p></div>
+    <div class="hidden error-template"><p><span class="notification-info"></span> <i class="fas fa-ban"></i></p></div>
 
 </body>
 </html>

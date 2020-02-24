@@ -4,7 +4,8 @@ PS = (function(window, document, $) {
 
     'use strict';
 
-    var self, weeks, mode;
+    var self;
+    var loading = 0;
 
     var construct = function() {
         self = this;
@@ -24,6 +25,37 @@ PS = (function(window, document, $) {
         $('body').on('click', '.fa-bullseye', self.suggest_keywords);
         $('body').on('click', '.fa-external-link-square-alt', self.open_external_link);
     };
+
+    function start_loading() {
+        loading++;
+        $('.loading').stop().animate({'opacity': 1}, 200);
+    };
+
+    function finish_loading() {
+        loading--;
+        if(loading == 0) {
+            $('.loading').stop().animate({'opacity': 0}, 200);
+        }
+    };
+
+    function render_notification(text, is_error = false) {
+        if(!is_error) {
+            var $notification = $('.notification-template').clone();
+            $notification.removeClass('notification-template');
+            $notification.addClass('notification');
+        } else {
+            var $notification = $('.error-template').clone();
+            $notification.removeClass('error-template');
+            $notification.addClass('error');
+        }
+        $notification.removeClass('hidden');
+        $('#log').prepend($notification);
+        $('.notification-info', $notification).text(text);
+        $notification.animate({'opacity': 1}, 200);
+        $notification.animate({'opacity': 0}, 6000, 'swing', function() {
+            $notification.remove();
+        });
+    }
 
     function suggest_keywords() {
         var $keyword_field = $('[name=keywords]', $(this).parent());
@@ -46,8 +78,11 @@ PS = (function(window, document, $) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Info geladen');
                     $('#keywords').attr('placeholder', '');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].idea_count != 'undefined' && typeof result.items[0].fact_count != 'undefined') {
@@ -57,6 +92,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.render_notification('Fehler', true);
             console.log(e.message);
         }
     };
@@ -68,8 +104,11 @@ PS = (function(window, document, $) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Karten geladen');
                     $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].cards != 'undefined') {
@@ -83,20 +122,23 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.render_notification('Fehler', true);
             console.log(e.message);
         }
     };
 
     function keywords(title, text, $keyword_field) {
-        console.log('x');
         var getUrl = 'http://localhost:1352/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Keywords vorgeschlagen');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].suggested_keywords != 'undefined') {
                         $keyword_field.val(result.items[0].suggested_keywords);
@@ -105,12 +147,12 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.render_notification('Fehler', true);
             console.log(e.message);
         }
     };
 
     function search() {
-        $('body').css('cursor', 'wait');
         var keywords = $('#keywords').val();
         var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(keywords);
         var formContentType = 'application/x-www-form-urlencoded';
@@ -118,9 +160,11 @@ PS = (function(window, document, $) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
-                    $('body').css('cursor', 'auto');
+                    self.finish_loading();
+                    self.render_notification('Karten geladen');
                     $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].cards != 'undefined') {
@@ -134,6 +178,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.render_notification('Fehler', true);
             console.log(e.message);
         }
     };
@@ -195,7 +240,6 @@ PS = (function(window, document, $) {
 
     function store_card(func) {
 
-        $('body').css('cursor', 'wait');
         if(func == 'edit') {
             var title = $('[name=title]', '#edit').val();
             var text = $('[name=text]', '#edit').val();
@@ -217,16 +261,18 @@ PS = (function(window, document, $) {
         }
 
         if(title == '' || text == '') {
-            $('body').css('cursor', 'wait');
-            alert('Title and text are mandatory!');
+            self.render_notification('Fehler: Titel und Beschreibung sind Pflichtfelder', true);
             return;
         }
 
+        self.start_loading();
         var xhr = new XMLHttpRequest();
         xhr.open('GET', getUrl, true);
         xhr.send();
         xhr.onreadystatechange = function() {
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                self.finish_loading();
+                self.render_notification('Karte gespeichert');
                 window.location.reload();
             }
         };
@@ -242,7 +288,10 @@ PS = (function(window, document, $) {
         keywords: keywords,
         register_events: register_events,
         suggest_keywords: suggest_keywords,
-        open_external_link: open_external_link
+        open_external_link: open_external_link,
+        render_notification: render_notification,
+        start_loading: start_loading,
+        finish_loading: finish_loading
     };
 
     return construct;
