@@ -200,4 +200,8 @@ p .type {
         left:0;
         margin-left:0;
     }
+    .jquery-modal input[type=text],
+    .jquery-modal textarea {
+        width:90%;
+    }
 }

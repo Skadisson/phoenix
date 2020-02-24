@@ -12,9 +12,31 @@ PS = (function(window, document, $) {
     };
 
     function init() {
-        $('input[type=text]').focus();
         self.info();
         self.latest_cards();
+
+        $('input[type=text]').focus();
+        self.register_events();
+    };
+
+    function register_events() {
+        $('body').off('click');
+        $('body').on('click', '.fa-bullseye', self.suggest_keywords);
+        $('body').on('click', '.fa-external-link-square-alt', self.open_external_link);
+    };
+
+    function suggest_keywords() {
+        var $keyword_field = $('[name=keywords]', $(this).parent());
+        var title = $('[name=title]', $(this).parent().parent()).val();
+        var text = $('[name=text]', $(this).parent().parent()).val();
+        self.keywords(title, text, $keyword_field);
+    };
+
+    function open_external_link() {
+        var external_link = $('[name=external_link]', $(this).parent()).val();
+        if(external_link != '') {
+            window.open(external_link);
+        }
     };
 
     function info() {
@@ -66,6 +88,7 @@ PS = (function(window, document, $) {
     };
 
     function keywords(title, text, $keyword_field) {
+        console.log('x');
         var getUrl = 'http://localhost:1352/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -120,14 +143,15 @@ PS = (function(window, document, $) {
         var title = card['title'];
         var author = !card['author'] ? '-' : card['author'];
         if(card['relation_type'] == 'confluence' && card['type'] == 'idea') {
-            title = 'Aus Confluence:<br />' + title
+            title = 'Aus Confluence:<br />' + title;
         } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
-            title = 'Aus Jira:<br />' + title
+            title = 'Aus Jira:<br />' + title;
         }
-        var external_link = card['external_link']
-        var date = new Date(card['changed'] * 1000)
+        var external_link = card['external_link'];
+        var date = new Date(card['changed'] * 1000);
         var $template = $('.card-template').clone();
-        var keywords = !card['keywords'] ? '' : card['keywords'].join(',')
+        var keywords = !card['keywords'] ? '' : card['keywords'].join(',');
+        var editors = !card['editors'] ? '' : card['editors'].join(', ');
         $template.removeClass('hidden');
         $template.removeClass('card-template');
         $template.attr('href', '#edit');
@@ -142,6 +166,7 @@ PS = (function(window, document, $) {
         $('#link-list').append($template);
         $($template).click(function(event) {
             event.preventDefault();
+            self.register_events();
             var card_id = $('p', this).attr('data-card-id');
             var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id);
             var xhr = new XMLHttpRequest();
@@ -153,37 +178,16 @@ PS = (function(window, document, $) {
             $('[name=text]', '#detail').text(card['text']);
             $('[name=keywords]', '#detail').val(keywords);
             $('[name=external_link]', '#detail').val(external_link);
-            $('.fa-external-link-square-alt', '#detail').off('click');
-            $('.fa-external-link-square-alt', '#detail').on('click', function(event) {
-                var external_link = $('[name=external_link]', $(this).parent()).val();
-                if(external_link != '') {
-                    window.open(external_link);
-                }
-            });
-            $('.fa-bullseye', '#detail').off('click');
-            $('.fa-bullseye', '#detail').on('click', function(event) {
-                var $keyword_field = $('[name=keywords]', $(this).parent());
-                self.keywords(title, card['text'], $keyword_field);
-            });
+            $('[name=editors]', '#detail').val(editors);
             $('.edit', '#detail').click(function(event) {
+                self.register_events();
                 $('#edit').modal();
                 $('[name=card_id]', '#edit').val(card['id']);
                 $('[name=title]', '#edit').val(card['title']);
                 $('[name=text]', '#edit').text(card['text']);
                 $('[name=keywords]', '#edit').val(keywords);
                 $('[name=external_link]', '#edit').val(external_link);
-                $('.fa-external-link-square-alt', '#edit').off('click');
-                $('.fa-external-link-square-alt', '#edit').on('click', function(event) {
-                    var external_link = $('[name=external_link]', $(this).parent()).val();
-                    if(external_link != '') {
-                        window.open(external_link);
-                    }
-                });
-                $('.fa-bullseye', '#edit').off('click');
-                $('.fa-bullseye', '#edit').on('click', function(event) {
-                    var $keyword_field = $('[name=keywords]', $(this).parent());
-                    self.keywords(title, card['text'], $keyword_field);
-                });
+                $('[name=editors]', '#edit').val(editors);
             });
             return false;
         });
@@ -235,7 +239,10 @@ PS = (function(window, document, $) {
         latest_cards: latest_cards,
         render_card: render_card,
         store_card: store_card,
-        keywords: keywords
+        keywords: keywords,
+        register_events: register_events,
+        suggest_keywords: suggest_keywords,
+        open_external_link: open_external_link
     };
 
     return construct;
