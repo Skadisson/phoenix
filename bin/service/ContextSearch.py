@@ -36,30 +36,14 @@ class ContextSearch:
 
         return normalized_cards, card_ids
 
-    @staticmethod
-    def normalize_cards_and_keywords(cards):
-        normalized_cards = []
-        keywords = []
-
-        for card_id in cards:
-            card = cards[card_id]
-            if card.keywords is None or len(card.keywords) <= 0:
-                break
-
-            keywords.append(','.join(card.keywords))
-            normalized_card = ''
-            if card.title is not None:
-                normalized_card += str(card.title)
-            if card.text is not None:
-                normalized_card += ' ' + str(card.text)
-            normalized_cards.append(str(normalized_card))
-
-        return normalized_cards, keywords
-
     def suggest_keywords(self, title, text):
 
+        query = title + ' ' + text
         cards = self.storage.get_all_cards()
-        normalized_cards, keywords = self.normalize_cards_and_keywords(cards)
-        suggested_keywords = self.sci_kit_learn.suggest_keywords(title, text, keywords, normalized_cards)
+        normalized_cards, card_ids = self.normalize_cards(cards)
+        card_ids = self.sci_kit_learn.context_search(normalized_cards, card_ids, query)
+        card_id = card_ids[0]
+        card = self.storage.get_card(card_id)
+        keywords = ','.join(card.keywords)
 
-        return suggested_keywords
+        return keywords
