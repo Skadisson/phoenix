@@ -4,4 +4,4 @@ class Favourite:
         self.id = None
         self.card_id = None
         self.created = None
-        self.author = None
+        self.user_id = None
