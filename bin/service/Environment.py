@@ -43,6 +43,10 @@ class Environment:
         path_yaml = self.load_yaml('path')
         return path_yaml['card_cache']
 
+    def get_path_favourites(self):
+        path_yaml = self.load_yaml('path')
+        return path_yaml['favourites']
+
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']

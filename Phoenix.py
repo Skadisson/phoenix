@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Test, Ping, Update, Latest, Search, Backup, Click, Store, Keywords
+from bin.module import Test, Ping, Update, Latest, Search, Backup, Click, Store, Keywords, Favourite, Favourites
 from bin.service import Environment
 import json
 
@@ -43,6 +43,13 @@ def phoenix(request):
         text = str(request.args.get('text', ''))
         keywords = Keywords.Keywords()
         response = keywords.run(title, text)
+    elif function == 'Favourite':
+        card_id = int(request.args.get('card_id', 0))
+        favourite = Favourite.Favourite()
+        response = favourite.run(card_id)
+    elif function == 'Favourites':
+        favourites = Favourites.Favourites()
+        response = favourites.run()
     else:
         response = {'error': 'unknown function'}
 
