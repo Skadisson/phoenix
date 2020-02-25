@@ -53,6 +53,7 @@ class TestFavouriteStorage:
         card = Card.Card()
         card.id = card_id
         card.likes = 0
+        card.title = random.getrandbits(10)
 
         return card
 

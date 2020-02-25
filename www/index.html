@@ -18,6 +18,9 @@
         <div class="loading">l&auml;dt <i class="far fa-lightbulb blink"></i></div>
     </div>
 
+    <div id="favourites">
+    </div>
+
     <form id="search" action="" method="GET" autocomplete="off" onsubmit="main.search();return false;">
         <h1>Phoenix</h1>
         <input type="text" name="keywords" id="keywords" placeholder="" value="" />
@@ -29,7 +32,7 @@
     </form>
 
     <div id="detail" class="modal">
-        <p>Karten Details</p>
+        <p><i class="far fa-star"></i> Karten Details</p>
         <input type="hidden" name="card_id" value="" />
         <fieldset>
             <label>Titel</label><br />
@@ -110,6 +113,7 @@
     <a href="#" target="_blank" class="hidden card-template"><p data-card-id="" data-card-type=""><span class="date"></span><span class="title"></span><span class="type"><i class="fas"></i></span><span class="author">-</span><span class="keywords"></span></p></a>
     <div class="hidden notification-template"><p><span class="notification-info"></span> <i class="fas fa-check-circle"></i></p></div>
     <div class="hidden error-template"><p><span class="notification-info"></span> <i class="fas fa-ban"></i></p></div>
+    <div class="hidden favourite-template" data-favourite-id="" data-card-id=""><p><i class="fas fa-star"></i> <span class="card-title"></span></p></div>
 
 </body>
 </html>

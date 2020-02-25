@@ -58,36 +58,6 @@ form {
     flex-wrap: wrap;
     text-align:center;
 }
-#log {
-    position:fixed;
-    right:5%;
-    top:10%;
-    overflow:hidden;
-    display:block;
-    z-index:100;
-}
-#log p {
-    color:#16BAE7;
-}
-#log .notification {
-    opacity:0;
-    background:white;
-    border-radius:5px;
-    padding:0 10px;
-    text-align:right;
-    width:200px;
-}
-#log .error {
-    opacity:0;
-    background:white;
-    border-radius:5px;
-    padding:0 10px;
-    text-align:right;
-    width:200px;
-}
-#log .error p {
-    color:red;
-}
 .loading {
     color:#16BAE7;
     top:5%;
@@ -239,6 +209,57 @@ p .type {
     display:inline-block;
     position:absolute;
     right:30px;
+}
+
+#log {
+    position:fixed;
+    right:5%;
+    top:10%;
+    overflow:hidden;
+    display:block;
+    z-index:100;
+}
+#log p {
+    color:#16BAE7;
+}
+#log .notification {
+    opacity:0;
+    background:white;
+    border-radius:5px;
+    padding:0 10px;
+    text-align:right;
+    width:200px;
+}
+#log .error {
+    opacity:0;
+    background:white;
+    border-radius:5px;
+    padding:0 10px;
+    text-align:right;
+    width:200px;
+}
+#log .error p {
+    color:red;
+}
+
+#favourites {
+    position:fixed;
+    left:5%;
+    top:10%;
+    overflow:hidden;
+    display:block;
+    z-index:100;
+}
+#favourites p {
+    color:#16BAE7;
+}
+#favourites .favourite {
+    opacity:0;
+    background:white;
+    border-radius:5px;
+    padding:0 10px;
+    text-align:left;
+    width:200px;
 }
 
 @media only screen and (max-width: 800px) {

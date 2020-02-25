@@ -30,6 +30,7 @@ class FavouriteStorage:
         favourite.created = time.time()
         favourite.user_id = user.id
         favourite.card_id = card.id
+        favourite.card_title = card.title
         return favourite
 
     def favourite_exists(self, card, user):
@@ -52,6 +53,13 @@ class FavouriteStorage:
         else:
             next_id = 1
         return next_id
+
+    def get_user_favourites(self, user):
+        user_favourites = {}
+        for favourite_id in self.favourites:
+            if self.favourites[favourite_id].user_id == user.id:
+                user_favourites[favourite_id] = self.favourites[favourite_id]
+        return user_favourites
 
     def load_favourites(self):
         cache_file = self.cache_path

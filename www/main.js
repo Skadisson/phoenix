@@ -15,6 +15,7 @@ PS = (function(window, document, $) {
     function init() {
         self.info();
         self.latest_cards();
+        self.favourites();
 
         $('input[type=text]').focus();
         self.register_events();
@@ -95,6 +96,71 @@ PS = (function(window, document, $) {
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
+    };
+
+    function favourites() {
+        var getUrl = 'http://localhost:1352/?function=Favourites';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Favoriten geladen');
+                    $('#favourites').html('');
+                    var result = JSON.parse(xhr.responseText);
+                    if(result.items.length > 0 && typeof result.items[0].favourites != 'undefined') {
+                        var favourites = result.items[0].favourites;
+                        for(var i in favourites) {
+                            var favourite = favourites[i];
+                            self.render_favourite(favourite);
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
+
+    function is_favourite_toggled(card_id) {
+        return $('.favourite[data-card-id=' + card_id + ']').length > 0;
+    };
+
+    function toggle_favourite(card_id) {
+        var getUrl = 'http://localhost:1352/?function=Favourite&card_id=' + card_id;
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Favoriten aktualisiert');
+                    var result = JSON.parse(xhr.responseText);
+                    if(result.items.length > 0 && typeof result.items[0].favourite != 'undefined' && typeof result.items[0].is_added != 'undefined') {
+                        self.favourites();
+                        if(result.items[0].is_added) {
+                            $('#detail .far.fa-star').removeClass('far').addClass('fas');
+                        } else {
+                            $('#detail .fas.fa-star').removeClass('fas').addClass('far');
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+
     };
 
     function latest_cards() {
@@ -183,6 +249,24 @@ PS = (function(window, document, $) {
         }
     };
 
+    function render_favourite(favourite) {
+        var $favourite = $('.favourite-template').clone();
+        $favourite.removeClass('favourite-template');
+        $favourite.addClass('favourite');
+        $favourite.removeClass('hidden');
+        $favourite.attr('data-favourite-id', favourite.id);
+        $favourite.attr('data-card-id', favourite.card_id);
+        $('#favourites').prepend($favourite);
+        $('.card-title', $favourite).text(favourite.card_title);
+        $favourite.animate({'opacity': 1}, 200);
+        $favourite.off('click');
+        $favourite.click(function() {
+            // TODO: load the actual card in detail mode
+            $('#keywords').val(favourite.card_title);
+            self.search();
+        });
+    };
+
     function render_card(card) {
         var icon = card['type'] == 'fact' ? 'fa-check-circle' : 'fa-question-circle';
         var title = card['title'];
@@ -209,10 +293,12 @@ PS = (function(window, document, $) {
         $('.keywords', $template).text(keywords);
         $('.author', $template).text(author);
         $('#link-list').append($template);
+        $($template).off('click');
         $($template).click(function(event) {
             event.preventDefault();
             self.register_events();
             var card_id = $('p', this).attr('data-card-id');
+            var is_toggled = self.is_favourite_toggled(card_id);
             var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
@@ -224,6 +310,12 @@ PS = (function(window, document, $) {
             $('[name=keywords]', '#detail').val(keywords);
             $('[name=external_link]', '#detail').val(external_link);
             $('[name=editors]', '#detail').val(editors);
+            if(is_toggled) {
+                $('#detail .far.fa-star').removeClass('far').addClass('fas');
+            } else {
+                $('#detail .fas.fa-star').removeClass('fas').addClass('far');
+            }
+            $('.edit', '#detail').off('click');
             $('.edit', '#detail').click(function(event) {
                 self.register_events();
                 $('#edit').modal();
@@ -233,6 +325,10 @@ PS = (function(window, document, $) {
                 $('[name=keywords]', '#edit').val(keywords);
                 $('[name=external_link]', '#edit').val(external_link);
                 $('[name=editors]', '#edit').val(editors);
+            });
+            $('.fa-star', '#detail').off('click');
+            $('.fa-star', '#detail').click(function(event) {
+                self.toggle_favourite(card['id']);
             });
             return false;
         });
@@ -291,7 +387,11 @@ PS = (function(window, document, $) {
         open_external_link: open_external_link,
         render_notification: render_notification,
         start_loading: start_loading,
-        finish_loading: finish_loading
+        finish_loading: finish_loading,
+        favourites: favourites,
+        render_favourite: render_favourite,
+        toggle_favourite: toggle_favourite,
+        is_favourite_toggled: is_favourite_toggled
     };
 
     return construct;
