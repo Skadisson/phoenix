@@ -114,6 +114,12 @@ input[type=text] {
     flex-wrap: wrap;
     width:100%;
 }
+.link-list .source-logo {
+    width:80px;
+    position:absolute;
+    left:0px;
+    top:0px;
+}
 .link-list > a {
     display: flex;
     justify-content: space-between;

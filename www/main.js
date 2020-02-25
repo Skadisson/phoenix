@@ -271,10 +271,11 @@ PS = (function(window, document, $) {
         var icon = card['type'] == 'fact' ? 'fa-check-circle' : 'fa-question-circle';
         var title = card['title'];
         var author = !card['author'] ? '-' : card['author'];
+        var source_logo = '';
         if(card['relation_type'] == 'confluence' && card['type'] == 'idea') {
-            title = 'Aus Confluence:<br />' + title;
+            source_logo = 'image/confluence-blue-mini.png';
         } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
-            title = 'Aus Jira:<br />' + title;
+            source_logo = 'image/jira-blue-mini.png';
         }
         var external_link = card['external_link'];
         var date = new Date(card['changed'] * 1000);
@@ -285,6 +286,11 @@ PS = (function(window, document, $) {
         $template.removeClass('card-template');
         $template.attr('href', '#edit');
         $template.attr('rel', 'modal:detail');
+        if(source_logo) {
+            $('img.source-logo', $template).attr('src', source_logo);
+        } else {
+            $('img.source-logo', $template).remove();
+        }
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
