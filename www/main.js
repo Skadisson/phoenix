@@ -261,8 +261,7 @@ PS = (function(window, document, $) {
         $favourite.animate({'opacity': 1}, 200);
         $favourite.off('click');
         $favourite.click(function() {
-            // TODO: load the actual card in detail mode
-            $('#keywords').val(favourite.card_title);
+            $('#keywords').val(favourite.card_id);
             self.search();
         });
     };

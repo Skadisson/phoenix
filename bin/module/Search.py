@@ -23,7 +23,10 @@ class Search:
         try:
 
             found_cards = []
-            card_ids = self.search.search(query)
+            if query.isnumeric():
+                card_ids = [int(query)]
+            else:
+                card_ids = self.search.search(query)
             for card_id in card_ids:
                 card = self.storage.get_card(card_id)
                 card.versions = None
