@@ -96,31 +96,38 @@ class CardTransfer:
             updated_jira_card.keywords = ticket['Keywords']
             updated_jira_card.changed = time.time()
 
-    @staticmethod
-    def create_confluence_card(confluence_id, confluence_entry, card_id):
-        jira_card = Card.Card()
-        jira_card.id = card_id
-        jira_card.relation_id = confluence_id
-        jira_card.relation_type = 'confluence'
-        jira_card.type = 'idea'
-        jira_card.created = 0
-        jira_card.changed = 0
-        jira_card.external_link = confluence_entry['link']
+    def create_confluence_card(self, confluence_id, confluence_entry, card_id):
+        confluence_card = Card.Card()
+        confluence_card.id = card_id
+        confluence_card.relation_id = confluence_id
+        confluence_card.relation_type = 'confluence'
+        confluence_card.type = 'idea'
+        confluence_card.created = self.timestamp_from_confluence_time(confluence_entry['created'])
+        confluence_card.changed = self.timestamp_from_confluence_time(confluence_entry['created'])
+        confluence_card.external_link = confluence_entry['link']
         if 'text' in confluence_entry and confluence_entry['text'] is not None:
-            jira_card.text = confluence_entry['text']
+            confluence_card.text = confluence_entry['text']
         if 'title' in confluence_entry and confluence_entry['title'] is not None:
-            jira_card.title = confluence_entry['title']
-        jira_card.versions = []
+            confluence_card.title = confluence_entry['title']
+        confluence_card.versions = []
 
-        return jira_card
+        return confluence_card
 
     @staticmethod
-    def update_confluence_card(confluence_entry, confluence_card):
+    def timestamp_from_confluence_time(confluence_time):
+        if confluence_time is None:
+            return 0
+        return time.mktime(datetime.datetime.strptime(confluence_time, "%Y-%m-%dT%H:%M:%S.%f%z").timetuple())
+
+    def update_confluence_card(self, confluence_entry, confluence_card):
         got_changes = ('text' in confluence_entry and confluence_card.text != confluence_entry['text']) \
                       or ('title' in confluence_entry and confluence_card.title != confluence_entry['title'])
         if got_changes:
             confluence_card.versions.append(confluence_card)
-            updated_jira_card = copy.deepcopy(confluence_card)
-            updated_jira_card.title = confluence_entry['title']
-            updated_jira_card.text = confluence_entry['text']
-            updated_jira_card.changed = time.time()
+            updated_confluence_card = copy.deepcopy(confluence_card)
+            updated_confluence_card.title = confluence_entry['title']
+            updated_confluence_card.text = confluence_entry['text']
+            updated_confluence_card.changed = time.time()
+            if updated_confluence_card.created is None:
+                updated_confluence_card.created = self.timestamp_from_ticket_time(confluence_entry['created'])
+            updated_confluence_card.changed = self.timestamp_from_ticket_time(confluence_entry['created'])
