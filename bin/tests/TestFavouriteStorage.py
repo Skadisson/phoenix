@@ -40,6 +40,10 @@ class TestFavouriteStorage:
         actual_favourites = favourite_storage.get_all_favourites()
         success = actual_favourites == expected_favourites
 
+        if success:
+            ranked_card_ids = favourite_storage.get_ranked_favourite_card_ids()
+            success = len(actual_favourites) == len(ranked_card_ids)
+
         return success
 
     def create_random_cards(self, length):

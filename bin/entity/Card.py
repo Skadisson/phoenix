@@ -16,3 +16,4 @@ class Card:
         self.clicks = 0
         self.likes = 0
         self.external_link = None
+        self.favourites = None

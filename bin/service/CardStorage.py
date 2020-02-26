@@ -1,4 +1,4 @@
-from bin.service import Environment
+from bin.service import Environment, FavouriteStorage
 from bin.entity import Card
 from shutil import copyfile
 import pickle
@@ -15,6 +15,7 @@ class CardStorage:
             self.cache_path = self.environment.get_path_card_cache()
         else:
             self.cache_path = cache_path
+        self.favourite_card_ids = None
 
     def add_card(self, card):
         cards = self.get_all_cards()
@@ -131,15 +132,21 @@ class CardStorage:
         latest_cards = []
 
         cards = list(self.get_all_cards().values())
+        self.load_favourite_card_ids()
 
         valid_cards = []
         for check_card in cards:
             len_title = len(check_card.title)
             len_text = len(check_card.text)
             if len_title > 0 and len_text > 0:
+                if check_card.id in self.favourite_card_ids:
+                    check_card.favourite = int(self.favourite_card_ids[check_card.id])
+                else:
+                    check_card.favourite = 0
                 valid_cards.append(check_card)
 
-        cards_by_date = sorted(valid_cards, key=lambda card: card.changed, reverse=True)
+        cards_by_favourite = sorted(valid_cards, key=lambda card: card.favourite, reverse=False)
+        cards_by_date = sorted(cards_by_favourite, key=lambda card: card.changed, reverse=True)
         cards_by_click = sorted(cards_by_date, key=lambda card: card.clicks, reverse=True)
         cards_by_type = sorted(cards_by_click, key=lambda card: card.type, reverse=False)
         limited_cards_by_date = cards_by_type[:count]
@@ -151,6 +158,10 @@ class CardStorage:
 
     def backup(self):
         copyfile(self.cache_path, "{}.backup".format(self.cache_path))
+
+    def load_favourite_card_ids(self):
+        favourite_storage = FavouriteStorage.FavouriteStorage()
+        self.favourite_card_ids = favourite_storage.get_ranked_favourite_card_ids()
 
     def create_card(self, title, text, keywords, external_link):
         card = Card.Card()

@@ -46,6 +46,15 @@ class FavouriteStorage:
         else:
             return None
 
+    def get_ranked_favourite_card_ids(self):
+        card_ids = {}
+        for favourite_id in self.favourites:
+            if favourite_id not in card_ids:
+                card_ids[favourite_id] = 1
+            else:
+                card_ids[favourite_id] += 1
+        return card_ids
+
     def get_next_id(self):
         if len(self.favourites) > 0:
             favourite_ids = self.favourites.keys()
