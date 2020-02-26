@@ -218,9 +218,13 @@ PS = (function(window, document, $) {
         }
     };
 
-    function search() {
-        var keywords = $('#keywords').val();
-        var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(keywords);
+    function search(card_id=null) {
+        if(card_id != null) {
+            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
+        } else {
+            var keywords = $('#keywords').val();
+            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(keywords);
+        }
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -261,8 +265,7 @@ PS = (function(window, document, $) {
         $favourite.animate({'opacity': 1}, 200);
         $favourite.off('click');
         $favourite.click(function() {
-            $('#keywords').val(favourite.card_id);
-            self.search();
+            self.search(favourite.card_id);
         });
     };
 
