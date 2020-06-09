@@ -41,3 +41,38 @@ How relevant are the entities to a search request, commit, documentation or tick
 ## Wireframe
 
 ![alt text](src/wireframe.png "Wireframe")
+
+
+___
+
+pip list -l
+<pre>
+Package              Version
+-------------------- ----------
+atlassian-python-api 1.15.9
+certifi              2020.4.5.2
+chardet              3.0.4
+idna                 2.9
+joblib               0.15.1
+numpy                1.18.5
+oauthlib             3.1.0
+pandas               1.0.4
+pip                  19.3.1
+python-dateutil      2.8.1
+pytz                 2020.1
+PyYAML               5.3.1
+requests             2.23.0
+requests-oauthlib    1.3.0
+scikit-learn         0.23.1
+scipy                1.4.1
+setuptools           47.1.1
+six                  1.15.0
+threadpoolctl        2.1.0
+urllib3              1.25.9
+Werkzeug             1.0.1
+wheel                0.34.2
+wincertstore         0.2
+
+</pre>
+
+Use "pip list --outdated --format=columns" to check for outdated versions.

@@ -38,15 +38,15 @@ class CardTransfer:
     def transfer_confluence(self, confluence_entries):
         created_confluence_card_ids = []
         if confluence_entries is not None:
-            for confluence_id in confluence_entries:
-                confluence_card = self.storage.get_confluence_card(confluence_id)
+            for confluence_entry in confluence_entries:
+                confluence_card = self.storage.get_confluence_card(confluence_entry['id'])
                 if confluence_card is None:
                     card_id = self.storage.get_next_card_id()
-                    confluence_card = self.create_confluence_card(confluence_id, confluence_entries[confluence_id], card_id)
+                    confluence_card = self.create_confluence_card(confluence_entry['id'], confluence_entry, card_id)
                     self.storage.add_card(confluence_card)
                     created_confluence_card_ids.append(confluence_card.id)
                 elif confluence_card.author is None:
-                    self.update_confluence_card(confluence_entries[confluence_id], confluence_card)
+                    self.update_confluence_card(confluence_entry, confluence_card)
 
         return created_confluence_card_ids
 
@@ -56,8 +56,8 @@ class CardTransfer:
         jira_card.relation_id = ticket_id
         jira_card.relation_type = 'jira'
         jira_card.type = 'idea'
-        jira_card.created = self.timestamp_from_ticket_time(ticket['Created'])
-        jira_card.changed = self.timestamp_from_ticket_time(ticket['Updated'])
+        jira_card.created = self.timestamp_from_atlassian_time(ticket['Created'])
+        jira_card.changed = self.timestamp_from_atlassian_time(ticket['Updated'])
         jira_card.text = ''
         jira_card.external_link = 'https://jira.konmedia.com/browse/' + ticket['Key']
         if 'Text' in ticket and ticket['Text'] is not None:
@@ -73,7 +73,7 @@ class CardTransfer:
         return jira_card
 
     @staticmethod
-    def timestamp_from_ticket_time(ticket_time):
+    def timestamp_from_atlassian_time(ticket_time):
         if ticket_time is None:
             return 0
         return time.mktime(datetime.datetime.strptime(ticket_time, "%Y-%m-%dT%H:%M:%S.%f%z").timetuple())
@@ -105,8 +105,8 @@ class CardTransfer:
         confluence_card.created = self.timestamp_from_confluence_time(confluence_entry['created'])
         confluence_card.changed = self.timestamp_from_confluence_time(confluence_entry['created'])
         confluence_card.external_link = confluence_entry['link']
-        if 'text' in confluence_entry and confluence_entry['text'] is not None:
-            confluence_card.text = confluence_entry['text']
+        if 'text' in confluence_entry and confluence_entry['body'] is not None:
+            confluence_card.text = confluence_entry['body']
         if 'title' in confluence_entry and confluence_entry['title'] is not None:
             confluence_card.title = confluence_entry['title']
         confluence_card.versions = []
@@ -120,14 +120,14 @@ class CardTransfer:
         return time.mktime(datetime.datetime.strptime(confluence_time, "%Y-%m-%dT%H:%M:%S.%f%z").timetuple())
 
     def update_confluence_card(self, confluence_entry, confluence_card):
-        got_changes = ('text' in confluence_entry and confluence_card.text != confluence_entry['text']) \
+        got_changes = ('body' in confluence_entry and confluence_card.text != confluence_entry['body']) \
                       or ('title' in confluence_entry and confluence_card.title != confluence_entry['title'])
         if got_changes:
             confluence_card.versions.append(confluence_card)
             updated_confluence_card = copy.deepcopy(confluence_card)
             updated_confluence_card.title = confluence_entry['title']
-            updated_confluence_card.text = confluence_entry['text']
+            updated_confluence_card.text = confluence_entry['body']
             updated_confluence_card.changed = time.time()
             if updated_confluence_card.created is None:
-                updated_confluence_card.created = self.timestamp_from_ticket_time(confluence_entry['created'])
-            updated_confluence_card.changed = self.timestamp_from_ticket_time(confluence_entry['created'])
+                updated_confluence_card.created = self.timestamp_from_atlassian_time(confluence_entry['created'])
+            updated_confluence_card.changed = self.timestamp_from_atlassian_time(confluence_entry['created'])

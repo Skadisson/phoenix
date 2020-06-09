@@ -1,4 +1,4 @@
-from bin.service import Logger, CardTransfer, Confluence, Jira
+from bin.service import Logger, CardTransfer, ConfluenceAPI, Jira
 
 
 class Update:
@@ -7,7 +7,7 @@ class Update:
         self.logger = Logger.Logger()
         self.card_transfer = CardTransfer.CardTransfer()
         self.jira = Jira.Jira()
-        self.confluence = Confluence.Confluence()
+        self.confluence = ConfluenceAPI.ConfluenceAPI()
 
     def run(self):
         result = {
@@ -19,7 +19,7 @@ class Update:
         try:
 
             tickets = self.jira.load_tickets()
-            confluence_entries = self.confluence.load_entries()
+            confluence_entries = self.confluence.load_cached_entries()
             created_ids = self.card_transfer.run(tickets, confluence_entries)
             result['items'].append({
                 'created_ids': created_ids

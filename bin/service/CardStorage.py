@@ -157,7 +157,14 @@ class CardStorage:
         return latest_cards
 
     def backup(self):
-        copyfile(self.cache_path, "{}.backup".format(self.cache_path))
+        phoenix_cache_path = self.environment.get_path_card_cache()
+        copyfile(phoenix_cache_path, "{}.backup".format(phoenix_cache_path))
+        git_cache_path = self.environment.get_path_git_cache()
+        copyfile(git_cache_path, "{}.backup".format(git_cache_path))
+        confluence_cache_path = self.environment.get_path_confluence_cache()
+        copyfile(confluence_cache_path, "{}.backup".format(confluence_cache_path))
+        jira_cache_path = self.environment.get_path_jira_cache()
+        copyfile(jira_cache_path, "{}.backup".format(jira_cache_path))
 
     def load_favourite_card_ids(self):
         favourite_storage = FavouriteStorage.FavouriteStorage()
