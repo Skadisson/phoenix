@@ -1,6 +1,7 @@
 from bin.service import Environment
 from bin.service import JiraSignature
 from bin.service import Logger
+from pymongo import MongoClient
 import oauth2 as oauth
 from urllib import parse
 import json
@@ -12,6 +13,7 @@ import time
 class Jira:
 
     def __init__(self):
+        self.mongo = MongoClient()
         self.environment = Environment.Environment()
         self.logger = Logger.Logger()
         self.token = None
@@ -39,13 +41,10 @@ class Jira:
         self.client.set_signature_method(JiraSignature.JiraSignature())
 
     def sync_entries(self):
-
         failed_jira_keys = []
         clean_cache = {}
-
         offset = 0
         max_results = 100
-
         jira_keys = self.request_service_jira_keys(offset, max_results)
         while len(jira_keys) > 0:
             for jira_id in jira_keys:
@@ -62,29 +61,31 @@ class Jira:
 
             offset += max_results
             jira_keys = self.request_service_jira_keys(offset, max_results)
+        self.store_tickets(clean_cache)
+        return self.load_tickets()
 
-        self.update_cache_diff(clean_cache)
-
-        return len(clean_cache)
-
-    def update_cache_diff(self, clean_cache):
-        old_cache = self.load_cached_tickets()
-        for jira_id in old_cache:
-            if jira_id not in clean_cache:
-                clean_cache[jira_id] = old_cache[jira_id]
-        cache_file = self.environment.get_path_jira_cache()
-        file = open(cache_file, "wb")
-        pickle.dump(clean_cache, file)
+    def store_tickets(self, tickets):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        for jira_id in tickets:
+            stored_ticket = jira_storage.find_one({'id': jira_id})
+            if stored_ticket is not None:
+                jira_storage.replace_one({'id': jira_id}, tickets[jira_id])
+            else:
+                jira_storage.insert_one(tickets[jira_id])
 
     def add_to_clean_cache(self, jira_key, failed_jira_keys, clean_cache, jira_id):
         ticket = None
         try:
             ticket_data = self.request_ticket_data(jira_key)
             ticket = {
+                'id': jira_id,
+                'key': jira_key,
                 'title': ticket_data['fields']['summary'],
                 'body': ticket_data['fields']['description'],
                 'created': ticket_data['fields']['created'],
                 'updated': ticket_data['fields']['updated'],
+                'keywords': ticket_data['fields']['labels'],
                 'comments': []
             }
             comments = ticket_data['fields']['comment']['comments']
@@ -99,22 +100,14 @@ class Jira:
         return clean_cache, failed_jira_keys
 
     def load_cached_ticket(self, jira_id):
-        ticket = None
-        tickets = self.load_cached_tickets()
-        if jira_id in tickets:
-            ticket = tickets[jira_id]
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        return jira_storage.find_one({'id': jira_id})
 
-        return ticket
-
-    def load_cached_tickets(self):
-        cache_file = self.environment.get_path_jira_cache()
-        file_exists = os.path.exists(cache_file)
-        if file_exists:
-            file = open(cache_file, "rb")
-            content = pickle.load(file)
-        else:
-            content = {}
-        return content
+    def load_tickets(self):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        return jira_storage.find()
 
     def retrieve_token(self):
         self.token = self.load_token()

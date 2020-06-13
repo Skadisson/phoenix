@@ -1,5 +1,4 @@
 from bin.service import CardStorage, Logger
-import copy
 
 
 class Store:
@@ -29,18 +28,18 @@ class Store:
 
             if card_exists:
                 card = self.storage.get_card(card_id)
-                card.title = title
-                card.text = text
-                card.external_link = external_link
-                card.keywords = keywords.split(',')
+                card['title'] = title
+                card['text'] = text
+                card['external_link'] = external_link
+                card['keywords'] = keywords.split(',')
                 """TODO: User Handling"""
-                if card.editors is None:
-                    card.editors = []
-                if 'ses' not in card.editors:
-                    card.editors.append('ses')
-                if card.author is None:
-                    card.author = 'ses'
-                card.type = 'fact'
+                if card['editors'] is None:
+                    card['editors'] = []
+                if 'ses' not in card['editors']:
+                    card['editors'].append('ses')
+                if card['author'] is None:
+                    card['author'] = 'ses'
+                card['type'] = 'fact'
                 self.storage.update_card(card)
             else:
                 card_id = self.storage.create_card(title, text, keywords, external_link)

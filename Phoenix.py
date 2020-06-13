@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Test, Ping, Update, Latest, Search, Backup, Click, Store, Keywords, Favourite, Favourites
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites
 from bin.service import Environment
 import json
 
@@ -7,15 +7,9 @@ import json
 @Request.application
 def phoenix(request):
     function = request.args.get('function', None)
-    if function == 'Test':
-        test = Test.Test()
-        response = test.run()
-    elif function == 'Ping':
+    if function == 'Ping':
         ping = Ping.Ping()
         response = ping.run()
-    elif function == 'Update':
-        update = Update.Update()
-        response = update.run()
     elif function == 'Latest':
         latest = Latest.Latest()
         response = latest.run()
@@ -23,9 +17,6 @@ def phoenix(request):
         query = request.args.get('query', None)
         search = Search.Search()
         response = search.run(query)
-    elif function == 'Backup':
-        backup = Backup.Backup()
-        response = backup.run()
     elif function == 'Click':
         card_id = int(request.args.get('card_id', 0))
         click = Click.Click()

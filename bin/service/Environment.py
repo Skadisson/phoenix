@@ -23,41 +23,9 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['port']
 
-    def get_path_jira_test_data(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['jira_test_data']
-
-    def get_path_confluence_test_data(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['confluence_test_data']
-
-    def get_path_jira_cache(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['jira_cache']
-
-    def get_path_confluence_cache(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['confluence_cache']
-
-    def get_path_git_cache(self):
-        service_yaml = self.load_yaml('path')
-        return service_yaml['git_cache']
-
-    def get_path_card_cache(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['card_cache']
-
-    def get_path_favourites(self):
-        path_yaml = self.load_yaml('path')
-        return path_yaml['favourites']
-
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']
-
-    def get_endpoint_git_link(self):
-        service_yaml = self.load_yaml('endpoint')
-        return service_yaml['git_link']
 
     def get_endpoint_git_projects(self):
         service_yaml = self.load_yaml('endpoint')

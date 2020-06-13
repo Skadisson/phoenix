@@ -1,24 +1,23 @@
 from bin.service import Environment
+from bin.service import Logger
+from pymongo import MongoClient
 import urllib.request
 import json
 import time
-import os
-import pickle
 
 
 class Gitlab:
     """Gitl API class"""
 
     def __init__(self):
+        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.logger = Logger.Logger()
 
     def sync_commits(self):
-
         private_token = self.environment.get_endpoint_git_private_token()
         url = self.environment.get_endpoint_git_projects()
-
-        commits = self.load_cached_commits()
-        new_commits = 0
+        commits = {}
         page = 0
         run = True
         while run:
@@ -28,22 +27,24 @@ class Gitlab:
             projects = self.git_request(parsed_url)
             if len(projects) > 0:
                 for project in projects:
-                    project_commits = self.get_project_commits(project['id'])
+                    try:
+                        project_commits = self.get_project_commits(project['id'])
+                    except Exception as err:
+                        self.logger.add_entry(self.__class__.__name__, str(err) + "; with space " + project['id'])
+                        project_commits = []
                     for project_commit in project_commits:
-                        if project_commit['id'] not in commits:
-                            new_commits += 1
-                            commit = {
-                                'title': project_commit['title'],
-                                'text': project_commit['message'],
-                                'date': project_commit['authored_date'],
-                                'project': project['id']
-                            }
-                            commits[project_commit['id']] = commit
+                        commit = {
+                            'id': project_commit['id'],
+                            'title': project_commit['title'],
+                            'body': project_commit['message'],
+                            'created': project_commit['authored_date'],
+                            'project': project['id']
+                        }
+                        commits[project_commit['id']] = commit
             else:
                 run = False
-
         self.store_commits(commits)
-        return len(commits), new_commits
+        return self.load_cached_commits()
 
     def get_project_commits(self, project_id):
         private_token = self.environment.get_endpoint_git_private_token()
@@ -71,20 +72,16 @@ class Gitlab:
         return json.loads(json_raw)
 
     def load_cached_commits(self):
-
-        confluence_commits = {}
-        git_cache_path = self.environment.get_path_git_cache()
-        file_exists = os.path.isfile(git_cache_path)
-        if file_exists:
-            file = open(git_cache_path, "rb")
-            confluence_commits = pickle.load(file)
-            file.close()
-
-        return confluence_commits
+        phoenix = self.mongo.phoenix
+        gitlab_storage = phoenix.gitlab_storage
+        return gitlab_storage.find()
 
     def store_commits(self, commits):
-
-        git_cache_path = self.environment.get_path_git_cache()
-        file = open(git_cache_path, "wb")
-        pickle.dump(obj=commits, file=file)
-        file.close()
+        phoenix = self.mongo.phoenix
+        gitlab_storage = phoenix.gitlab_storage
+        for commit_id in commits:
+            stored_commit = gitlab_storage.find_one({'id': commit_id})
+            if stored_commit is not None:
+                gitlab_storage.replace_one({'id': commit_id}, commits[commit_id])
+            else:
+                gitlab_storage.insert_one(commits[commit_id])

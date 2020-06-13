@@ -1,26 +1,19 @@
-from bin.service import Environment
 from bin.entity import Favourite
-import pickle
-import os
+from pymongo import MongoClient
 import time
 
 
 class FavouriteStorage:
 
-    def __init__(self, cache_path=None):
-        self.environment = Environment.Environment()
-        if cache_path is None:
-            self.cache_path = self.environment.get_path_favourites()
-        else:
-            self.cache_path = cache_path
-        self.favourites = {}
-        self.load_favourites()
+    def __init__(self):
+        self.mongo = MongoClient()
 
     def add_favourite(self, card, user):
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
         favourite_id = self.get_next_id()
         favourite = self.create_favourite(favourite_id, card, user)
-        self.favourites[favourite_id] = favourite
-        self.store_favourites()
+        favourite_storage.insert_one(favourite)
         return favourite
 
     @staticmethod
@@ -33,82 +26,69 @@ class FavouriteStorage:
         favourite.card_title = card.title
         return favourite
 
+    def find_favourite(self, card, user):
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourite = favourite_storage.find_one({'card_id': card, 'user_id': user})
+        return favourite
+
     def favourite_exists(self, card, user):
-        favourite = self.search_favourite(card, user)
+        favourite = self.find_favourite(card, user)
         return favourite is not None
 
     def get_all_favourites(self):
-        return self.favourites
+        return self.load_favourites()
 
     def get_favourite(self, favourite_id):
-        if favourite_id in self.favourites:
-            return self.favourites[favourite_id]
-        else:
-            return None
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourite = favourite_storage.find_one({'id': favourite_id})
+        return favourite
 
     def get_ranked_favourite_card_ids(self):
         card_ids = {}
-        for favourite_id in self.favourites:
-            if favourite_id not in card_ids:
-                card_ids[favourite_id] = 1
+        favourites = self.load_favourites()
+        for favourite in favourites:
+            if favourite.card_id not in card_ids:
+                card_ids[favourite.card_id] = 1
             else:
-                card_ids[favourite_id] += 1
+                card_ids[favourite.card_id] += 1
         return card_ids
 
     def get_next_id(self):
-        if len(self.favourites) > 0:
-            favourite_ids = self.favourites.keys()
-            next_id = max(favourite_ids) + 1
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        max_id_favourites = favourite_storage.find(sort=[('id', -1)]).limit(1)
+        if max_id_favourites.count() > 0:
+            next_id = max_id_favourites[0]['id'] + 1
         else:
             next_id = 1
+
         return next_id
 
     def get_user_favourites(self, user):
-        user_favourites = {}
-        for favourite_id in self.favourites:
-            if self.favourites[favourite_id].user_id == user.id:
-                user_favourites[favourite_id] = self.favourites[favourite_id]
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        user_favourites = favourite_storage.find({'user_id': user.id})
         return user_favourites
 
     def load_favourites(self):
-        cache_file = self.cache_path
-        file_exists = os.path.exists(cache_file)
-        if file_exists:
-            file = open(cache_file, "rb")
-            content = pickle.load(file)
-        else:
-            file = open(cache_file, "wb")
-            content = {}
-            pickle.dump(content, file)
-        self.favourites = content
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourites = favourite_storage.find()
+        return favourites
 
     def remove_favourite(self, card, user):
-        favourite = self.search_favourite(card, user)
-        if favourite is not None:
-            del(self.favourites[favourite.id])
-            self.store_favourites()
-        return favourite
-
-    def search_favourite(self, card, user):
-        favourite = None
-        for favourite_id in self.favourites:
-            if self.favourites[favourite_id].card_id == card.id and self.favourites[favourite_id].user_id == user.id:
-                favourite = self.favourites[favourite_id]
-                break
-        return favourite
-
-    def store_favourites(self):
-        cache_file = self.cache_path
-        file = open(cache_file, "wb")
-        pickle.dump(self.favourites, file)
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourite_storage.remove({'card_id': card.id, 'user_id': user.id})
 
     def toggle_favourite(self, card, user):
-        favourite_exists = self.favourite_exists(card, user)
-        if favourite_exists:
+        favourite = self.favourite_exists(card, user)
+        if favourite:
             is_added = False
-            favourite = self.remove_favourite(card, user)
+            self.remove_favourite(card, user)
         else:
             is_added = True
             favourite = self.add_favourite(card, user)
-        self.store_favourites()
         return favourite, is_added

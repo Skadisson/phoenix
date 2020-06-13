@@ -1,14 +1,12 @@
 from bin.service import CardStorage
-from bin.service import Environment
 from bin.service import SciKitLearn
 
 
 class ContextSearch:
 
-    def __init__(self, cache_path=None):
-        self.storage = CardStorage.CardStorage(cache_path)
+    def __init__(self):
+        self.storage = CardStorage.CardStorage()
         self.sci_kit_learn = SciKitLearn.SciKitLearn()
-        self.environment = Environment.Environment()
 
     def search(self, query):
         cards = self.storage.get_all_cards()
@@ -22,16 +20,15 @@ class ContextSearch:
         normalized_cards = []
         card_ids = []
 
-        for card_id in cards:
-            card = cards[card_id]
-            card_ids.append(card_id)
+        for card in cards:
+            card_ids.append(card['id'])
             normalized_card = ''
             if card.title is not None:
-                normalized_card += str(card.title)
+                normalized_card += str(card['title'])
             if card.text is not None:
-                normalized_card += ' ' + str(card.text)
+                normalized_card += ' ' + str(card['text'])
             if card.keywords is not None:
-                normalized_card += ' ' + str(' '.join(card.keywords))
+                normalized_card += ' ' + str(' '.join(card['keywords']))
             normalized_cards.append(str(normalized_card))
 
         return normalized_cards, card_ids
