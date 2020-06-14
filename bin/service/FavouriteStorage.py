@@ -13,7 +13,7 @@ class FavouriteStorage:
         favourite_storage = phoenix.favourite_storage
         favourite_id = self.get_next_id()
         favourite = self.create_favourite(favourite_id, card, user)
-        favourite_storage.insert_one(favourite)
+        favourite_storage.insert_one(dict(favourite))
         return favourite
 
     @staticmethod
@@ -22,14 +22,14 @@ class FavouriteStorage:
         favourite.id = favourite_id
         favourite.created = time.time()
         favourite.user_id = user.id
-        favourite.card_id = card.id
-        favourite.card_title = card.title
+        favourite.card_id = card['id']
+        favourite.card_title = card['title']
         return favourite
 
     def find_favourite(self, card, user):
         phoenix = self.mongo.phoenix
         favourite_storage = phoenix.favourite_storage
-        favourite = favourite_storage.find_one({'card_id': card, 'user_id': user})
+        favourite = favourite_storage.find_one({'card_id': card['id'], 'user_id': user.id})
         return favourite
 
     def favourite_exists(self, card, user):
@@ -49,10 +49,10 @@ class FavouriteStorage:
         card_ids = {}
         favourites = self.load_favourites()
         for favourite in favourites:
-            if favourite.card_id not in card_ids:
-                card_ids[favourite.card_id] = 1
+            if favourite['card_id'] not in card_ids:
+                card_ids[favourite['card_id']] = 1
             else:
-                card_ids[favourite.card_id] += 1
+                card_ids[favourite['card_id']] += 1
         return card_ids
 
     def get_next_id(self):
@@ -81,11 +81,12 @@ class FavouriteStorage:
     def remove_favourite(self, card, user):
         phoenix = self.mongo.phoenix
         favourite_storage = phoenix.favourite_storage
-        favourite_storage.remove({'card_id': card.id, 'user_id': user.id})
+        favourite_storage.remove({'card_id': card['id'], 'user_id': user.id})
 
     def toggle_favourite(self, card, user):
-        favourite = self.favourite_exists(card, user)
-        if favourite:
+        favourite = None
+        favourite_exists = self.favourite_exists(card, user)
+        if favourite_exists:
             is_added = False
             self.remove_favourite(card, user)
         else:

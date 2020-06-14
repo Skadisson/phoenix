@@ -16,10 +16,10 @@ class Click:
         try:
 
             card = self.storage.get_card(card_id)
-            card.clicks += 1
+            card['clicks'] += 1
             self.storage.store_card(card)
             result['items'].append({
-                'clicks': card.clicks
+                'clicks': card['clicks']
             })
 
         except Exception as e:

@@ -22,6 +22,12 @@ class CardStorage:
         cards = card_storage.find()
         return cards
 
+    def get_jira_and_confluence_cards(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence']}})
+        return cards
+
     def get_jira_card(self, ticket_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
@@ -63,6 +69,12 @@ class CardStorage:
         card = card_storage.find_one({'id': card_id})
         return card
 
+    def get_cards(self, card_ids):
+        cards = []
+        for card_id in card_ids:
+            cards.append(self.get_card(card_id))
+        return cards
+
     def update_card(self, card):
         success = False
         existing_card = self.get_card(card['id'])
@@ -97,7 +109,7 @@ class CardStorage:
     def get_latest_cards(self, count):
         latest_cards = []
 
-        cards = self.get_all_cards()
+        cards = self.get_jira_and_confluence_cards()
         self.load_favourite_card_ids()
 
         valid_cards = []
@@ -111,13 +123,14 @@ class CardStorage:
                     check_card['favourite'] = 0
                 valid_cards.append(check_card)
 
-        cards_by_favourite = sorted(valid_cards, key=lambda card: card.favourite, reverse=False)
-        cards_by_date = sorted(cards_by_favourite, key=lambda card: card.changed, reverse=True)
-        cards_by_click = sorted(cards_by_date, key=lambda card: card.clicks, reverse=True)
-        cards_by_type = sorted(cards_by_click, key=lambda card: card.type, reverse=False)
+        cards_by_favourite = sorted(valid_cards, key=lambda card: card['favourite'], reverse=False)
+        cards_by_date = sorted(cards_by_favourite, key=lambda card: card['changed'], reverse=True)
+        cards_by_click = sorted(cards_by_date, key=lambda card: card['clicks'], reverse=True)
+        cards_by_type = sorted(cards_by_click, key=lambda card: card['type'], reverse=False)
         limited_cards_by_date = cards_by_type[:count]
         for sorted_card in limited_cards_by_date:
-            latest_cards.append(sorted_card.__dict__)
+            del(sorted_card['_id'])
+            latest_cards.append(sorted_card)
 
         return latest_cards
 

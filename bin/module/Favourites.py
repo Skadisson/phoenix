@@ -21,8 +21,10 @@ class Favourites:
             user.id = 1
             favourites = self.storage.get_user_favourites(user)
             dict_favourites = []
-            for favourite_id in favourites:
-                dict_favourites.append(favourites[favourite_id].__dict__)
+            for favourite in favourites:
+                favourite = dict(favourite)
+                del(favourite['_id'])
+                dict_favourites.append(favourite)
             result['items'].append({
                 'favourites': dict_favourites
             })

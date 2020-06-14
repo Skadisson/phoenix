@@ -29,7 +29,8 @@ class Search:
                 card_ids = self.search.search(query)
             for card_id in card_ids:
                 card = self.storage.get_card(card_id)
-                found_cards.append(card.__dict__)
+                del(card['_id'])
+                found_cards.append(card)
             result['items'].append({
                 'query': query,
                 'cards': found_cards

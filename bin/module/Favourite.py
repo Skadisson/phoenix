@@ -22,9 +22,11 @@ class Favourite:
             user.id = 1
             card = self.card_storage.get_card(card_id)
             favourite, is_added = self.favourite_storage.toggle_favourite(card, user)
+            if favourite is not None:
+                favourite = dict(favourite)
             result['items'].append({
                 'is_added': is_added,
-                'favourite': favourite.__dict__
+                'favourite': favourite
             })
 
         except Exception as e:

@@ -18,6 +18,7 @@ class ConfluenceAPI:
         )
 
     def sync_entries(self):
+        return self.load_cached_entries()
         confluence_spaces = self.environment.get_map_confluence_spaces()
         confluence_entries = {}
         for confluence_space in confluence_spaces:

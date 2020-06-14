@@ -275,9 +275,11 @@ PS = (function(window, document, $) {
         var author = !card['author'] ? '-' : card['author'];
         var source_logo = '';
         if(card['relation_type'] == 'confluence' && card['type'] == 'idea') {
-            source_logo = 'image/confluence-blue-mini.png';
+            source_logo = 'image/confluence-logo.png';
         } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
-            source_logo = 'image/jira-blue-mini.png';
+            source_logo = 'image/jira4.png';
+        } else if(card['relation_type'] == 'git' && card['type'] == 'idea') {
+            source_logo = 'image/GitLab_Logo.png';
         }
         var external_link = card['external_link'];
         var date = new Date(card['changed'] * 1000);
