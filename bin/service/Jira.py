@@ -1,6 +1,7 @@
 from bin.service import Environment
 from bin.service import JiraSignature
 from bin.service import Logger
+from bin.service import CardTransfer
 from pymongo import MongoClient
 import oauth2 as oauth
 from urllib import parse
@@ -20,6 +21,7 @@ class Jira:
         self.consumer = None
         self.client = None
         self.init_api()
+        self.card_transfer = CardTransfer.CardTransfer()
 
     def init_api(self):
         self.init_consumer()
@@ -40,13 +42,15 @@ class Jira:
         self.client = oauth.Client(self.consumer, self.token)
         self.client.set_signature_method(JiraSignature.JiraSignature())
 
-    def sync_entries(self):
+    def sync_entries(self, wait=2):
         failed_jira_keys = []
-        clean_cache = {}
         offset = 0
         max_results = 100
-        jira_keys = self.request_service_jira_keys(offset, max_results)
+        cached_total = 0
+        jira_keys, total = self.request_service_jira_keys(offset, max_results)
         while len(jira_keys) > 0:
+            start = float(time.time())
+            clean_cache = {}
             for jira_id in jira_keys:
                 jira_key = jira_keys[jira_id]
                 try:
@@ -58,11 +62,19 @@ class Jira:
                     )
                 except Exception as err:
                     self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
-
+            self.store_tickets(clean_cache)
+            cached_current = len(clean_cache)
+            cached_total += cached_current
+            stop = float(time.time())
+            seconds = (stop - start)
+            print('>>> cached {} jira entries of {} entries total after {} seconds'.format(cached_current, cached_total, seconds))
+            time.sleep(wait)
             offset += max_results
-            jira_keys = self.request_service_jira_keys(offset, max_results)
-        self.store_tickets(clean_cache)
-        return self.load_tickets()
+            jira_keys, total = self.request_service_jira_keys(offset, max_results)
+        jira_entries = self.load_tickets()
+        created_card_ids = self.card_transfer.transfer_jira(jira_entries)
+        created_current = len(created_card_ids)
+        print('>>> jira synchronization completed, {} new cards created'.format(created_current))
 
     def store_tickets(self, tickets):
         phoenix = self.mongo.phoenix
@@ -187,6 +199,7 @@ class Jira:
 
     def request_service_jira_keys(self, offset=0, max_results=100):
         jira_keys = {}
+        total = 0
 
         tickets_endpoint = self.environment.get_endpoint_tickets()
         data_url = tickets_endpoint.format(max_results, offset)
@@ -198,8 +211,10 @@ class Jira:
         if 'issues' in raw_data:
             for issue in raw_data['issues']:
                 jira_keys[issue['id']] = issue['key']
+        if 'total' in raw_data:
+            total = int(raw_data['total'])
 
-        return jira_keys
+        return jira_keys, total
 
     def request_info(self):
         info_endpoint = self.environment.get_endpoint_info()

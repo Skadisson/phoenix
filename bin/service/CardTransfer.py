@@ -12,13 +12,6 @@ class CardTransfer:
         self.confluence_entries = []
         self.storage = CardStorage.CardStorage()
 
-    def run(self, jira_tickets=None, confluence_entries=None, git_entries=None):
-        created_jira_card_ids = self.transfer_jira(jira_tickets)
-        created_confluence_card_ids = self.transfer_confluence(confluence_entries)
-        created_git_card_ids = self.transfer_git(git_entries)
-
-        return created_jira_card_ids + created_confluence_card_ids + created_git_card_ids
-
     def transfer_jira(self, jira_tickets):
         created_jira_card_ids = []
         if jira_tickets is not None:

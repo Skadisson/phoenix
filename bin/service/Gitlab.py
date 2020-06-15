@@ -1,5 +1,6 @@
 from bin.service import Environment
 from bin.service import Logger
+from bin.service import CardTransfer
 from pymongo import MongoClient
 import urllib.request
 import json
@@ -7,26 +8,27 @@ import time
 
 
 class Gitlab:
-    """Gitl API class"""
 
     def __init__(self):
         self.mongo = MongoClient()
         self.environment = Environment.Environment()
         self.logger = Logger.Logger()
+        self.card_transfer = CardTransfer.CardTransfer()
 
-    def sync_commits(self):
+    def sync_commits(self, wait=2):
         private_token = self.environment.get_endpoint_git_private_token()
         url = self.environment.get_endpoint_git_projects()
-        commits = {}
+        cached_total = 0
         page = 0
         run = True
         while run:
-            time.sleep(0.25)
             page += 1
             parsed_url = url.format(private_token, page)
             projects = self.git_request(parsed_url)
             if len(projects) > 0:
                 for project in projects:
+                    start = float(time.time())
+                    commits = {}
                     try:
                         project_commits = self.get_project_commits(project['id'])
                     except Exception as err:
@@ -41,10 +43,19 @@ class Gitlab:
                             'project': project['id']
                         }
                         commits[project_commit['id']] = commit
+                    self.store_commits(commits)
+                    cached_current = len(commits)
+                    cached_total += cached_current
+                    stop = float(time.time())
+                    seconds = (stop - start)
+                    print('>>> cached {} gitlab entries of {} entries total after {} minutes'.format(cached_current, cached_total, seconds))
+                    time.sleep(wait)
             else:
                 run = False
-        self.store_commits(commits)
-        return self.load_cached_commits()
+        cached_commits = self.load_cached_commits()
+        created_card_ids = self.card_transfer.transfer_git(cached_commits)
+        created_current = len(created_card_ids)
+        print('>>> gitlab synchronization completed, {} new cards created'.format(created_current))
 
     def get_project_commits(self, project_id):
         private_token = self.environment.get_endpoint_git_private_token()

@@ -2,49 +2,35 @@ from bin.service import ConfluenceAPI
 from bin.service import Gitlab
 from bin.service import Jira
 from bin.service import Logger
-from bin.service import CardTransfer
-import time
+import _thread
+import threading
 
 logger = Logger.Logger()
 try:
 
-    start_total = float(time.time())
+    def confluence_thread():
+        print('--- confluence thread started ---')
+        confluence = ConfluenceAPI.ConfluenceAPI()
+        confluence.sync_entries(0)
 
-    start = float(time.time())
-    confluence = ConfluenceAPI.ConfluenceAPI()
-    confluence_entries = confluence.sync_entries()
-    stop = float(time.time())
-    minutes = (stop - start) / 60
-    print('--- confluence entries synced after {} minutes ---'.format(minutes))
+    _thread.start_new_thread(confluence_thread, ())
 
-    start = float(time.time())
-    jira = Jira.Jira()
-    jira_entries = jira.sync_entries()
-    stop = float(time.time())
-    minutes = (stop - start) / 60
-    print('--- jira tickets synced after {} minutes ---'.format(minutes))
+    def jira_thread():
+        print('--- jira thread started ---')
+        jira = Jira.Jira()
+        jira.sync_entries(0)
 
-    """start = float(time.time())
-    gitlab = Gitlab.Gitlab()
-    git_entries = gitlab.sync_commits()
-    stop = float(time.time())
-    minutes = (stop - start) / 60
-    print('--- git commits synced after {} minutes ---'.format(minutes))"""
-    git_entries = None
+    _thread.start_new_thread(jira_thread, ())
 
-    start = float(time.time())
-    transfer = CardTransfer.CardTransfer()
-    transfer.run(jira_entries, confluence_entries, git_entries)
-    stop = float(time.time())
-    minutes = (stop - start) / 60
-    print('--- cards created and updated after {} minutes ---'.format(minutes))
+    def git_thread():
+        print('--- git thread started ---')
+        gitlab = Gitlab.Gitlab()
+        gitlab.sync_commits(0)
 
-    stop_total = float(time.time())
-    minutes_total = (stop_total - start_total) / 60
+    """_thread.start_new_thread(git_thread, ())"""
 
-    completed_message = '--- sync completed after {} minutes ---'.format(minutes_total)
-    print(completed_message)
-    logger.add_entry('PhoenixSync', completed_message)
+    while threading.activeCount():
+        pass
 
 except Exception as e:
     logger.add_entry('PhoenixSync', e)
