@@ -27,7 +27,7 @@ try:
         gitlab = Gitlab.Gitlab()
         gitlab.sync_commits(0)
 
-    """_thread.start_new_thread(git_thread, ())"""
+    _thread.start_new_thread(git_thread, ())
 
     while threading.activeCount():
         pass

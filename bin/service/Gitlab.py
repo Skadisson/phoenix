@@ -48,7 +48,7 @@ class Gitlab:
                     cached_total += cached_current
                     stop = float(time.time())
                     seconds = (stop - start)
-                    print('>>> cached {} gitlab entries of {} entries total after {} minutes'.format(cached_current, cached_total, seconds))
+                    print('>>> cached {} gitlab entries of {} entries total after {} seconds'.format(cached_current, cached_total, seconds))
                     time.sleep(wait)
             else:
                 run = False
