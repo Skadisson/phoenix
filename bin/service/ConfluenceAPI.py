@@ -1,6 +1,7 @@
 from bin.service import Environment
 from bin.service import Logger
 from bin.service import CardTransfer
+from bin.service import RegEx
 from atlassian import Confluence
 from pymongo import MongoClient
 import time
@@ -18,6 +19,7 @@ class ConfluenceAPI:
             password=self.environment.get_endpoint_confluence_password()
         )
         self.card_transfer = CardTransfer.CardTransfer()
+        self.regex = RegEx.RegEx()
 
     def sync_entries(self, wait=2):
         cached_total = 0
@@ -58,7 +60,7 @@ class ConfluenceAPI:
                     'space': space,
                     'id': page['id'],
                     'title': page['title'],
-                    'body': page['body']['view']['value'],
+                    'body': self.regex.mask_text(page['body']['view']['value']),
                     'created': page['history']['createdDate'],
                     'link': self.environment.get_endpoint_confluence_host() + page['_links']['webui']
                 }
