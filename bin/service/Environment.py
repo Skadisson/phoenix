@@ -23,6 +23,10 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['port']
 
+    def get_service_enable_git(self):
+        service_yaml = self.load_yaml('service')
+        return service_yaml['enable_git'] == 1
+
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']

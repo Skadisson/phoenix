@@ -1,4 +1,22 @@
 import re
+from io import StringIO
+from html.parser import HTMLParser
+
+
+class MLStripper(HTMLParser):
+
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.text = StringIO()
+
+    def handle_data(self, d):
+        self.text.write(d)
+
+    def get_data(self):
+        return self.text.getvalue()
 
 
 class RegEx:
@@ -16,11 +34,18 @@ class RegEx:
         return masked_texts
 
     def mask_text(self, text):
-        masked_text = text
+        masked_text = str(text)
+        masked_text = self.strip_tags(masked_text)
         masked_text = self.mask_jira_users(masked_text)
         masked_text = self.mask_email(masked_text)
         masked_text = self.mask_phone(masked_text)
         return masked_text
+
+    @staticmethod
+    def strip_tags(text):
+        s = MLStripper()
+        s.feed(text)
+        return s.get_data()
 
     def mask_jira_users(self, text):
         masked_text = re.sub(self.jira_user, '[user]', text)

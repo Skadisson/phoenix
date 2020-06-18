@@ -1,13 +1,19 @@
 from bin.service import CardStorage
+from bin.service import Environment
 
 
 class Info:
 
     def __init__(self):
+        self.environment = Environment.Environment()
         self.storage = CardStorage.CardStorage()
 
     def get_idea_count(self):
-        cards = self.storage.get_jira_and_confluence_cards()
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards()
+        else:
+            cards = self.storage.get_jira_and_confluence_cards()
         idea_count = 0
         for card in cards:
             if card['type'] == 'idea':
@@ -15,7 +21,11 @@ class Info:
         return idea_count
 
     def get_fact_count(self):
-        cards = self.storage.get_jira_and_confluence_cards()
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards()
+        else:
+            cards = self.storage.get_jira_and_confluence_cards()
         fact_count = 0
         for card in cards:
             if card['type'] == 'fact':
@@ -23,7 +33,11 @@ class Info:
         return fact_count
 
     def get_jira_count(self):
-        cards = self.storage.get_jira_and_confluence_cards()
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards()
+        else:
+            cards = self.storage.get_jira_and_confluence_cards()
         jira_count = 0
         for card in cards:
             if card['relation_type'] == 'jira':
@@ -31,7 +45,11 @@ class Info:
         return jira_count
 
     def get_confluence_count(self):
-        cards = self.storage.get_jira_and_confluence_cards()
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards()
+        else:
+            cards = self.storage.get_jira_and_confluence_cards()
         confluence_count = 0
         for card in cards:
             if card['relation_type'] == 'confluence':

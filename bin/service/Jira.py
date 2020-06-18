@@ -2,6 +2,7 @@ from bin.service import Environment
 from bin.service import JiraSignature
 from bin.service import Logger
 from bin.service import CardTransfer
+from bin.service import RegEx
 from pymongo import MongoClient
 import oauth2 as oauth
 from urllib import parse
@@ -20,6 +21,7 @@ class Jira:
         self.token = None
         self.consumer = None
         self.client = None
+        self.regex = RegEx.RegEx()
         self.init_api()
         self.card_transfer = CardTransfer.CardTransfer()
 
@@ -94,15 +96,18 @@ class Jira:
                 'id': jira_id,
                 'key': jira_key,
                 'title': ticket_data['fields']['summary'],
-                'body': ticket_data['fields']['description'],
+                'body': '',
                 'created': ticket_data['fields']['created'],
                 'updated': ticket_data['fields']['updated'],
                 'keywords': ticket_data['fields']['labels'],
                 'comments': []
             }
+            if ticket_data['fields']['description'] is not None:
+                ticket['body'] = self.regex.mask_text(ticket_data['fields']['description'])
             comments = ticket_data['fields']['comment']['comments']
             for comment in comments:
-                ticket['comments'].append(comment['body'])
+                if comment['body'] is not None:
+                    ticket['comments'].append(self.regex.mask_text(comment['body']))
         except Exception as e:
             self.logger.add_entry(self.__class__.__name__, e)
             failed_jira_keys.append(jira_key)

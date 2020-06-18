@@ -6,6 +6,8 @@ PS = (function(window, document, $) {
 
     var self;
     var loading = 0;
+    var timer = 0;
+    var interval = 0;
 
     var construct = function() {
         self = this;
@@ -28,6 +30,7 @@ PS = (function(window, document, $) {
     };
 
     function start_loading() {
+        self.start_timer();
         loading++;
         $('.loading').stop().animate({'opacity': 1}, 200);
     };
@@ -35,8 +38,27 @@ PS = (function(window, document, $) {
     function finish_loading() {
         loading--;
         if(loading == 0) {
+            self.stop_timer();
             $('.loading').stop().animate({'opacity': 0}, 200);
         }
+    };
+
+    function start_timer() {
+      if(!interval) {
+          timer = 0;
+          $('.timer').text(timer);
+          interval = setInterval(function() {
+            timer += 1;
+            $('.timer').text(timer);
+          }, 1000);
+      }
+    };
+
+    function stop_timer() {
+      if(interval) {
+        clearInterval(interval);
+        interval = 0;
+      }
     };
 
     function render_notification(text, is_error = false) {
@@ -398,6 +420,8 @@ PS = (function(window, document, $) {
         render_notification: render_notification,
         start_loading: start_loading,
         finish_loading: finish_loading,
+        start_timer: start_timer,
+        stop_timer: stop_timer,
         favourites: favourites,
         render_favourite: render_favourite,
         toggle_favourite: toggle_favourite,

@@ -28,6 +28,12 @@ class CardStorage:
         cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence']}})
         return cards
 
+    def get_jira_cards(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'relation_type': 'jira'})
+        return cards
+
     def get_jira_card(self, ticket_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage

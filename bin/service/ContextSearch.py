@@ -1,18 +1,24 @@
 from bin.service import CardStorage
 from bin.service import SciKitLearn
+from bin.service import Environment
 
 
 class ContextSearch:
 
     def __init__(self):
+        self.environment = Environment.Environment()
         self.storage = CardStorage.CardStorage()
         self.sci_kit_learn = SciKitLearn.SciKitLearn()
 
     def search(self, query):
-        cards = self.storage.get_jira_and_confluence_cards()
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards()
+        else:
+            cards = self.storage.get_jira_and_confluence_cards()
         normalized_cards, card_ids = self.normalize_cards(cards)
-        """context_card_ids = self.sci_kit_learn.phased_context_search(normalized_cards, card_ids, query)"""
-        context_card_ids = self.sci_kit_learn.unphased_context_search(normalized_cards, card_ids, query)
+        context_card_ids = self.sci_kit_learn.phased_context_search(normalized_cards, card_ids, query)
+        """context_card_ids = self.sci_kit_learn.unphased_context_search(normalized_cards, card_ids, query)"""
 
         while len(context_card_ids) > 9:
             cards = self.storage.get_cards(context_card_ids)
@@ -45,7 +51,7 @@ class ContextSearch:
     def suggest_keywords(self, title, text):
 
         query = title + ' ' + text
-        cards = self.storage.get_jira_and_confluence_cards()
+        cards = self.storage.get_jira_cards()
         normalized_cards, card_ids = self.normalize_cards(cards)
         card_ids = self.sci_kit_learn.unphased_context_search(normalized_cards, card_ids, query)
         card_id = card_ids[0]
