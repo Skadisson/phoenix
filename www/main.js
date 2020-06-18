@@ -375,9 +375,10 @@ PS = (function(window, document, $) {
             var external_link = $('[name=external_link]', '#edit').val();
             var card_id = $('[name=card_id]', '#edit').val();
             var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
-                        + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords)
-                        + '&external_link=' + encodeURIComponent(external_link) +
-                        + '&card_id=' + encodeURIComponent(card_id);
+                        + '&keywords=' + encodeURIComponent(keywords)
+                        + '&card_id=' + encodeURIComponent(card_id)
+                        + '&text=' + encodeURIComponent(text)
+                        + '&external_link=' + encodeURIComponent(external_link);
         } else {
             var title = $('[name=title]', '#create').val();
             var text = $('[name=text]', '#create').val();

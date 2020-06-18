@@ -106,8 +106,8 @@ class CardStorage:
     def store_card(self, card):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        card = card_storage.find_one({'id': card['id']})
-        if card is not None:
+        stored_card = card_storage.find_one({'id': card['id']})
+        if stored_card is not None:
             card_storage.replace_one({'id': card['id']}, card)
         else:
             card_storage.insert_one(card)
