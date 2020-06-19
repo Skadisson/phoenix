@@ -14,9 +14,8 @@ class ContextSearch:
     def suggest_keywords(self, title, text):
 
         query = title + ' ' + text
-        card_ids = self.sci_kit_learn.phased_context_search(query, 'keywords')
-        card_id = card_ids[0]
-        card = self.storage.get_card(card_id)
+        cards = self.sci_kit_learn.phased_context_search(query, 'keywords')
+        card = cards[0]
         keywords = ','.join(card['keywords'])
 
         return keywords

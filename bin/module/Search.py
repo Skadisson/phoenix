@@ -25,11 +25,12 @@ class Search:
             found_cards = []
             if query.isnumeric():
                 card_ids = [int(query)]
+                cards = self.storage.get_cards(card_ids)
             else:
-                card_ids = self.search.search(query)
-            for card_id in card_ids:
-                card = self.storage.get_card(card_id)
-                del(card['_id'])
+                cards = self.search.search(query)
+            for card in cards:
+                if '_id' in card:
+                    del(card['_id'])
                 found_cards.append(card)
             result['items'].append({
                 'query': query,

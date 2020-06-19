@@ -118,7 +118,6 @@ class CardStorage:
             card_storage.insert_one(card)
 
     def get_latest_cards(self, count):
-        latest_cards = []
 
         cards = self.get_jira_and_confluence_cards()
         self.load_favourite_card_ids()
@@ -129,21 +128,32 @@ class CardStorage:
             len_text = len(check_card['text'])
             if len_title > 0 and len_text > 0:
                 if check_card['id'] in self.favourite_card_ids:
-                    check_card['favourite'] = int(self.favourite_card_ids[check_card['id']])
+                    check_card['favourites'] = int(self.favourite_card_ids[check_card['id']])
                 else:
-                    check_card['favourite'] = 0
+                    check_card['favourites'] = 0
                 valid_cards.append(check_card)
 
-        cards_by_favourite = sorted(valid_cards, key=lambda card: card['favourite'], reverse=False)
+        latest_cards = self.sort_cards(valid_cards, count)
+        return latest_cards
+
+    @staticmethod
+    def sort_cards(cards, count, has_favourites=True):
+        if has_favourites:
+            cards_by_favourite = sorted(cards, key=lambda card: card['favourites'], reverse=False)
+        else:
+            cards_by_favourite = cards
         cards_by_date = sorted(cards_by_favourite, key=lambda card: card['changed'], reverse=True)
         cards_by_click = sorted(cards_by_date, key=lambda card: card['clicks'], reverse=True)
         cards_by_type = sorted(cards_by_click, key=lambda card: card['type'], reverse=False)
-        limited_cards_by_date = cards_by_type[:count]
-        for sorted_card in limited_cards_by_date:
-            del(sorted_card['_id'])
-            latest_cards.append(sorted_card)
+        limited_cards = cards_by_type[:count]
+        sorted_cards = []
+        for sorted_card in limited_cards:
+            if '_id' in sorted_card:
+                del(sorted_card['_id'])
+            sorted_cards.append(sorted_card)
 
-        return latest_cards
+        return sorted_cards
+
 
     def load_favourite_card_ids(self):
         favourite_storage = FavouriteStorage.FavouriteStorage()

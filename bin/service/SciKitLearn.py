@@ -20,12 +20,16 @@ class SciKitLearn:
 
         context_ids = []
         self.phased_search(normalized_cards, card_ids, query, context_ids)
-        while len(context_ids) > 9:
+        while len(context_ids) > 18:
             documents = self.storage.get_cards(context_ids)
             normalized_cards, card_ids = self.normalize_cards(documents)
             context_ids = []
             self.phased_search(normalized_cards, card_ids, query, context_ids)
-        return context_ids
+
+        cards = self.storage.get_cards(context_ids)
+        sorted_cards = self.storage.sort_cards(cards, 9, False)
+
+        return sorted_cards
 
     def phased_search(self, documents, ids, query, context_ids, phase=None):
 
