@@ -1,27 +1,41 @@
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import naive_bayes, feature_extraction
-from bin.service import Logger
+from bin.service import Logger, Environment, CardStorage
 
 
 class SciKitLearn:
 
     def __init__(self):
         self.logger = Logger.Logger()
+        self.environment = Environment.Environment()
+        self.storage = CardStorage.CardStorage()
 
-    def phased_context_search(self, documents, ids, query):
+    def phased_context_search(self, query, not_empty=None):
+
+        enable_git = self.environment.get_service_enable_git()
+        if enable_git is True:
+            cards = self.storage.get_all_cards(not_empty)
+        else:
+            cards = self.storage.get_jira_and_confluence_cards(not_empty)
+        normalized_cards, card_ids = self.normalize_cards(cards)
+
         context_ids = []
-        self.phased_search(documents, ids, query, context_ids)
+        self.phased_search(normalized_cards, card_ids, query, context_ids)
+        while len(context_ids) > 9:
+            documents = self.storage.get_cards(context_ids)
+            normalized_cards, card_ids = self.normalize_cards(documents)
+            context_ids = []
+            self.phased_search(normalized_cards, card_ids, query, context_ids)
         return context_ids
 
-    def phased_search(self, documents, ids, query, context_ids, phase=1):
+    def phased_search(self, documents, ids, query, context_ids, phase=None):
 
-        total = len(ids)
-        chunk = total / phase
+        if phase is None:
+            phase = len(ids)
 
-        if phase < 10 and chunk >= 1:
-            phase += 1
+        if phase > 2:
             chunk_documents = self.chunks(documents, phase)
             chunk_ids = list(self.chunks(ids, phase))
+            phase = int(round(phase / 2))
             i = 0
             for chunked_documents in chunk_documents:
                 chunked_ids = chunk_ids[i]
@@ -29,7 +43,8 @@ class SciKitLearn:
                 i += 1
         else:
             try:
-                context_ids += self.unphased_context_search(documents, ids, query)
+                winning_context_ids = self.unphased_context_search(documents, ids, query)
+                context_ids += winning_context_ids
             except Exception as e:
                 self.logger.add_entry(self.__class__.__name__, e)
 
@@ -52,7 +67,6 @@ class SciKitLearn:
         predicted_relevancy_id = clf_relevancy.predict(X_new_tfidf)"""
 
         """TODO: relevancy search"""
-        """TODO: mutliple predictions"""
         """TODO: context/relevancy sorting"""
 
         context_id = int(predicted_context_id.astype(int))
@@ -81,3 +95,24 @@ class SciKitLearn:
         suggested_keywords = clf_context.predict(X_new_tfidf)
 
         return suggested_keywords.astype(str)[0]
+
+    @staticmethod
+    def normalize_cards(cards):
+        normalized_cards = []
+        card_ids = []
+
+        for card in cards:
+            normalized_card = ''
+            if card['title'] is not None:
+                normalized_card += str(card['title'])
+            if card['text'] is not None:
+                normalized_card += ' ' + str(card['text'])
+            if card['keywords'] is not None:
+                normalized_card += ' ' + str(' '.join(card['keywords']))
+            normalized_content = str(normalized_card)
+            card_id = int(card['id'])
+            if normalized_content != '' and card_id > 0:
+                card_ids.append(card_id)
+                normalized_cards.append(normalized_content)
+
+        return normalized_cards, card_ids

@@ -15,9 +15,11 @@ class Latest:
         }
         try:
 
-            cards = self.storage.get_latest_cards(9)
+            max_cards = 9
+            cards = self.storage.get_latest_cards(max_cards)
             result['items'].append({
-                'cards': cards
+                'cards': cards,
+                'count': max_cards
             })
 
         except Exception as e:

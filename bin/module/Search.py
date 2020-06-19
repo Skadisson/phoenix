@@ -33,6 +33,7 @@ class Search:
                 found_cards.append(card)
             result['items'].append({
                 'query': query,
+                'count': len(found_cards),
                 'cards': found_cards
             })
 

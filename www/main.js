@@ -196,11 +196,11 @@ PS = (function(window, document, $) {
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
-                    self.render_notification('Karten geladen');
                     $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].cards != 'undefined') {
                         var cards = result.items[0].cards;
+                        self.render_notification(result.items[0].count + ' Karte(n) geladen');
                         for(var i in cards) {
                             var card = cards[i];
                             self.render_card(card);
@@ -256,11 +256,11 @@ PS = (function(window, document, $) {
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
-                    self.render_notification('Karten geladen');
                     $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].cards != 'undefined') {
                         var cards = result.items[0].cards;
+                        self.render_notification(result.items[0].count + ' Karten geladen');
                         for(var i in cards) {
                             var card = cards[i];
                             self.render_card(card);
@@ -317,6 +317,7 @@ PS = (function(window, document, $) {
         } else {
             $('img.source-logo', $template).remove();
         }
+        $('.source-tooltip', $template).text(card['relation_type']);
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());

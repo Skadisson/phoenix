@@ -2,7 +2,6 @@ from bin.service import FavouriteStorage
 from bin.entity import Card
 from pymongo import MongoClient
 import time
-import copy
 
 
 class CardStorage:
@@ -16,16 +15,22 @@ class CardStorage:
         card_storage = phoenix.card_storage
         card_storage.insert_one(card)
 
-    def get_all_cards(self):
+    def get_all_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find()
+        if not_empty is not None:
+            cards = card_storage.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+        else:
+            cards = card_storage.find()
         return cards
 
-    def get_jira_and_confluence_cards(self):
+    def get_jira_and_confluence_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence']}})
+        if not_empty is not None:
+            cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence']}}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+        else:
+            cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence']}})
         return cards
 
     def get_jira_cards(self):
