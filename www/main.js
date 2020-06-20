@@ -262,7 +262,7 @@ PS = (function(window, document, $) {
         $('.dot').addClass('active');
         dot_interval = setInterval(function() {
             var $active_dots = $('.dot.active');
-            var deactivate_dots = ($active_dots.length / 5);
+            var deactivate_dots = ($active_dots.length / 3) - 9;
             var occured = [];
             if(deactivate_dots > 0) {
                 for(var i = 0; i < deactivate_dots; i++) {
