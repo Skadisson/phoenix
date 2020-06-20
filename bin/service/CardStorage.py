@@ -28,9 +28,9 @@ class CardStorage:
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
         if not_empty is not None:
-            cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence']}}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence', None]}}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
         else:
-            cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence']}})
+            cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence', None]}})
         return cards
 
     def get_jira_cards(self):
@@ -172,6 +172,6 @@ class CardStorage:
         """TODO: user handling"""
         card.author = 'ses'
         card.editors = ['ses']
-        self.store_card(card)
+        self.store_card(dict(card))
 
         return card.id

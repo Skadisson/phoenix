@@ -36,7 +36,7 @@ class SciKitLearn:
         if phase is None:
             phase = len(ids)
 
-        if phase > 2:
+        if phase > 500:
             chunk_documents = self.chunks(documents, phase)
             chunk_ids = list(self.chunks(ids, phase))
             phase = int(round(phase / 2))

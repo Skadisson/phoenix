@@ -87,7 +87,7 @@ input[type=text] {
     font-size:16px;
     line-height:18px;
     color:#635C3B;
-    box-shadow: 1px 1px 5px grey;
+    box-shadow: 1px 1px 5px black;
 }
 #image-copyright {
     position:fixed;
@@ -134,7 +134,7 @@ input[type=text] {
     border-radius: 10px;
     padding: 5px 10px;
     color:beige;
-    box-shadow: 1px 1px 3px grey;
+    box-shadow: 1px 1px 3px black;
     overflow: hidden;
     position:relative;
     min-width:140px;
@@ -167,7 +167,7 @@ a:hover > .source-tooltip {
 }
 .link-list p:hover {
     opacity:1;
-    box-shadow: 0px 0px 2px grey;
+    box-shadow: 0px 0px 2px black;
 }
 .link-list p#single {
     margin-right:0;

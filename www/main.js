@@ -262,7 +262,7 @@ PS = (function(window, document, $) {
         $('.dot').addClass('active');
         dot_interval = setInterval(function() {
             var $active_dots = $('.dot.active');
-            var deactivate_dots = ($active_dots.length / 3) - 9;
+            var deactivate_dots = ($active_dots.length / 2) - 8;
             var occured = [];
             if(deactivate_dots > 0) {
                 for(var i = 0; i < deactivate_dots; i++) {
@@ -393,7 +393,7 @@ PS = (function(window, document, $) {
         } else {
             $('img.source-logo', $template).remove();
         }
-        $('.source-tooltip', $template).text(card['relation_type']);
+        $('.source-tooltip', $template).text((card['relation_type'] ? card['relation_type'] : 'phoenix'));
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
