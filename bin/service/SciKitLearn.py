@@ -1,4 +1,4 @@
-from sklearn import naive_bayes, feature_extraction
+from sklearn import naive_bayes, feature_extraction, pipeline
 from bin.service import Logger, Environment, CardStorage
 
 
@@ -67,14 +67,14 @@ class SciKitLearn:
         clf_context = naive_bayes.MultinomialNB().fit(X_train_tfidf, ids)
         predicted_context_id = clf_context.predict(X_new_tfidf)
 
-        """clf_relevancy = naive_bayes.BernoulliNB().fit(X_train_tfidf, ids)
-        predicted_relevancy_id = clf_relevancy.predict(X_new_tfidf)"""
-
-        """TODO: relevancy search"""
-        """TODO: context/relevancy sorting"""
-
         context_id = int(predicted_context_id.astype(int))
         context_ids.append(context_id)
+
+        """clf_relevancy = naive_bayes.BernoulliNB().fit(X_train_tfidf, ids)
+        predicted_relevancy_id = clf_relevancy.predict(X_new_tfidf)
+
+        relevancy_id = int(predicted_relevancy_id.astype(int))
+        context_ids.append(relevancy_id)"""
 
         return context_ids
 

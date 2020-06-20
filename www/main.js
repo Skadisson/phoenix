@@ -479,7 +479,7 @@ PS = (function(window, document, $) {
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
-                window.location.reload();
+                self.search();
             }
         };
     };
