@@ -376,6 +376,8 @@ PS = (function(window, document, $) {
             source_logo = 'image/jira4.png';
         } else if(card['relation_type'] == 'git' && card['type'] == 'idea') {
             source_logo = 'image/GitLab_Logo.png';
+        } else {
+            source_logo = 'image/phoenix_logo.png';
         }
         var external_link = card['external_link'];
         var date = new Date(card['changed'] * 1000);
