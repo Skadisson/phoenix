@@ -4,7 +4,7 @@ html, body {
 }
 body {
     background-color:white;
-    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868-reversed.jpg);
+    background-image:url(image/abstract-active-ash-color-235807.jpg);
     background-size:cover;
     background-attachment: fixed;
     margin:0;
@@ -52,6 +52,7 @@ form {
     width:800px;
     position:absolute;
     left:50%;
+    top:150px;
     margin-left:-400px;
     flex-direction: row;
     display: flex;
@@ -60,7 +61,7 @@ form {
 }
 .loading {
     color:#16BAE7;
-    top:5%;
+    top:130px;
     right:5%;
     position:fixed;
 }
@@ -238,7 +239,7 @@ a:hover > .source-tooltip {
 #log {
     position:fixed;
     right:5%;
-    top:10%;
+    top:150px;
     overflow:hidden;
     display:block;
     z-index:100;
@@ -269,7 +270,7 @@ a:hover > .source-tooltip {
 #favourites {
     position:fixed;
     left:5%;
-    top:10%;
+    top:150px;
     overflow:hidden;
     display:block;
     z-index:100;
@@ -288,6 +289,49 @@ a:hover > .source-tooltip {
 }
 .fa-star {
     cursor:pointer;
+}
+
+#header {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100px;
+    z-index:1;
+    overflow:hidden;
+}
+
+#header .logo {
+    position:absolute;
+    left:50%;
+    top:0;
+    width:400px;
+    height:100px;
+    margin-left:-200px;
+    z-index:10;
+}
+
+#header .dot-space {
+    background-color:#0F0F0F;
+    width:100%;
+    height:98px;
+    border-top:1px solid #333D3F;
+    border-bottom:1px solid #333D3F;
+}
+
+#header .dot {
+    position:relative;
+    float:left;
+    background-color: #1A1E1F;
+    width:4px;
+    height:4px;
+    margin-left:1px;
+    margin-top:1px;
+    z-index:3;
+}
+
+#header .dot.active {
+    background-color: #FD5A2F;
 }
 
 @media only screen and (max-width: 800px) {

@@ -8,6 +8,7 @@ PS = (function(window, document, $) {
     var loading = 0;
     var timer = 0;
     var interval = 0;
+    var dot_interval = 0;
 
     var construct = function() {
         self = this;
@@ -61,6 +62,10 @@ PS = (function(window, document, $) {
       }
     };
 
+    function randomize(value) {
+        return Math.random()*value;
+    };
+
     function render_notification(text, is_error = false) {
         if(!is_error) {
             var $notification = $('.notification-template').clone();
@@ -110,6 +115,12 @@ PS = (function(window, document, $) {
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0].idea_count != 'undefined' && typeof result.items[0].fact_count != 'undefined') {
                         $('#keywords').attr('placeholder', "Suche Dein Thema in " + result.items[0].idea_count + " Ideen und " + result.items[0].fact_count + " Fakten");
+                        var total_count = result.items[0].idea_count + result.items[0].fact_count;
+                        var i = 0;
+                        while(i<total_count) {
+                            $('.dot-space').append('<div class="dot" />');
+                            i += 1;
+                        }
                     }
                 }
             };
@@ -193,6 +204,7 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
             self.start_loading();
+            self.start_dot_animation();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
@@ -205,6 +217,7 @@ PS = (function(window, document, $) {
                             var card = cards[i];
                             self.render_card(card);
                         }
+                        self.stop_dot_animation(result.items[0].count);
                     }
                 }
             };
@@ -240,7 +253,67 @@ PS = (function(window, document, $) {
         }
     };
 
+    function start_dot_animation() {
+        if(dot_interval){
+            clearInterval(dot_interval);
+            dot_interval = 0;
+        }
+        $('.dot.active').removeClass('active');
+        $('.dot').addClass('active');
+        dot_interval = setInterval(function() {
+            var $active_dots = $('.dot.active');
+            var deactivate_dots = ($active_dots.length / 5);
+            var occured = [];
+            if(deactivate_dots > 0) {
+                for(var i = 0; i < deactivate_dots; i++) {
+                    var random = Math.floor(self.randomize($active_dots.length));
+                    while($.inArray(random, occured) != -1) {
+                        var random = Math.floor(self.randomize($active_dots.length));
+                    }
+                    occured.push(random);
+                    $($active_dots[random]).removeClass('active');
+                }
+            } else {
+                clearInterval(dot_interval);
+            }
+        }, 1000);
+    };
+
+    function stop_dot_animation(count_cards) {
+        if(dot_interval){
+            clearInterval(dot_interval);
+            dot_interval = 0;
+        }
+        var $active_dots = $('.dot.active');
+        var $inactive_dots = $('.dot:not(.active)');
+        var occured = [];
+        if($active_dots.length > count_cards) {
+            var diff = $active_dots.length - count_cards;
+            var total_count = $active_dots.length;
+            for(var i = 0; i < diff; i++) {
+                var random = Math.floor(self.randomize(total_count));
+                while($.inArray(random, occured) != -1) {
+                    var random = Math.floor(self.randomize(total_count));
+                }
+                occured.push(random);
+                $($active_dots[random]).removeClass('active');
+            }
+        } else if($active_dots.length < count_cards) {
+            var diff = count_cards - $active_dots.length;
+            var total_count = $inactive_dots.length;
+            for(var i = 0; i < diff; i++) {
+                var random = Math.floor(self.randomize(total_count));
+                while($.inArray(random, occured) != -1) {
+                    var random = Math.floor(self.randomize(total_count));
+                }
+                occured.push(random);
+                $($inactive_dots[random]).addClass('active');
+            }
+        }
+    };
+
     function search(card_id=null) {
+        self.start_dot_animation();
         if(card_id != null) {
             var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
         } else {
@@ -265,6 +338,7 @@ PS = (function(window, document, $) {
                             var card = cards[i];
                             self.render_card(card);
                         }
+                        self.stop_dot_animation(result.items[0].count);
                     }
                 }
             };
@@ -427,7 +501,10 @@ PS = (function(window, document, $) {
         favourites: favourites,
         render_favourite: render_favourite,
         toggle_favourite: toggle_favourite,
-        is_favourite_toggled: is_favourite_toggled
+        is_favourite_toggled: is_favourite_toggled,
+        start_dot_animation: start_dot_animation,
+        stop_dot_animation: stop_dot_animation,
+        randomize: randomize
     };
 
     return construct;
