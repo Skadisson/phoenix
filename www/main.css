@@ -454,4 +454,7 @@ a:hover > .source-tooltip {
     #phoenix-info {
         margin:10px;
     }
+    .link-list a {
+        margin:0 1%;
+    }
 }
