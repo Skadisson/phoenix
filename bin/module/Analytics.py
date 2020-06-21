@@ -21,6 +21,7 @@ class Analytics:
             new_facts_this_week = self.info.get_new_facts_this_week()
             new_facts_this_month = self.info.get_new_facts_this_month()
             log_entries = self.info.get_last_log_entries()
+            query_count = self.info.get_query_count()
             result['items'].append({
                 'fact_count': fact_count,
                 'idea_count': idea_count,
@@ -28,7 +29,8 @@ class Analytics:
                 'favourite_count': favourite_count,
                 'new_facts_this_week': new_facts_this_week,
                 'new_facts_this_month': new_facts_this_month,
-                'log_entries': log_entries
+                'log_entries': log_entries,
+                'query_count': query_count
             })
 
         except Exception as e:

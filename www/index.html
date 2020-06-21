@@ -14,13 +14,6 @@
 </head>
 <body>
 
-    <div id="log">
-        <div class="loading">l&auml;dt (<i class="timer">0</i> s) <i class="far fa-lightbulb blink"></i></div>
-    </div>
-
-    <div id="favourites">
-    </div>
-
     <div id="header">
         <div class="logo"><img src="image/logo_piece.png"></div>
         <div class="dot-space"></div>
@@ -35,16 +28,25 @@
         </div>
     </form>
 
+    <div id="log">
+        <div class="loading">l&auml;dt (<i class="timer">0</i> s) <i class="far fa-lightbulb blink"></i></div>
+    </div>
+
+    <div id="favourites">
+    </div>
+
     <div id="analytics">
-        <p>Analytics</p>
+        <div class="header"></div>
+        <img class="logo" src="image/logo_mini.png" />
+        <h3>Analytics</h3>
         <table>
             <tr>
                 <td>Fakten</td>
-                <td class="fact-count">0</td>
+                <td class="fact-count"></td>
             </tr>
             <tr>
                 <td>Ideen</td>
-                <td class="idea-count">0</td>
+                <td class="idea-count"></td>
             </tr>
             <tr>
                 <td>Karten insgesamt</td>
@@ -53,6 +55,10 @@
             <tr>
                 <td>Clicks</td>
                 <td class="click-count"></td>
+            </tr>
+            <tr>
+                <td>Queries</td>
+                <td class="query-count"></td>
             </tr>
             <tr>
                 <td>Favoriten</td>
@@ -148,7 +154,6 @@
     </div>
 
     <div id="phoenix-info"><a href="https://confluence.konmedia.com/display/QS/Phoenix+-+Information+Manager" target="_blank" title="information"><span class="fa fa-info-circle">&nbsp;</span></a> <a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="issues"><span class="fas fa-bug">&nbsp;</span></a> <span class="fas fa-notes-medical" onclick="javascript:main.toggle_analytics();">&nbsp;</span></div>
-    <div id="image-copyright"><a href="https://www.pexels.com/photo/abstract-active-ash-color-235807/" target="_blank">Photo by <b>Pixabay</b> from <b>Pexels</b></a></div>
     <div id="image-copyright"><a href="https://www.pexels.com/photo/abstract-active-ash-color-235807/" target="_blank">Photo by <b>Pixabay</b> from <b>Pexels</b></a></div>
 
     <a href="#" target="_blank" class="hidden card-template"><span class="source-tooltip"></span><p data-card-id="" data-card-type=""><img src="" class="source-logo" /><span class="date"></span><span class="title"></span><span class="type"><i class="fas"></i></span><span class="author">-</span><span class="keywords"></span></p></a>

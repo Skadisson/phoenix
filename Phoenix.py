@@ -19,8 +19,9 @@ def phoenix(request):
         response = search.run(query)
     elif function == 'Click':
         card_id = int(request.args.get('card_id', 0))
+        query = request.args.get('query', None)
         click = Click.Click()
-        response = click.run(card_id)
+        response = click.run(card_id, query)
     elif function == 'Store':
         title = str(request.args.get('title', ''))
         text = str(request.args.get('text', ''))

@@ -1,4 +1,4 @@
-from bin.service import CardStorage, Environment, Logger, FavouriteStorage
+from bin.service import CardStorage, Environment, Logger, FavouriteStorage, QueryStorage
 import time
 
 
@@ -9,6 +9,7 @@ class Info:
         self.logger = Logger.Logger()
         self.card_storage = CardStorage.CardStorage()
         self.favourite_storage = FavouriteStorage.FavouriteStorage()
+        self.query_storage = QueryStorage.QueryStorage()
 
     def get_idea_count(self):
         enable_git = self.environment.get_service_enable_git()
@@ -94,3 +95,10 @@ class Info:
 
     def get_last_log_entries(self):
         return self.logger.get_latest_entries(5)
+
+    def get_query_count(self):
+        query_count = 0
+        queries = self.query_storage.get_queries()
+        for query in queries:
+            query_count += 1
+        return query_count

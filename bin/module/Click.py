@@ -1,13 +1,14 @@
-from bin.service import CardStorage, Logger
+from bin.service import CardStorage, Logger, QueryStorage
 
 
 class Click:
 
     def __init__(self):
-        self.storage = CardStorage.CardStorage()
+        self.card_storage = CardStorage.CardStorage()
+        self.query_storage = QueryStorage.QueryStorage()
         self.logger = Logger.Logger()
 
-    def run(self, card_id):
+    def run(self, card_id, query):
         result = {
             'items': [],
             'success': True,
@@ -15,9 +16,10 @@ class Click:
         }
         try:
 
-            card = self.storage.get_card(card_id)
+            card = self.card_storage.get_card(card_id)
             card['clicks'] += 1
-            self.storage.store_card(card)
+            self.query_storage.store_query(card_id, query)
+            self.card_storage.store_card(card)
             result['items'].append({
                 'clicks': card['clicks']
             })

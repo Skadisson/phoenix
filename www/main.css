@@ -11,6 +11,7 @@ body {
 }
 .blocker {
     background-color:rgba(0, 0, 0, 0.75);
+    z-index:200;
 }
 .modal {
     background: rgba(0,212,255,1);
@@ -339,19 +340,29 @@ a:hover > .source-tooltip {
 }
 
 #analytics {
+    visibilty:hidden;
     display:none;
     width:400px;
     height:400px;
-    position:absolute;
+    position:fixed;
     bottom:30px;
     left:10px;
     background-color: #0F0F0F;
-    border:1px solid #333D3F;
     padding:10px;
+    font-size:12px;
+    line-height:14px;
 }
 
 #analytics table {
     width:100%;
+}
+
+#analytics tr td {
+    border-bottom: 1px solid #333D3F;
+}
+
+#analytics tr td:nth-child(2) {
+    text-align: right;
 }
 
 #analytics .log {
@@ -360,7 +371,41 @@ a:hover > .source-tooltip {
     line-height:10px;
 }
 
-@media only screen and (max-width: 800px) {
+#analytics .logo {
+    position:absolute;
+    top: 0px;
+    left: 50%;
+    margin-left: -82px;
+    z-index: 10;
+}
+
+#analytics .header {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    width:418px;
+    height:60px;
+    border:1px solid #333D3F;
+    background-color: #0F0F0F;
+}
+
+#analytics h3 {
+    margin-top:60px;
+}
+
+#analytics .analytics-dot {
+    position:relative;
+    float:left;
+    background-color: #1A1E1F;
+    background-color: #FD5A2F;
+    width:4px;
+    height:4px;
+    margin-left:1px;
+    margin-top:1px;
+    z-index:3;
+}
+
+@media only screen and (max-width: 1400px) {
     html, body {
         height:auto;
     }
@@ -369,8 +414,44 @@ a:hover > .source-tooltip {
         left:0;
         margin-left:0;
     }
+    input[type="text"] {
+        width:90%;
+    }
     .jquery-modal input[type=text],
     .jquery-modal textarea {
         width:90%;
+    }
+    #image-copyright, #phoenix-info, #header, #favourites, #log, #search {
+        position:relative;
+        top:auto;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        display:block;
+    }
+    #image-copyright {
+        background-color: #0F0F0F;
+        text-align:left;
+        padding:5px;
+    }
+    #analytics {
+        position:relative;
+        top:auto;
+        left:50%;
+        right:auto;
+        bottom:auto;
+        margin-left:-200px;
+    }
+    #search {
+        margin-top:20px;
+    }
+    #log > .notification, #log > .error, #log > .loading, #favourites > .favourite {
+        width:100%;
+        text-align:left;
+        top: auto;
+        left: auto;
+    }
+    #phoenix-info {
+        margin:10px;
     }
 }
