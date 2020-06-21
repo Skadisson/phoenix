@@ -57,6 +57,12 @@ class CardStorage:
         card = card_storage.find_one({'relation_type': 'git', 'relation_id': git_id})
         return card
 
+    def get_timed_facts(self, target_time):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'changed': {'$gt': target_time}, 'type': 'fact'})
+        return cards
+
     def get_next_card_id(self):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage

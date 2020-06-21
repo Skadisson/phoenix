@@ -334,6 +334,32 @@ a:hover > .source-tooltip {
     background-color: #FD5A2F;
 }
 
+.fa-notes-medical {
+    cursor:pointer;
+}
+
+#analytics {
+    display:none;
+    width:400px;
+    height:400px;
+    position:absolute;
+    bottom:30px;
+    left:10px;
+    background-color: #0F0F0F;
+    border:1px solid #333D3F;
+    padding:10px;
+}
+
+#analytics table {
+    width:100%;
+}
+
+#analytics .log {
+    font-family:Courier New;
+    font-size:10px;
+    line-height:10px;
+}
+
 @media only screen and (max-width: 800px) {
     html, body {
         height:auto;

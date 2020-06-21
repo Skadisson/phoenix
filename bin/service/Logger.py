@@ -14,3 +14,16 @@ class Logger:
         file = open(log_file, "a")
         file.write(entry)
         file.close()
+
+    @staticmethod
+    def get_latest_entries(line_count):
+        lines = []
+        environment = Environment.Environment()
+        log_file = environment.get_path_log()
+        file = open(log_file, "r")
+        line = file.read()
+        while line:
+            lines.append(line)
+            line = file.read()
+        file.close()
+        return lines[:line_count]

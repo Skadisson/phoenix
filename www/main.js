@@ -99,6 +99,46 @@ PS = (function(window, document, $) {
         }
     };
 
+    function toggle_analytics() {
+        if($('#analytics').is(':not(:hidden)')) {
+            $('#analytics').hide();
+            return;
+        }
+        var getUrl = 'http://localhost:1352/?function=Analytics';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Analytics geladen');
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                        $('.fact-count').text(result.items[0].fact_count);
+                        $('.idea-count').text(result.items[0].idea_count);
+                        $('.total-count').text(result.items[0].fact_count + result.items[0].idea_count);
+                        $('.click-count').text(result.items[0].click_count);
+                        $('.favourite-count').text(result.items[0].favourite_count);
+                        $('.new-facts-this-week').text(result.items[0].new_facts_this_week);
+                        $('.new-facts-this-month').text(result.items[0].new_facts_this_month);
+                        $('.log-entries p').remove();
+                        for(var index in result.items[0].log_entries) {
+                            $('.log-entries').prepend('<p class="log">' + result.items[0].log_entries[index] + '</p>')
+                        }
+                        $('#analytics').show();
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
+
     function info() {
         var getUrl = 'http://localhost:1352/?function=Ping';
         var formContentType = 'application/x-www-form-urlencoded';
@@ -506,7 +546,8 @@ PS = (function(window, document, $) {
         is_favourite_toggled: is_favourite_toggled,
         start_dot_animation: start_dot_animation,
         stop_dot_animation: stop_dot_animation,
-        randomize: randomize
+        randomize: randomize,
+        toggle_analytics: toggle_analytics
     };
 
     return construct;

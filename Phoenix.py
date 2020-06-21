@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics
 from bin.service import Environment
 import json
 
@@ -41,6 +41,9 @@ def phoenix(request):
     elif function == 'Favourites':
         favourites = Favourites.Favourites()
         response = favourites.run()
+    elif function == 'Analytics':
+        analytics = Analytics.Analytics()
+        response = analytics.run()
     else:
         response = {'error': 'unknown function'}
 

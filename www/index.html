@@ -35,6 +35,42 @@
         </div>
     </form>
 
+    <div id="analytics">
+        <p>Analytics</p>
+        <table>
+            <tr>
+                <td>Fakten</td>
+                <td class="fact-count">0</td>
+            </tr>
+            <tr>
+                <td>Ideen</td>
+                <td class="idea-count">0</td>
+            </tr>
+            <tr>
+                <td>Karten insgesamt</td>
+                <td class="total-count"></td>
+            </tr>
+            <tr>
+                <td>Clicks</td>
+                <td class="click-count"></td>
+            </tr>
+            <tr>
+                <td>Favoriten</td>
+                <td class="favourite-count"></td>
+            </tr>
+            <tr>
+                <td>Neue Fakten diese Woche</td>
+                <td class="new-facts-this-week"></td>
+            </tr>
+            <tr>
+                <td>Neue Fakten diesen Monat</td>
+                <td class="new-facts-this-month"></td>
+            </tr>
+        </table>
+        <p>Log Einträge</p>
+        <div class="log-entries"></div>
+    </div>
+
     <div id="detail" class="modal">
         <p><i class="far fa-star"></i> Karten Details</p>
         <input type="hidden" name="card_id" value="" />
@@ -111,7 +147,7 @@
         <a href="javascript:main.store_card('create');" class="save">Save</a>
     </div>
 
-    <div id="phoenix-info"><a href="https://confluence.konmedia.com/display/QS/Phoenix+-+Information+Manager" target="_blank" title="information"><span class="fa fa-info-circle">&nbsp;</span></a> <a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="issues"><span class="fas fa-bug">&nbsp;</span></a></div>
+    <div id="phoenix-info"><a href="https://confluence.konmedia.com/display/QS/Phoenix+-+Information+Manager" target="_blank" title="information"><span class="fa fa-info-circle">&nbsp;</span></a> <a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="issues"><span class="fas fa-bug">&nbsp;</span></a> <span class="fas fa-notes-medical" onclick="javascript:main.toggle_analytics();">&nbsp;</span></div>
     <div id="image-copyright"><a href="https://www.pexels.com/photo/abstract-active-ash-color-235807/" target="_blank">Photo by <b>Pixabay</b> from <b>Pexels</b></a></div>
     <div id="image-copyright"><a href="https://www.pexels.com/photo/abstract-active-ash-color-235807/" target="_blank">Photo by <b>Pixabay</b> from <b>Pexels</b></a></div>
 
