@@ -537,6 +537,7 @@ PS = (function(window, document, $) {
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
                 self.search();
+                self.favourites();
             }
         };
     };

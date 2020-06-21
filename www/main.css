@@ -74,7 +74,9 @@ button[type=submit] {
     color:#E3DECA;
 }
 [readonly] {
-    opacity:0.9;
+    font-family: 'Montserrat', sans-serif !important;
+    background: rgba(0,212,255,1) !important;
+    color: white !important;
 }
 textarea,
 input[type=text] {

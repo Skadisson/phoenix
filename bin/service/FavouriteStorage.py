@@ -93,3 +93,17 @@ class FavouriteStorage:
             is_added = True
             favourite = self.add_favourite(card, user)
         return favourite, is_added
+
+    def update_favourite_title(self, card_id, title):
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourite = self.get_favourite_by_card_id(card_id)
+        if favourite is not None:
+            favourite['card_title'] = title
+            favourite_storage.replace_one({'id': favourite['id']}, favourite)
+
+    def get_favourite_by_card_id(self, card_id):
+        phoenix = self.mongo.phoenix
+        favourite_storage = phoenix.favourite_storage
+        favourite = favourite_storage.find_one({'card_id': card_id})
+        return favourite

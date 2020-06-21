@@ -123,6 +123,8 @@ class CardStorage:
             else:
                 existing_card['type'] = card['type']
             self.store_card(existing_card)
+            favourite_storage = FavouriteStorage.FavouriteStorage()
+            favourite_storage.update_favourite_title(card['id'], card['title'])
 
         return success
 
