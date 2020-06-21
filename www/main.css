@@ -343,7 +343,7 @@ a:hover > .source-tooltip {
     visibilty:hidden;
     display:none;
     width:400px;
-    height:400px;
+    min-height:400px;
     position:fixed;
     bottom:30px;
     left:10px;
