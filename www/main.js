@@ -471,8 +471,8 @@ PS = (function(window, document, $) {
             xhr.send();
             $('#detail').modal();
             $('[name=card_id]', '#detail').val(card['id']);
-            $('[name=title]', '#detail').val(title);
-            $('[name=text]', '#detail').text(card['text']);
+            $('[name=title]', '#detail').val(card['title']);
+            $('[name=text]', '#detail').val(card['text']);
             $('[name=keywords]', '#detail').val(keywords);
             $('[name=external_link]', '#detail').val(external_link);
             $('[name=editors]', '#detail').val(editors);
@@ -487,7 +487,7 @@ PS = (function(window, document, $) {
                 $('#edit').modal();
                 $('[name=card_id]', '#edit').val(card['id']);
                 $('[name=title]', '#edit').val(card['title']);
-                $('[name=text]', '#edit').text(card['text']);
+                $('[name=text]', '#edit').val(card['text']);
                 $('[name=keywords]', '#edit').val(keywords);
                 $('[name=external_link]', '#edit').val(external_link);
                 $('[name=editors]', '#edit').val(editors);
