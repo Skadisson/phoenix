@@ -45,6 +45,18 @@ class CardStorage:
         card = card_storage.find_one({'relation_type': 'jira', 'relation_id': ticket_id})
         return card
 
+    def get_confluence_cards(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'relation_type': 'confluence'})
+        return cards
+
+    def get_git_cards(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'relation_type': 'git'})
+        return cards
+
     def get_confluence_card(self, confluence_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage

@@ -1,5 +1,5 @@
 from bin.service import CardStorage, Environment, Logger, FavouriteStorage, QueryStorage
-import time
+import time, statistics
 
 
 class Info:
@@ -36,28 +36,25 @@ class Info:
         return fact_count
 
     def get_jira_count(self):
-        enable_git = self.environment.get_service_enable_git()
-        if enable_git is True:
-            cards = self.card_storage.get_all_cards()
-        else:
-            cards = self.card_storage.get_jira_and_confluence_cards()
         jira_count = 0
+        cards = self.card_storage.get_jira_cards()
         for card in cards:
-            if card['relation_type'] == 'jira':
-                jira_count += 1
+            jira_count += 1
         return jira_count
 
     def get_confluence_count(self):
-        enable_git = self.environment.get_service_enable_git()
-        if enable_git is True:
-            cards = self.card_storage.get_all_cards()
-        else:
-            cards = self.card_storage.get_jira_and_confluence_cards()
         confluence_count = 0
+        cards = self.card_storage.get_confluence_cards()
         for card in cards:
-            if card['relation_type'] == 'confluence':
-                confluence_count += 1
+            confluence_count += 1
         return confluence_count
+
+    def get_git_count(self):
+        git_count = 0
+        cards = self.card_storage.get_git_cards()
+        for card in cards:
+            git_count += 1
+        return git_count
 
     def get_click_count(self):
         click_count = 0
@@ -94,7 +91,7 @@ class Info:
         return fact_count
 
     def get_last_log_entries(self):
-        return self.logger.get_latest_entries(5)
+        return self.logger.get_latest_entries(3)
 
     def get_query_count(self):
         query_count = 0
@@ -102,3 +99,11 @@ class Info:
         for query in queries:
             query_count += 1
         return query_count
+
+    def get_average_loading_time(self):
+        loading_times = []
+        queries = self.query_storage.get_queries()
+        for query in queries:
+            if 'loading_seconds' in query:
+                loading_times.append(int(query['loading_seconds']))
+        return statistics.mean(loading_times)

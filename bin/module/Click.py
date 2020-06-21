@@ -8,7 +8,7 @@ class Click:
         self.query_storage = QueryStorage.QueryStorage()
         self.logger = Logger.Logger()
 
-    def run(self, card_id, query):
+    def run(self, card_id, query, loading_seconds):
         result = {
             'items': [],
             'success': True,
@@ -18,7 +18,7 @@ class Click:
 
             card = self.card_storage.get_card(card_id)
             card['clicks'] += 1
-            self.query_storage.store_query(card_id, query)
+            self.query_storage.store_query(card_id, query, loading_seconds)
             self.card_storage.store_card(card)
             result['items'].append({
                 'clicks': card['clicks']

@@ -9,6 +9,7 @@ PS = (function(window, document, $) {
     var timer = 0;
     var interval = 0;
     var dot_interval = 0;
+    var loading_seconds = 0;
 
     var construct = function() {
         self = this;
@@ -47,11 +48,11 @@ PS = (function(window, document, $) {
 
     function start_timer() {
       if(!interval) {
-          timer = 0;
-          $('.timer').text(timer);
+          loading_seconds = 0;
+          $('.timer').text(loading_seconds);
           interval = setInterval(function() {
-            timer += 1;
-            $('.timer').text(timer);
+            loading_seconds += 1;
+            $('.timer').text(loading_seconds);
           }, 1000);
       }
     };
@@ -120,15 +121,28 @@ PS = (function(window, document, $) {
                     if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
                         $('.fact-count').text(result.items[0].fact_count);
                         $('.idea-count').text(result.items[0].idea_count);
+                        $('.jira-count').text(result.items[0].jira_count);
+                        $('.confluence-count').text(result.items[0].confluence_count);
+                        $('.git-count').text(result.items[0].git_count);
                         $('.total-count').text(result.items[0].fact_count + result.items[0].idea_count);
                         $('.click-count').text(result.items[0].click_count);
                         $('.query-count').text(result.items[0].query_count);
                         $('.favourite-count').text(result.items[0].favourite_count);
                         $('.new-facts-this-week').text(result.items[0].new_facts_this_week);
                         $('.new-facts-this-month').text(result.items[0].new_facts_this_month);
+                        $('.average-loading-time').text(result.items[0].average_loading_time);
+                        if(result.items[0].is_git_active) {
+                            $('.is-git-active').text('Ja');
+                        } else {
+                            $('.is-git-active').text('Nein');
+                        }
                         $('.log-entries p').remove();
-                        for(var index in result.items[0].log_entries) {
-                            $('.log-entries').prepend('<p class="log">' + result.items[0].log_entries[index] + '</p>')
+                        if(result.items[0].log_entries.length > 0) {
+                            for(var index in result.items[0].log_entries) {
+                                $('.log-entries').prepend('<p class="log">' + result.items[0].log_entries[index] + '</p>')
+                            }
+                        } else {
+                            $('.log-entries').prepend('<p class="log">Keine Einträge vorhanden</p>')
                         }
                         $('#analytics').show();
                     }
@@ -451,7 +465,7 @@ PS = (function(window, document, $) {
             var card_id = $('p', this).attr('data-card-id');
             var is_toggled = self.is_favourite_toggled(card_id);
             var query = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query);
+            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
