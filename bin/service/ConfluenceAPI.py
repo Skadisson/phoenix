@@ -51,6 +51,7 @@ class ConfluenceAPI:
         start = 0
         try:
             pages = self.confluence.get_all_pages_from_space(space, start=start, limit=limit, status=None, expand='body.view,history', content_type='page')
+            pages += self.confluence.get_all_pages_from_space(space, start=start, limit=limit, status=None, expand='body.view,history', content_type='blogpost')
         except Exception as err:
             self.logger.add_entry(self.__class__.__name__, str(err) + "; with space " + space)
             pages = []
@@ -67,6 +68,7 @@ class ConfluenceAPI:
             start += limit
             try:
                 pages = self.confluence.get_all_pages_from_space(space, start=start, limit=limit, status=None, expand='body.view,history', content_type='page')
+                pages += self.confluence.get_all_pages_from_space(space, start=start, limit=limit, status=None, expand='body.view,history', content_type='blogpost')
             except Exception as err:
                 self.logger.add_entry(self.__class__.__name__, str(err) + "; with space " + space)
                 pages = []
