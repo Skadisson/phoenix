@@ -16,17 +16,14 @@ class SciKitLearn:
             cards = self.storage.get_all_cards(not_empty)
         else:
             cards = self.storage.get_jira_and_confluence_cards(not_empty)
-        normalized_cards, card_ids = self.normalize_cards(cards)
+        normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
 
         context_ids = []
-        self.phased_search(normalized_cards, card_ids, query, context_ids)
-        while len(context_ids) > 18:
-            documents = self.storage.get_cards(context_ids)
-            normalized_cards, card_ids = self.normalize_cards(documents)
-            context_ids = []
-            self.phased_search(normalized_cards, card_ids, query, context_ids)
+        self.phased_search(normalized_keywords, card_ids, query, context_ids)
+        self.phased_search(normalized_titles, card_ids, query, context_ids)
+        self.phased_search(normalized_texts, card_ids, query, context_ids)
 
-        cards = self.storage.get_cards(context_ids)
+        cards = self.storage.get_cards(list(set(context_ids)))
         sorted_cards = self.storage.sort_cards(cards, 9, False)
 
         return sorted_cards
@@ -57,24 +54,14 @@ class SciKitLearn:
         context_ids = []
         docs_new = [query]
 
-        count_vectorizer = feature_extraction.text.CountVectorizer()
-        X_train_counts = count_vectorizer.fit_transform(documents)
-        tfidf_transformer = feature_extraction.text.TfidfTransformer()
-        X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
-        X_new_counts = count_vectorizer.transform(docs_new)
-        X_new_tfidf = tfidf_transformer.transform(X_new_counts)
-
-        clf_context = naive_bayes.MultinomialNB().fit(X_train_tfidf, ids)
-        predicted_context_id = clf_context.predict(X_new_tfidf)
-
-        context_id = int(predicted_context_id.astype(int))
-        context_ids.append(context_id)
-
-        """clf_relevancy = naive_bayes.BernoulliNB().fit(X_train_tfidf, ids)
-        predicted_relevancy_id = clf_relevancy.predict(X_new_tfidf)
-
-        relevancy_id = int(predicted_relevancy_id.astype(int))
-        context_ids.append(relevancy_id)"""
+        text_clf = pipeline.Pipeline([
+            ('vect', feature_extraction.text.CountVectorizer()),
+            ('tfidf', feature_extraction.text.TfidfTransformer()),
+            ('clf', naive_bayes.MultinomialNB()),
+        ])
+        text_context = text_clf.fit(documents, ids)
+        text_id = text_context.predict(docs_new)
+        context_ids.append(int(text_id.astype(int)))
 
         return context_ids
 
@@ -102,21 +89,26 @@ class SciKitLearn:
 
     @staticmethod
     def normalize_cards(cards):
-        normalized_cards = []
+        normalized_keywords = []
+        normalized_titles = []
+        normalized_texts = []
         card_ids = []
 
         for card in cards:
-            normalized_card = ''
+            normalized_keyword = ''
+            normalized_title = ''
+            normalized_text = ''
             if card['title'] is not None:
-                normalized_card += str(card['title'])
+                normalized_title = str(card['title'])
             if card['text'] is not None:
-                normalized_card += ' ' + str(card['text'])
+                normalized_text = str(card['text'])
             if card['keywords'] is not None:
-                normalized_card += ' ' + str(' '.join(card['keywords']))
-            normalized_content = str(normalized_card)
+                normalized_keyword = str(' '.join(card['keywords']))
             card_id = int(card['id'])
-            if normalized_content != '' and card_id > 0:
+            if normalized_title != '' and card_id > 0:
                 card_ids.append(card_id)
-                normalized_cards.append(normalized_content)
+                normalized_keywords.append(normalized_keyword)
+                normalized_titles.append(normalized_title)
+                normalized_texts.append(normalized_text)
 
-        return normalized_cards, card_ids
+        return normalized_keywords, normalized_titles, normalized_texts, card_ids

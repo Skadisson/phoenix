@@ -9,7 +9,7 @@ class ContextSearch:
         self.sci_kit_learn = SciKitLearn.SciKitLearn()
 
     def search(self, query):
-        return self.sci_kit_learn.phased_context_search(query)
+        return self.sci_kit_learn.phased_context_search(query, 'title')
 
     def suggest_keywords(self, title, text):
 
