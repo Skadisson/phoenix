@@ -50,31 +50,33 @@ ___
 pip list -l
 <pre>
 Package              Version
--------------------- ----------
-atlassian-python-api 1.15.9
-certifi              2020.4.5.2
+-------------------- -----------
+atlassian-python-api 1.16.0
+certifi              2020.6.20
 chardet              3.0.4
+httplib2             0.18.1
 idna                 2.9
 joblib               0.15.1
-numpy                1.18.5
+mkl-fft              1.0.15
+mkl-random           1.1.0
+mkl-service          2.3.0
+numpy                1.19.0
+oauth2               1.9.0.post1
 oauthlib             3.1.0
-pandas               1.0.4
-pip                  19.3.1
-python-dateutil      2.8.1
-pytz                 2020.1
-PyYAML               5.3.1
-requests             2.23.0
+pip                  20.0.2
+pymongo              3.10.1
+PyYAML               5.3
+requests             2.24.0
 requests-oauthlib    1.3.0
 scikit-learn         0.23.1
-scipy                1.4.1
-setuptools           47.1.1
+scipy                1.5.0
+setuptools           47.3.1
 six                  1.15.0
 threadpoolctl        2.1.0
+tlslite              0.4.9
 urllib3              1.25.9
-Werkzeug             1.0.1
 wheel                0.34.2
 wincertstore         0.2
-
 </pre>
 
 Use "pip list --outdated --format=columns" to check for outdated versions.
