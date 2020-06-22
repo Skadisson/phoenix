@@ -10,6 +10,7 @@ PS = (function(window, document, $) {
     var interval = 0;
     var dot_interval = 0;
     var loading_seconds = 0;
+    var loaded_shout_outs = [];
 
     var construct = function() {
         self = this;
@@ -19,6 +20,7 @@ PS = (function(window, document, $) {
     function init() {
         self.fill_analytics();
         self.info();
+        self.shout_outs();
         self.latest_cards();
         self.favourites();
 
@@ -155,6 +157,38 @@ PS = (function(window, document, $) {
         }
     };
 
+    function shout_outs() {
+        var getUrl = 'http://localhost:1352/?function=ShoutOuts';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Shout Outs geladen');
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0].shout_outs != 'undefined') {
+                        loaded_shout_outs = result.items[0].shout_outs;
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
+
+    function render_shout_outs() {
+        for(var i in loaded_shout_outs) {
+            var loaded_shout_out = loaded_shout_outs[i];
+            $('p[data-card-id=' + loaded_shout_out.card_id + ']').addClass('flash-card');
+        }
+    };
+
     function info() {
         var getUrl = 'http://localhost:1352/?function=Ping';
         var formContentType = 'application/x-www-form-urlencoded';
@@ -223,6 +257,18 @@ PS = (function(window, document, $) {
         return $('.favourite[data-card-id=' + card_id + ']').length > 0;
     };
 
+    function shout_out(card_id) {
+        var text = prompt('Shout Out');
+        if(text) {
+            var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+            var formContentType = 'application/x-www-form-urlencoded';
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            xhr.send();
+        }
+    };
+
     function toggle_favourite(card_id) {
         var getUrl = 'http://localhost:1352/?function=Favourite&card_id=' + card_id;
         var formContentType = 'application/x-www-form-urlencoded';
@@ -276,6 +322,7 @@ PS = (function(window, document, $) {
                             self.render_card(card);
                         }
                         self.stop_dot_animation(result.items[0].count);
+                        self.render_shout_outs();
                     }
                 }
             };
@@ -397,6 +444,7 @@ PS = (function(window, document, $) {
                             self.render_card(card);
                         }
                         self.stop_dot_animation(result.items[0].count);
+                        self.render_shout_outs();
                     }
                 }
             };
@@ -478,6 +526,16 @@ PS = (function(window, document, $) {
             $('[name=keywords]', '#detail').val(keywords);
             $('[name=external_link]', '#detail').val(external_link);
             $('[name=editors]', '#detail').val(editors);
+            $('.shout-outs p', '#detail').remove();
+            for(var x in loaded_shout_outs) {
+                var loaded_shout_out = loaded_shout_outs[x];
+                if(loaded_shout_out.card_id == card['id']) {
+                    $('.shout-outs').append('<p class="shout-out">ses: "' + loaded_shout_out['text'] + '"</p>');
+                }
+            }
+            if($('.shout-outs p', '#detail').length == 0) {
+                $('.shout-outs').append('<p class="shout-out">In letzter Zeit wurden zu dieser Karte keine Shout Outs gemacht.</p>');
+            }
             if(is_toggled) {
                 $('#detail .far.fa-star').removeClass('far').addClass('fas');
             } else {
@@ -497,6 +555,10 @@ PS = (function(window, document, $) {
             $('.fa-star', '#detail').off('click');
             $('.fa-star', '#detail').click(function(event) {
                 self.toggle_favourite(card['id']);
+            });
+            $('.fa-bullhorn', '#detail').off('click');
+            $('.fa-bullhorn', '#detail').click(function(event) {
+                self.shout_out(card['id']);
             });
             return false;
         });
@@ -570,12 +632,15 @@ PS = (function(window, document, $) {
         favourites: favourites,
         render_favourite: render_favourite,
         toggle_favourite: toggle_favourite,
+        shout_out: shout_out,
         is_favourite_toggled: is_favourite_toggled,
         start_dot_animation: start_dot_animation,
         stop_dot_animation: stop_dot_animation,
         randomize: randomize,
         toggle_analytics: toggle_analytics,
-        fill_analytics: fill_analytics
+        fill_analytics: fill_analytics,
+        shout_outs: shout_outs,
+        render_shout_outs: render_shout_outs
     };
 
     return construct;

@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts
 from bin.service import Environment
 import json
 
@@ -46,6 +46,14 @@ def phoenix(request):
     elif function == 'Analytics':
         analytics = Analytics.Analytics()
         response = analytics.run()
+    elif function == 'ShoutOut':
+        card_id = int(request.args.get('card_id', 0))
+        text = str(request.args.get('text', ''))
+        shout_out = ShoutOut.ShoutOut()
+        response = shout_out.run(card_id, text)
+    elif function == 'ShoutOuts':
+        shout_outs = ShoutOuts.ShoutOuts()
+        response = shout_outs.run()
     else:
         response = {'error': 'unknown function'}
 

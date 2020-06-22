@@ -27,6 +27,10 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['enable_git'] == 1
 
+    def get_service_shout_out_liftime_days(self):
+        service_yaml = self.load_yaml('service')
+        return service_yaml['shout_out_liftime_days']
+
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']
