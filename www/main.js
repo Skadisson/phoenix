@@ -172,6 +172,8 @@ PS = (function(window, document, $) {
                     if(typeof result.items[0].idea_count != 'undefined' && typeof result.items[0].fact_count != 'undefined') {
                         $('#keywords').attr('placeholder', "Suche Dein Thema in " + result.items[0].idea_count + " Ideen und " + result.items[0].fact_count + " Fakten");
                         var total_count = result.items[0].idea_count + result.items[0].fact_count;
+                        if(total_count > 10000)
+                            total_count = 10000
                         var i = 0;
                         while(i<total_count) {
                             $('.dot-space').append('<div class="dot" />');
