@@ -75,6 +75,7 @@ six                  1.15.0
 threadpoolctl        2.1.0
 tlslite              0.4.9
 urllib3              1.25.9
+Werkzeug             1.0.1
 wheel                0.34.2
 wincertstore         0.2
 </pre>
