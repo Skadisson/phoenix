@@ -14,47 +14,30 @@ class Info:
     def get_idea_count(self):
         enable_git = self.environment.get_service_enable_git()
         if enable_git is True:
-            cards = self.card_storage.get_all_cards()
+            cards = self.card_storage.get_all_ideas()
         else:
-            cards = self.card_storage.get_jira_and_confluence_cards()
-        idea_count = 0
-        for card in cards:
-            if card['type'] == 'idea':
-                idea_count += 1
-        return idea_count
+            cards = self.card_storage.get_jira_and_confluence_ideas()
+        return cards.count()
 
     def get_fact_count(self):
         enable_git = self.environment.get_service_enable_git()
         if enable_git is True:
-            cards = self.card_storage.get_all_cards()
+            cards = self.card_storage.get_all_facts()
         else:
-            cards = self.card_storage.get_jira_and_confluence_cards()
-        fact_count = 0
-        for card in cards:
-            if card['type'] == 'fact':
-                fact_count += 1
-        return fact_count
+            cards = self.card_storage.get_jira_and_confluence_facts()
+        return cards.count()
 
     def get_jira_count(self):
-        jira_count = 0
         cards = self.card_storage.get_jira_cards()
-        for card in cards:
-            jira_count += 1
-        return jira_count
+        return cards.count()
 
     def get_confluence_count(self):
-        confluence_count = 0
         cards = self.card_storage.get_confluence_cards()
-        for card in cards:
-            confluence_count += 1
-        return confluence_count
+        return cards.count()
 
     def get_git_count(self):
-        git_count = 0
         cards = self.card_storage.get_git_cards()
-        for card in cards:
-            git_count += 1
-        return git_count
+        return cards.count()
 
     def get_click_count(self):
         click_count = 0

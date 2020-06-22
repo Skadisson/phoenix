@@ -24,6 +24,18 @@ class CardStorage:
             cards = card_storage.find()
         return cards
 
+    def get_all_ideas(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'type': 'idea'})
+        return cards
+
+    def get_all_facts(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'type': 'fact'})
+        return cards
+
     def get_jira_and_confluence_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
@@ -31,6 +43,18 @@ class CardStorage:
             cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence', None]}}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
         else:
             cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence', None]}})
+        return cards
+
+    def get_jira_and_confluence_ideas(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence', None]}}, {'type': 'idea'}]})
+        return cards
+
+    def get_jira_and_confluence_facts(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence', None]}}, {'type': 'fact'}]})
         return cards
 
     def get_jira_cards(self):
