@@ -363,6 +363,7 @@ a:hover > .source-tooltip {
     padding:10px;
     font-size:12px;
     line-height:14px;
+    z-index:100;
 }
 
 #analytics table {
