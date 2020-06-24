@@ -105,7 +105,13 @@ class SciKitLearn:
             if card['keywords'] is not None:
                 normalized_keyword = str(' '.join(card['keywords']))
             card_id = int(card['id'])
-            if normalized_title != '' and card_id > 0:
+            if card_id > 0:
+                if normalized_keyword == '':
+                    normalized_keyword = 'empty'
+                if normalized_title == '':
+                    normalized_title = 'empty'
+                if normalized_text == '':
+                    normalized_text = 'empty'
                 card_ids.append(card_id)
                 normalized_keywords.append(normalized_keyword)
                 normalized_titles.append(normalized_title)
