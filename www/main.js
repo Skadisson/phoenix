@@ -602,6 +602,10 @@ PS = (function(window, document, $) {
                 self.render_notification('Karte gespeichert');
                 self.search();
                 self.favourites();
+                $('[name=title]', '#create').val('');
+                $('[name=text]', '#create').val('');
+                $('[name=keywords]', '#create').val('');
+                $('[name=external_link]', '#create').val('');
             }
         };
     };
