@@ -24,7 +24,7 @@ class SciKitLearn:
         self.phased_search(normalized_texts, card_ids, query, context_ids)
 
         cards = self.storage.get_cards(list(set(context_ids)))
-        sorted_cards = self.storage.sort_cards(cards, 9, False)
+        sorted_cards = self.storage.sort_cards(cards, 9)
 
         return sorted_cards
 

@@ -265,6 +265,14 @@ PS = (function(window, document, $) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    self.finish_loading();
+                    self.render_notification('Shout Out erfolgreich');
+                    self.shout_outs();
+                }
+            };
             xhr.send();
         }
     };

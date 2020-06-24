@@ -15,10 +15,10 @@ body {
 }
 .modal {
     background: white;
-    color:#635C3B;
+    color:#0F0F0F;
 }
 .modal a, .modal a:active, .modal a:visited, .modal a:hover, .modal a:link {
-    color:#635C3B;
+    color:#0F0F0F;
 }
 .hidden {
     display:none;
@@ -80,7 +80,7 @@ button[type=submit] {
 [readonly] {
     font-family: 'Montserrat', sans-serif !important;
     background: white !important;
-    color: #635C3B !important;
+    color: #1A1E1F !important;
 }
 textarea,
 input[type=text] {
@@ -93,7 +93,7 @@ input[type=text] {
     outline-width: 0;
     font-size:16px;
     line-height:18px;
-    color:#635C3B;
+    color:#0F0F0F;
     box-shadow: 1px 1px 5px black;
 }
 #image-copyright {
@@ -420,6 +420,7 @@ a:hover > .source-tooltip {
 
 .shout-outs {
     margin-bottom:30px;
+    margin-left:15px;
 }
 
 .shout-out {

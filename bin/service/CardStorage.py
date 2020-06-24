@@ -1,4 +1,4 @@
-from bin.service import FavouriteStorage
+from bin.service import FavouriteStorage, ShoutOutStorage, Environment
 from bin.entity import Card
 from pymongo import MongoClient
 import time
@@ -8,6 +8,8 @@ class CardStorage:
 
     def __init__(self):
         self.mongo = MongoClient()
+        self.so_storage = ShoutOutStorage.ShoutOutStorage()
+        self.environment = Environment.Environment()
         self.favourite_card_ids = None
 
     def add_card(self, card):
@@ -162,31 +164,32 @@ class CardStorage:
             card_storage.insert_one(card)
 
     def get_latest_cards(self, count):
-
-        cards = self.get_jira_and_confluence_cards()
+        git_enabled = self.environment.get_service_enable_git()
+        if git_enabled:
+            cards = self.get_all_cards('title')
+        else:
+            cards = self.get_jira_and_confluence_cards('title')
         self.load_favourite_card_ids()
 
         valid_cards = []
         for check_card in cards:
-            len_title = len(check_card['title'])
-            len_text = len(check_card['text'])
-            if len_title > 0 and len_text > 0:
-                if check_card['id'] in self.favourite_card_ids:
-                    check_card['favourites'] = int(self.favourite_card_ids[check_card['id']])
-                else:
-                    check_card['favourites'] = 0
-                valid_cards.append(check_card)
+            if check_card['id'] in self.favourite_card_ids:
+                check_card['favourites'] = int(self.favourite_card_ids[check_card['id']])
+            else:
+                check_card['favourites'] = 0
+            shout_outs = self.so_storage.get_card_shout_outs(check_card['id'])
+            check_card['shout_outs'] = shout_outs.count()
+            valid_cards.append(check_card)
+
+        valid_cards = sorted(valid_cards, key=lambda card: card['shout_outs'], reverse=False)
+        valid_cards = sorted(valid_cards, key=lambda card: card['favourites'], reverse=False)
 
         latest_cards = self.sort_cards(valid_cards, count)
         return latest_cards
 
     @staticmethod
-    def sort_cards(cards, count, has_favourites=True):
-        if has_favourites:
-            cards_by_favourite = sorted(cards, key=lambda card: card['favourites'], reverse=False)
-        else:
-            cards_by_favourite = cards
-        cards_by_date = sorted(cards_by_favourite, key=lambda card: card['changed'], reverse=True)
+    def sort_cards(cards, count):
+        cards_by_date = sorted(cards, key=lambda card: card['changed'], reverse=True)
         cards_by_click = sorted(cards_by_date, key=lambda card: card['clicks'], reverse=True)
         cards_by_type = sorted(cards_by_click, key=lambda card: card['type'], reverse=False)
         limited_cards = cards_by_type[:count]
