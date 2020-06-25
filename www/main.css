@@ -441,8 +441,9 @@ a:hover > .source-tooltip {
 }
 
 .shout-out {
-    font-size:10px;
-    line-height:12px;
+    font-size:12px;
+    line-height:14px;
+    color: #16BAE7;
 }
 
 #shout-out {
