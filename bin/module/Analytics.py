@@ -28,6 +28,7 @@ class Analytics:
             jira_count = self.info.get_jira_count()
             confluence_count = self.info.get_confluence_count()
             git_count = self.info.get_git_count()
+            shout_out_count = self.info.get_shout_out_count()
             result['items'].append({
                 'fact_count': fact_count,
                 'idea_count': idea_count,
@@ -41,7 +42,8 @@ class Analytics:
                 'is_git_active': is_git_active,
                 'jira_count': jira_count,
                 'confluence_count': confluence_count,
-                'git_count': git_count
+                'git_count': git_count,
+                'shout_out_count': shout_out_count
             })
 
         except Exception as e:

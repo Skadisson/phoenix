@@ -130,6 +130,7 @@ PS = (function(window, document, $) {
                         $('.click-count').text(result.items[0].click_count);
                         $('.query-count').text(result.items[0].query_count);
                         $('.favourite-count').text(result.items[0].favourite_count);
+                        $('.shout-out-count').text(result.items[0].shout_out_count);
                         $('.new-facts-this-week').text(result.items[0].new_facts_this_week);
                         $('.new-facts-this-month').text(result.items[0].new_facts_this_month);
                         $('.average-loading-time').text(result.items[0].average_loading_time);

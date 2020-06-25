@@ -1,4 +1,4 @@
-from bin.service import CardStorage, Environment, Logger, FavouriteStorage, QueryStorage
+from bin.service import CardStorage, Environment, Logger, FavouriteStorage, QueryStorage, ShoutOutStorage
 import time, statistics
 
 
@@ -10,6 +10,7 @@ class Info:
         self.card_storage = CardStorage.CardStorage()
         self.favourite_storage = FavouriteStorage.FavouriteStorage()
         self.query_storage = QueryStorage.QueryStorage()
+        self.so_storage = ShoutOutStorage.ShoutOutStorage()
 
     def get_idea_count(self):
         enable_git = self.environment.get_service_enable_git()
@@ -90,3 +91,7 @@ class Info:
             if 'loading_seconds' in query:
                 loading_times.append(int(query['loading_seconds']))
         return statistics.mean(loading_times)
+
+    def get_shout_out_count(self):
+        shout_outs = self.so_storage.get_shout_outs()
+        return shout_outs.count()
