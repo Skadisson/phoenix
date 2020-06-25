@@ -675,7 +675,7 @@ PS = (function(window, document, $) {
 
     function fill_analytics() {
         var $header = $('#analytics .header');
-        for(var i = 0; i<3000; i++) {
+        for(var i = 0; i<996; i++) {
             $header.append('<div class="analytics-dot" />');
         }
     };

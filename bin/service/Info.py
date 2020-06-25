@@ -90,7 +90,9 @@ class Info:
         for query in queries:
             if 'loading_seconds' in query:
                 loading_times.append(int(query['loading_seconds']))
-        return statistics.mean(loading_times)
+        if len(loading_times) > 0:
+            return statistics.mean(loading_times)
+        return 0
 
     def get_shout_out_count(self):
         shout_outs = self.so_storage.get_shout_outs()
