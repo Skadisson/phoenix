@@ -95,6 +95,7 @@ input[type=text] {
     line-height:18px;
     color:#0F0F0F;
     box-shadow: 1px 1px 5px black;
+    resize:none;
 }
 #image-copyright {
     position:fixed;

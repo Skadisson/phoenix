@@ -610,12 +610,13 @@ PS = (function(window, document, $) {
 
     function store_card(func) {
 
+        var card_id = 0;
         if(func == 'edit') {
             var title = $('[name=title]', '#edit').val();
             var text = $('[name=text]', '#edit').val();
             var keywords = $('[name=keywords]', '#edit').val();
             var external_link = $('[name=external_link]', '#edit').val();
-            var card_id = $('[name=card_id]', '#edit').val();
+            card_id = $('[name=card_id]', '#edit').val();
             var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
                         + '&keywords=' + encodeURIComponent(keywords)
                         + '&card_id=' + encodeURIComponent(card_id)
@@ -642,6 +643,13 @@ PS = (function(window, document, $) {
         xhr.send();
         xhr.onreadystatechange = function() {
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                if(card_id > 0) {
+                    var $changed_card = $('[data-card-id=' + card_id + ']');
+                    $('.date', $changed_card).text('soeben geändert');
+                    $('.title', $changed_card).text(title);
+                    $('.author', $changed_card).text('ses'); // TODO: user handling
+                    $('.keywords', $changed_card).text(keywords);
+                }
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
                 self.info();
