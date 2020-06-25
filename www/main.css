@@ -249,7 +249,7 @@ a:hover > .source-tooltip {
     top:150px;
     overflow:hidden;
     display:block;
-    z-index:100;
+    z-index:400;
 }
 #log p {
     color:#16BAE7;
@@ -280,7 +280,7 @@ a:hover > .source-tooltip {
     top:150px;
     overflow:hidden;
     display:block;
-    z-index:100;
+    z-index:400;
 }
 #favourites p {
     color:#16BAE7;
@@ -426,6 +426,42 @@ a:hover > .source-tooltip {
 .shout-out {
     font-size:10px;
     line-height:12px;
+}
+
+#shout-out {
+    display:none;
+    position: fixed;
+    width: 600px;
+    height: 120px;
+    background: #16BAE7;
+    top: 50%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -60px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px black;
+    z-index: 400;
+}
+
+#shout-out .fa-times-circle {
+    color:black;
+    cursor:pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+#shout-out fieldset {
+    border:none;
+}
+
+#shout-out p {
+    text-align: center;
+}
+
+#shout-out input[type=text] {
+    width: 510px;
+    box-shadow:none;
 }
 
 .flash-card {

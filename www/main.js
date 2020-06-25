@@ -32,6 +32,52 @@ PS = (function(window, document, $) {
         $('body').off('click');
         $('body').on('click', '.fa-bullseye', self.suggest_keywords);
         $('body').on('click', '.fa-external-link-square-alt', self.open_external_link);
+        $('body #shout-out').on('click', '.fa-times-circle', function() {
+            $('#shout-out input').val('');
+            $('#shout-out').hide();
+        });
+        $('body').off('keyup');
+        $('body').on('keyup', '#shout-out input[type=text]', function(event) {
+            var text = $('#shout-out input').val();
+            var card_id = $('#detail input[name=card_id]').val();
+            if(card_id > 0 && text && event.keyCode == 13) {
+                var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+                var formContentType = 'application/x-www-form-urlencoded';
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', getUrl, true);
+                xhr.setRequestHeader('Content-type', formContentType);
+                self.start_loading();
+                xhr.onreadystatechange = function() {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        self.finish_loading();
+                        var result = JSON.parse(xhr.responseText);
+                        if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                            if(result.items[0].is_added) {
+                                self.render_notification('Shout Out erfolgreich');
+                                self.shout_outs();
+                                $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
+                                $('#shout-out fieldset i').removeClass('fa-check');
+                                $('#shout-out fieldset i').removeClass('fa-times');
+                                $('#shout-out fieldset i').addClass('fa-check');
+                            } else {
+                                self.render_notification('Diese Woche bereits geteilt');
+                                $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
+                                $('#shout-out fieldset i').removeClass('fa-check');
+                                $('#shout-out fieldset i').removeClass('fa-times');
+                                $('#shout-out fieldset i').addClass('fa-times');
+                            }
+                        } else {
+                            self.render_notification('Shout Out fehlgeschlagen');
+                            $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
+                            $('#shout-out fieldset i').removeClass('fa-check');
+                            $('#shout-out fieldset i').removeClass('fa-times');
+                            $('#shout-out fieldset i').addClass('fa-times');
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        });
     };
 
     function start_loading() {
@@ -259,23 +305,12 @@ PS = (function(window, document, $) {
     };
 
     function shout_out(card_id) {
-        var text = prompt('Shout Out');
-        if(text) {
-            var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
-            var formContentType = 'application/x-www-form-urlencoded';
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', getUrl, true);
-            xhr.setRequestHeader('Content-type', formContentType);
-            self.start_loading();
-            xhr.onreadystatechange = function() {
-                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    self.finish_loading();
-                    self.render_notification('Shout Out erfolgreich');
-                    self.shout_outs();
-                }
-            };
-            xhr.send();
-        }
+        $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
+        $('#shout-out fieldset i').removeClass('fa-check');
+        $('#shout-out fieldset i').removeClass('fa-times');
+        $('#shout-out fieldset i').addClass('fa-ellipsis-h');
+        $('#shout-out input').val('');
+        $('#shout-out').show();
     };
 
     function toggle_favourite(card_id) {
