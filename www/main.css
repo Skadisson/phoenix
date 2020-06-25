@@ -16,6 +16,7 @@ body {
 .modal {
     background: white;
     color:#0F0F0F;
+    z-index:200;
 }
 .modal a, .modal a:active, .modal a:visited, .modal a:hover, .modal a:link {
     color:#0F0F0F;
@@ -122,6 +123,7 @@ input[type=text] {
     display: flex;
     flex-wrap: wrap;
     width:100%;
+    margin-top: 10px;
 }
 .link-list .source-logo {
     max-height:32px;
