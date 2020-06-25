@@ -18,14 +18,15 @@ PS = (function(window, document, $) {
     };
 
     function init() {
-        self.fill_analytics();
-        self.info();
-        self.shout_outs();
-        self.latest_cards();
-        self.favourites();
+        self.info(function() {
+            self.fill_analytics();
+            self.shout_outs();
+            self.latest_cards();
+            self.favourites();
 
-        $('input[type=text]').focus();
-        self.register_events();
+            $('input[type=text]').focus();
+            self.register_events();
+        });
     };
 
     function register_events() {
@@ -236,7 +237,7 @@ PS = (function(window, document, $) {
         }
     };
 
-    function info() {
+    function info(callback) {
         var getUrl = 'http://localhost:1352/?function=Ping';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -259,6 +260,15 @@ PS = (function(window, document, $) {
                         while(i<total_count) {
                             $('.dot-space').append('<div class="dot" />');
                             i += 1;
+                        }
+                        if(callback && total_count > 0) {
+                            callback();
+                        } else if(callback && total_count <= 0) {
+                            $('#keywords').val('Die Datenbank ist leer, meldet euch bei Sebastian');
+                            $('#keywords').attr('readonly', true);
+                            $('#link-list').remove();
+                            $('.link-list').remove();
+                            $('.fa-notes-medical').remove();
                         }
                     }
                 }
