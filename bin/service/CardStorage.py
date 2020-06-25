@@ -38,6 +38,12 @@ class CardStorage:
         cards = card_storage.find({'type': 'fact'})
         return cards
 
+    def search_cards_by_title(self, title):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'title': title})
+        return cards
+
     def get_jira_and_confluence_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage

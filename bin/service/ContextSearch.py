@@ -9,6 +9,12 @@ class ContextSearch:
         self.sci_kit_learn = SciKitLearn.SciKitLearn()
 
     def search(self, query):
+
+        title_cards = self.storage.search_cards_by_title(query)
+        if title_cards.count() > 0:
+            sorted_cards = self.storage.sort_cards(title_cards, 9)
+            return sorted_cards
+
         return self.sci_kit_learn.phased_context_search(query, 'title')
 
     def suggest_keywords(self, title, text):
