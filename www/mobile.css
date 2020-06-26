@@ -1,0 +1,198 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    color:#FCF7E0;
+}
+body {
+    background-color:white;
+    background-image:url(image/marble-surface-wall-white-1323712-inverted.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    margin:0;
+}
+
+#beta-ribbon {
+    z-index: 800;
+    position: fixed;
+    top: -30px;
+    right: -5px;
+    background: #16BAE7;
+    width: 50px;
+    height: 200px;
+    font-size: 40px;
+    text-align: center;
+    -moz-transform: rotate(-30deg);
+    -ms-transform: rotate(-30deg);
+    -o-transform: rotate(-30deg);
+    -webkit-transform: rotate(-30deg);
+    box-shadow: 0 0 5px #16BAE7;
+    cursor:pointer;
+}
+
+a, a:active, a:link, a:visited, a:hover {
+    color:#FCF7E0;
+    text-decoration:none;
+}
+
+.sphere {
+    position:absolute;
+    top:0px;
+    left:0px;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+}
+
+#marbles {
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:400px;
+    height:400px;
+    margin-left:-200px;
+    margin-top:-200px;
+}
+
+#marbles .marble {
+    position:absolute;
+    width:50px;
+    height:50px;
+    border-radius:25px;
+    background:white;
+    box-shadow: 2px 2px 4px black;
+}
+
+#marbles .marble .logo {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:32px;
+    height:32px;
+    margin-left:-16px;
+    margin-top:-16px;
+}
+
+#marbles .marble .sphere {
+
+}
+
+#marbles .marble:nth-child(1) {
+    top:15%;
+    left:50%;
+    margin-left:-25px;
+    margin-top:-25px;
+}
+
+#marbles .marble:nth-child(2) {
+    top:25%;
+    right:25%;
+    margin-right:-25px;
+    margin-top:-25px;
+}
+
+#marbles .marble:nth-child(3) {
+    top:50%;
+    right:15%;
+    margin-right:-25px;
+    margin-top:-25px;
+}
+
+#marbles .marble:nth-child(4) {
+    bottom:25%;
+    right:25%;
+    margin-right:-25px;
+    margin-bottom:-25px;
+}
+
+#marbles .marble:nth-child(5) {
+    bottom:15%;
+    left:50%;
+    margin-left:-25px;
+    margin-bottom:-25px;
+}
+
+#marbles .marble:nth-child(6) {
+    bottom:25%;
+    left:25%;
+    margin-left:-25px;
+    margin-bottom:-25px;
+}
+
+#marbles .marble:nth-child(7) {
+    top:50%;
+    left:15%;
+    margin-left:-25px;
+    margin-top:-25px;
+}
+
+#marbles .marble:nth-child(8) {
+    top:25%;
+    left:25%;
+    margin-left:-25px;
+    margin-top:-25px;
+}
+
+#marbles .marble.idea {
+    background: #16DDE7;
+}
+
+#marbles .marble.fact {
+    background: #16BAE7;
+}
+
+#globe {
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:100px;
+    height:100px;
+    border-radius:50px;
+    margin-left:-50px;
+    margin-top:-50px;
+    background: #fd5a2f;
+    box-shadow: 3px 3px 6px black;
+}
+
+#globe .logo {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    width: 32px;
+    height:32px;
+    margin-left: -16px;
+    margin-top: -16px;
+    mix-blend-mode: screen;
+}
+
+#globe p {
+    text-align: center;
+    font-weight:bold;
+    margin-top:30px;
+}
+
+#image-copyright {
+    position:fixed;
+    bottom:10px;
+    right:20px;
+    font-size:13px;
+    line-height:14px;
+    text-align:right;
+}
+#image-copyright a {
+    color: white;
+}
+
+.shouted {
+  -moz-animation: flash_card 1.5s ease-out;
+  -moz-animation-iteration-count: infinite;
+
+  -webkit-animation: flash_card 1.5s ease-out;
+  -webkit-animation-iteration-count: infinite;
+
+  -ms-animation: flash_card 1.5s ease-out;
+  -ms-animation-iteration-count: infinite;
+}
+
+@keyframes flash_card {
+    0% { box-shadow: 2px 2px 4px black; }
+    50% { box-shadow: 0px 0px 20px #16BAE7; }
+    100% { box-shadow: 2px 2px 4px black; }
+}
