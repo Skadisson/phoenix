@@ -180,6 +180,19 @@ a, a:active, a:link, a:visited, a:hover {
     color: white;
 }
 
+.off {
+    opacity:0.5;
+    background-color: black !important;
+}
+
+.off .sphere {
+    opacity:0.5;
+}
+
+.on {
+    opacity:1;
+}
+
 .shouted {
   -moz-animation: flash_card 1.5s ease-out;
   -moz-animation-iteration-count: infinite;
