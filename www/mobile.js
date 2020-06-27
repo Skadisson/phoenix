@@ -177,6 +177,7 @@ PSM = (function(window, document, $) {
                 if(typeof items[0].cards != 'undefined') {
                     var cards = items[0].cards;
                     if(cards.length > 0) {
+                        $('#globe').removeClass('off');
                         var card = cards[0];
                         self.render_card_modal(card);
                     } else {
