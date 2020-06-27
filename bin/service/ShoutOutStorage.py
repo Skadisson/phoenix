@@ -13,13 +13,10 @@ class ShoutOutStorage:
         self.shout_out_life_time *= self.environment.get_service_shout_out_liftime_days()
 
     def add_shout_out(self, card_id, text, user_id=0):
-        exists = self.shout_out_exists(card_id, user_id)
-        shout_out = None
-        if exists is False:
-            phoenix = self.mongo.phoenix
-            shout_out_storage = phoenix.shout_out_storage
-            shout_out = self.create_shout_out(card_id, text, user_id)
-            shout_out_storage.insert_one(dict(shout_out))
+        phoenix = self.mongo.phoenix
+        shout_out_storage = phoenix.shout_out_storage
+        shout_out = self.create_shout_out(card_id, text, user_id)
+        shout_out_storage.insert_one(dict(shout_out))
         return shout_out
 
     @staticmethod

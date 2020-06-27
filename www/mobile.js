@@ -9,6 +9,7 @@ PSM = (function(window, document, $) {
     var search_visible = false;
     var loading = 0;
     var favourite_card_ids = [];
+    var shout_outs = [];
 
     var construct = function() {
         self = this;
@@ -25,15 +26,18 @@ PSM = (function(window, document, $) {
         $('body').on('click', '#marbles .marble', self.load_card_modal);
         $('body').on('click', '#favourites .favourite', self.load_card_modal);
         $('body').on('click', '.modal .tag', self.add_favourite);
+        $('body').on('keyup', '[name=shout_out]', self.add_shout_out);
 
         // calls
         self.flush_favourites();
         self.flush_search();
         self.flush_marbles();
         self.flush_card_modal();
+        self.flush_shout_outs();
         self.info();
         self.search();
         self.load_favourites();
+        self.load_shout_outs();
 
     };
 
@@ -190,8 +194,10 @@ PSM = (function(window, document, $) {
     };
 
     function render_card_modal(card) {
+        self.flush_shout_outs();
         var is_favourite = favourite_card_ids.indexOf(card['id']) > -1;
         var $modal = $('#detail');
+        $('[name=shout_out]').attr('readonly', false);
         $('.tag', $modal).attr('data-card-id', card['id']);
         $('[name=card_id]', $modal).val(card['id']);
         $('.title', $modal).text(card['title']);
@@ -214,6 +220,7 @@ PSM = (function(window, document, $) {
         } else {
             $('.fas.fa-star', $modal).removeClass('fas').addClass('far');
         }
+        self.render_shout_outs();
     };
 
     function flush_card_modal() {
@@ -244,19 +251,43 @@ PSM = (function(window, document, $) {
         self.request(getUrl, function(items) {
             if(typeof items[0].favourites !== 'undefined') {
                 self.flush_favourites();
+                var shout_out_ids = [];
+                for(var j in shout_outs) {
+                    shout_out_ids.push(shout_outs[j]['card_id']);
+                }
                 favourite_card_ids = [];
                 for(var i in items[0].favourites) {
                     var favourite = items[0].favourites[i];
+                    var shout_out_index = shout_out_ids.indexOf(favourite['card_id']);
+                    var is_shouted_out = shout_out_index > -1;
                     favourite_card_ids.push(favourite['card_id']);
-                    self.render_favourite(favourite);
+                    self.render_favourite(favourite, is_shouted_out);
                 }
             }
         });
     };
 
-    function render_favourite(favourite) {
+    function load_shout_outs() {
+        var getUrl = 'http://localhost:1352/?function=ShoutOuts';
+        self.request(getUrl, function(items) {
+            if(typeof items[0].shout_outs !== 'undefined') {
+                shout_outs = [];
+                for(var i in items[0].shout_outs) {
+                    var shout_out = items[0].shout_outs[i];
+                    shout_outs.push(shout_out);
+                }
+            }
+        });
+    };
+
+    function render_favourite(favourite, is_shouted_out) {
+        if(is_shouted_out) {
+            var classes = 'favourite shouted-out';
+        } else {
+            var classes = 'favourite';
+        }
         var $favourite = $('#favourites').append(
-            '<p class="favourite" data-card-id="' +
+            '<p class="' + classes + '" data-card-id="' +
             favourite['card_id'] + '"><i class="fas fa-star"></i> <span class="text">' +
             favourite['card_title'] + '</span></p>'
         );
@@ -278,6 +309,38 @@ PSM = (function(window, document, $) {
                     $('#detail .fas.fa-star').removeClass('fas').addClass('far');
                 }
             });
+        }
+    };
+
+    function flush_shout_outs() {
+        $('.shout_outs .shout_out').remove();
+        $('[name=shout_out]').val('');
+    };
+
+    function add_shout_out(event) {
+        if(event.keyCode == 13) {
+            var card_id = parseInt($('[name=card_id]').val());
+            var text = $('[name=shout_out]').val();
+            if(card_id > 0 && text != '') {
+                var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+                self.request(getUrl, function(items) {
+                    // TODO: user handling
+                    $('.shout_outs').prepend('<p class="shout_out">ses: "' + text + '"</p>');
+                    $('[name=shout_out]').val('');
+                    self.load_shout_outs();
+                });
+            }
+        }
+    };
+
+    function render_shout_outs() {
+        var card_id = parseInt($('[name=card_id]').val());
+        for(var i in shout_outs) {
+            var shout_out = shout_outs[i];
+            if(shout_out['card_id'] == card_id) {
+                // TODO: user handling
+                $('.shout_outs').prepend('<p class="shout_out">ses: "' + shout_out['text'] + '"</p>');
+            }
         }
     };
 
@@ -323,7 +386,11 @@ PSM = (function(window, document, $) {
         load_favourites: load_favourites,
         render_favourite: render_favourite,
         flush_favourites: flush_favourites,
-        add_favourite: add_favourite
+        add_favourite: add_favourite,
+        load_shout_outs: load_shout_outs,
+        flush_shout_outs: flush_shout_outs,
+        add_shout_out: add_shout_out,
+        render_shout_outs: render_shout_outs
     };
 
     return construct;

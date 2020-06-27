@@ -214,7 +214,6 @@ a, a:active, a:link, a:visited, a:hover {
 }
 
 .modal h2 {
-    margin-top: 40px;
 }
 
 .modal .tag i {
@@ -224,6 +223,30 @@ a, a:active, a:link, a:visited, a:hover {
     height: 16px;
     left: 50%;
     margin-left: -9px;
+}
+
+.shout_outs {
+    margin-top: 50px;
+    width: 100%;
+}
+
+.shout_out {
+    background: #16BAE7;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px black;
+    margin: 5px 0;
+}
+
+.shout_outs input {
+    padding:5px 40px 5px 10px;
+    background:white;
+    border:none;
+    border-radius:10px;
+    height:20px;
+    font-size:18px;
+    line-height:20px;
+    width: 200px;
 }
 
 #globe {
@@ -338,6 +361,10 @@ a, a:active, a:link, a:visited, a:hover {
     box-shadow:3px 3px 5px black;
     overflow:hidden;
     cursor:pointer;
+}
+
+.favourite.shouted-out {
+    background:#16BAE7;
 }
 
 #search {
