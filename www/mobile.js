@@ -55,6 +55,7 @@ PSM = (function(window, document, $) {
             $('#globe, #marbles').css('opacity', 1);
         } else {
             $('#search').show();
+            $('#search input').focus();
             search_visible = true;
             $('#globe, #marbles').css('opacity', 0.25);
         }
