@@ -21,6 +21,7 @@ PSM = (function(window, document, $) {
         $('body').on('click', '#show-favourites', self.toggle_favourites);
         $('body').on('click', '#globe', self.toggle_search);
         $('body').on('keyup', '#search', self.trigger_search);
+        $('body').on('click', '#search button', self.trigger_search);
         $('body').on('click', '#marbles .marble', self.load_card_modal);
         $('body').on('click', '#favourites .favourite', self.load_card_modal);
         $('body').on('click', '.modal .tag', self.add_favourite);
@@ -60,7 +61,7 @@ PSM = (function(window, document, $) {
     };
 
     function trigger_search(event) {
-        if(event.keyCode == 13) {
+        if(typeof event.keyCode == 'undefined' || event.keyCode == 13) {
             $('#search').hide();
             search_visible = false;
             $('#globe, #marbles').css('opacity', 1);
