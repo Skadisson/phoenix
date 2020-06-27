@@ -188,6 +188,44 @@ a, a:active, a:link, a:visited, a:hover {
     display:block;
 }
 
+.modal textarea {
+    background: white;
+    width: 96%;
+    height: 200px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    resize: none;
+}
+
+.modal .tag {
+    width: 30px;
+    height: 50px;
+    box-shadow: 1px 1px 3px black;
+    cursor: pointer;
+    text-align: center;
+    position: absolute;
+    border-radius: 0 0 15px 15px;
+    top: -20px;
+    background-color:white;
+    background-image:url(image/marble-surface-wall-white-1323712.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+}
+
+.modal h2 {
+    margin-top: 40px;
+}
+
+.modal .tag i {
+    position: absolute;
+    bottom: 10px;
+    width: 18px;
+    height: 16px;
+    left: 50%;
+    margin-left: -8px;
+}
+
 #globe {
     position:fixed;
     left:50%;
@@ -299,6 +337,7 @@ a, a:active, a:link, a:visited, a:hover {
     margin:5px;
     box-shadow:3px 3px 5px black;
     overflow:hidden;
+    cursor:pointer;
 }
 
 #search {

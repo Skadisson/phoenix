@@ -542,7 +542,7 @@ PS = (function(window, document, $) {
         var external_link = card['external_link'];
         var date = new Date(card['changed'] * 1000);
         var $template = $('.card-template').clone();
-        var keywords = !card['keywords'] ? '' : card['keywords'].join(',');
+        var keywords = !card['keywords'] ? '' : card['keywords'].join(', ');
         var editors = !card['editors'] ? '' : card['editors'].join(', ');
         $template.removeClass('hidden');
         $template.removeClass('card-template');

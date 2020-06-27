@@ -19,3 +19,6 @@ class QueryStorage:
 
     def get_queries(self):
         return self.mongo.phoenix.query.find()
+
+    def get_queries_with_loading_time(self):
+        return self.mongo.phoenix.query.find({'loading_seconds': {'$gt': 0}})

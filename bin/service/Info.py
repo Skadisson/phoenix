@@ -86,7 +86,7 @@ class Info:
 
     def get_average_loading_time(self):
         loading_times = []
-        queries = self.query_storage.get_queries()
+        queries = self.query_storage.get_queries_with_loading_time()
         for query in queries:
             if 'loading_seconds' in query:
                 loading_times.append(int(query['loading_seconds']))
