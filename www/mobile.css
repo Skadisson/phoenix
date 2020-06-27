@@ -2,6 +2,15 @@ html, body {
     font-family: 'Montserrat', sans-serif;
     color:#FCF7E0;
 }
+h1 {
+    font-family: 'Shrikhand', sans-serif;
+    color:black;
+    mix-blend-mode: multiply;
+    opacity: 40%;
+    font-size:60px;
+    line-height:60px;
+    text-align:center;
+}
 body {
     background-color:white;
     background-image:url(image/marble-surface-wall-white-1323712-inverted.jpg);
@@ -24,7 +33,7 @@ body {
     -ms-transform: rotate(-30deg);
     -o-transform: rotate(-30deg);
     -webkit-transform: rotate(-30deg);
-    box-shadow: 0 0 5px #16BAE7;
+    box-shadow: -3px -3px 5px black;
     cursor:pointer;
 }
 
@@ -58,6 +67,12 @@ a, a:active, a:link, a:visited, a:hover {
     border-radius:25px;
     background:white;
     box-shadow: 2px 2px 4px black;
+    cursor:pointer;
+}
+
+#marbles .marble.on:hover {
+    opacity:1;
+    box-shadow: 0px 0px 5px #16BAE7;
 }
 
 #marbles .marble .logo {
@@ -138,6 +153,41 @@ a, a:active, a:link, a:visited, a:hover {
     background: #16BAE7;
 }
 
+.modal a.close-modal, .modal a.close-modal:active, .modal a.close-modal:visited, .modal a.close-modal:hover, .modal a.close-modal:link {
+    background-image: url(image/menu.png);
+    background-color: white;
+    top: -15px;
+    right: 50%;
+    margin-right:-16px;
+    width:32px;
+    height:32px;
+    border-radius:16px;
+}
+.modal a.close-modal:hover {
+    box-shadow: 0px 0px 10px white;
+}
+.modal a, .modal a:active, .modal a:visited, .modal a:hover, .modal a:link {
+    color:#0F0F0F;
+}
+
+.modal {
+    background-color:white;
+    background-image:url(image/marble-surface-wall-white-1323712.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    color:#0F0F0F;
+    z-index:200;
+    box-shadow:3px 3px 8px black;
+}
+.blocker {
+    background-color: transparent;
+}
+
+.modal a.bottom-close {
+    text-align:right;
+    display:block;
+}
+
 #globe {
     position:fixed;
     left:50%;
@@ -149,6 +199,7 @@ a, a:active, a:link, a:visited, a:hover {
     margin-top:-50px;
     background: #fd5a2f;
     box-shadow: 3px 3px 6px black;
+    cursor:pointer;
 }
 
 #globe .logo {
@@ -171,10 +222,11 @@ a, a:active, a:link, a:visited, a:hover {
 #image-copyright {
     position:fixed;
     bottom:10px;
-    right:20px;
+    right:0;
     font-size:13px;
     line-height:14px;
-    text-align:right;
+    text-align:center;
+    width:100%;
 }
 #image-copyright a {
     color: white;
@@ -193,6 +245,94 @@ a, a:active, a:link, a:visited, a:hover {
     opacity:1;
 }
 
+#logo {
+    position: absolute;
+    left: 50%;
+    top: 100px;
+    width: 250px;
+    height: 100px;
+    margin-left: -125px;
+    z-index: 0;
+    mix-blend-mode: multiply;
+    opacity: 40%;
+}
+
+#show-favourites {
+    display:block;
+    background-color:white;
+    background-image:url(image/marble-surface-wall-white-1323712.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    width:230px;
+    height:20px;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:1px 1px 3px black;
+    position:fixed;
+    left:50%;
+    bottom:50px;
+    margin-left:-125px;
+    color:black;
+    cursor:pointer;
+}
+
+#favourites {
+    display:none;
+    position:fixed;
+    bottom:100px;
+    right:0px;
+    width:90%;
+    overflow:hidden;
+}
+
+.favourite {
+    display:block;
+    background-color:white;
+    background-image:url(image/marble-surface-wall-white-1323712.jpg);
+    background-size:cover;
+    background-attachment: fixed;
+    color:black;
+    width:100%;
+    height:20px;
+    padding:10px;
+    border-radius:10px 0 0 10px;
+    margin:5px;
+    box-shadow:3px 3px 5px black;
+    overflow:hidden;
+}
+
+#search {
+    display:none;
+    width:400px;
+    position:fixed;
+    height:30px;
+    top:50%;
+    left:50%;
+    margin-left:-200px;
+    margin-top:-15px;
+    box-shadow:3px 3px 5px black;
+}
+
+#search input {
+    width:350px;
+    padding:5px 40px 5px 10px;
+    background:white;
+    border:none;
+    border-radius:10px;
+    height:20px;
+    font-size:18px;
+    line-height:20px;
+}
+
+#search button {
+    border:none;
+    background:transparent;
+    position:absolute;
+    right:10px;
+    top:8px;
+    cursor:pointer;
+}
+
 .shouted {
   -moz-animation: flash_card 1.5s ease-out;
   -moz-animation-iteration-count: infinite;
@@ -202,6 +342,23 @@ a, a:active, a:link, a:visited, a:hover {
 
   -ms-animation: flash_card 1.5s ease-out;
   -ms-animation-iteration-count: infinite;
+}
+
+.loading {
+  -moz-animation: loading 1.5s ease-out;
+  -moz-animation-iteration-count: infinite;
+
+  -webkit-animation: loading 1.5s ease-out;
+  -webkit-animation-iteration-count: infinite;
+
+  -ms-animation: loading 1.5s ease-out;
+  -ms-animation-iteration-count: infinite;
+}
+
+@keyframes loading {
+    0% { box-shadow: 3px 3px 6px black; }
+    50% { box-shadow: 0px 0px 40px #fd5a2f; }
+    100% { box-shadow: 3px 3px 6px black; }
 }
 
 @keyframes flash_card {

@@ -485,6 +485,48 @@ a:hover > .source-tooltip {
     box-shadow:none;
 }
 
+#mobile-notice {
+    display:none;
+    position: fixed;
+    width: 360px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -50px;
+    background: #16BAE7;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px black;
+    z-index: 600;
+    padding: 20px;
+}
+
+#mobile-notice a {
+    width:120px;
+    height:20px;
+    padding:5px 20px;
+    background: black;
+    color: white;
+}
+
+#mobile-notice a:hover {
+    color: black;
+    background: white;
+}
+
+#mobile-notice a:nth-child(2) {
+    position:absolute;
+    left:20px;
+    bottom:20px;
+}
+
+#mobile-notice a:nth-child(3) {
+    position:absolute;
+    right:20px;
+    bottom:20px;
+    text-align: right;
+}
+
 .flash-card {
   -moz-animation: flash_card 1.5s ease-out;
   -moz-animation-iteration-count: infinite;
@@ -503,6 +545,9 @@ a:hover > .source-tooltip {
 }
 
 @media only screen and (max-width: 1400px) {
+    #mobile-notice {
+        display:block;
+    }
     html, body {
         height:auto;
     }

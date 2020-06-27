@@ -14,6 +14,11 @@
 </head>
 <body>
 
+    <dev id="mobile-notice">
+        <p>Es wird eng hier, willst Du auf die mobile Version wechseln?</p>
+        <a href="#" onclick="javascript:$('#mobile-notice').remove();return false;">Nein, danke</a> <a href="mobile.html">Wechseln</a>
+    </dev>
+
     <a href="https://confluence.konmedia.com/display/QS/Phoenix+-+Information+Manager" target="_blank">
         <div id="beta-ribbon">
             <p>&alpha;</p>
@@ -142,8 +147,8 @@
             <label>Editors</label><br />
             <input type="text" readonly name="editors" value="" />
         </fieldset>
-        <a href="#" rel="modal:close">Close</a>
-        <a href="#" data-card-id="" class="edit">Edit</a>
+        <a href="#" rel="modal:close">Schlie&szlig;en</a>
+        <a href="#" data-card-id="" class="edit">Bearbeiten</a>
     </div>
 
     <div id="edit" class="modal">
@@ -169,8 +174,8 @@
             <label>Editors</label><br />
             <input type="text" readonly name="editors" value="" />
         </fieldset>
-        <a href="#" rel="modal:close">Close</a>
-        <a href="javascript:main.store_card('edit');" class="save">Save</a>
+        <a href="#" rel="modal:close">Schlie&szlig;en</a>
+        <a href="javascript:main.store_card('edit');" class="save">Speichern</a>
     </div>
 
     <div id="create" class="modal">
@@ -191,8 +196,8 @@
             <label>Keywords</label> <i class="fas fa-bullseye" title="Keywords vorschlagen"></i><br />
             <input type="text" name="keywords" value="" />
         </fieldset>
-        <a href="#" rel="modal:close">Close</a>
-        <a href="javascript:main.store_card('create');" class="save">Save</a>
+        <a href="#" rel="modal:close">Schlie&szlig;en</a>
+        <a href="javascript:main.store_card('create');" class="save">Speichern</a>
     </div>
 
     <div id="phoenix-info"><a href="https://confluence.konmedia.com/display/QS/Phoenix+-+Information+Manager" target="_blank" title="information"><span class="fa fa-info-circle">&nbsp;</span></a> <a href="https://github.com/Skadisson/phoenix/issues" target="_blank" title="issues"><span class="fas fa-bug">&nbsp;</span></a> <span class="fas fa-notes-medical" onclick="javascript:main.toggle_analytics();">&nbsp;</span></div>
