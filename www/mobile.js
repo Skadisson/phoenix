@@ -158,7 +158,9 @@ PSM = (function(window, document, $) {
                 $('#keywords').attr('placeholder', "Suche in " + total_count + " Fakten und Ideen");
                 if(total_count <= 0) {
                     $('#globe p').text('<i class="fas fa-exclamation-triangle"></i>');
+                    $('#globe').addClass('off');
                 } else {
+                    $('#globe').removeClass('off');
                     $('#globe p').text(total_count);
                 }
             }
