@@ -238,7 +238,7 @@ PSM = (function(window, document, $) {
 
     function track_click(card_id) {
         var query = $('#keywords').val();
-        var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=-1';
+        var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=-1&frontend=mobile';
         self.request(getUrl);
     };
 

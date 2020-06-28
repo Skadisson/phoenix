@@ -84,6 +84,20 @@ class Info:
             query_count += 1
         return query_count
 
+    def get_desktop_count(self):
+        desktop_count = 0
+        queries = self.query_storage.get_desktop_queries()
+        for query in queries:
+            desktop_count += 1
+        return desktop_count
+
+    def get_mobile_count(self):
+        mobile_count = 0
+        queries = self.query_storage.get_mobile_queries()
+        for query in queries:
+            mobile_count += 1
+        return mobile_count
+
     def get_average_loading_time(self):
         loading_times = []
         queries = self.query_storage.get_queries_with_loading_time()

@@ -179,6 +179,8 @@ PS = (function(window, document, $) {
                         $('.total-count').text(result.items[0].fact_count + result.items[0].idea_count);
                         $('.click-count').text(result.items[0].click_count);
                         $('.query-count').text(result.items[0].query_count);
+                        $('.desktop-count').text(result.items[0].desktop_count);
+                        $('.mobile-count').text(result.items[0].mobile_count);
                         $('.favourite-count').text(result.items[0].favourite_count);
                         $('.shout-out-count').text(result.items[0].shout_out_count);
                         $('.new-facts-this-week').text(result.items[0].new_facts_this_week);
@@ -572,7 +574,7 @@ PS = (function(window, document, $) {
             var card_id = $('p', this).attr('data-card-id');
             var is_toggled = self.is_favourite_toggled(card_id);
             var query = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds);
+            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
