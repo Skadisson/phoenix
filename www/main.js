@@ -12,6 +12,7 @@ PS = (function(window, document, $) {
     var loading_seconds = 0;
     var loaded_shout_outs = [];
     var card_id_parameter = 0;
+    var notify_interval = 0;
 
     var construct = function() {
         self = this;
@@ -40,6 +41,7 @@ PS = (function(window, document, $) {
 
             $('input[type=text]').focus();
             self.register_events();
+            self.start_notifications();
         });
     };
 
@@ -696,6 +698,58 @@ PS = (function(window, document, $) {
         }
     };
 
+    function start_notifications() {
+        self.request_notifications();
+        if(self.notify_interval == 0) {
+            self.notify_interval = setInterval(self.request_notifications, 60000);
+        }
+    };
+
+    function request_notifications() {
+        navigator.serviceWorker.register('service-worker.js', {scope: 'http://localhost:8090/'}).then(registration => {
+
+            var getUrl = 'http://localhost:1352/?function=Notifications';
+            var formContentType = 'application/x-www-form-urlencoded';
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', getUrl, true);
+                xhr.setRequestHeader('Content-type', formContentType);
+                self.start_loading();
+                xhr.onreadystatechange = function() {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                        self.finish_loading();
+                        self.render_notification('Benachrichtigungen aktualisiert');
+                        var result = JSON.parse(xhr.responseText);
+                        if(typeof result.items[0].notifications != 'undefined') {
+                            for(var i in result.items[0].notifications) {
+                                var notification = result.items[0].notifications[i];
+                                var title = 'Phoenix: ';
+                                if(notification['is_shout_out']) {
+                                    title += 'Neuer ShoutOut';
+                                } else {
+                                    title += 'Neuer Fakt';
+                                }
+                                var options = {
+                                    icon: 'favicon-32x32.png',
+                                    silent: true,
+                                    body: notification['title']
+                                };
+                                registration.showNotification(title, options);
+                            }
+                        }
+                    }
+                };
+                xhr.send();
+            } catch(e) {
+                self.render_notification('Fehler', true);
+                console.log(e.message);
+            }
+
+        }).catch((error) => {
+            console.log('Registration failed with ' + error);
+        });
+    };
+
     construct.prototype = {
         init: init,
         search: search,
@@ -724,7 +778,9 @@ PS = (function(window, document, $) {
         fill_analytics: fill_analytics,
         shout_outs: shout_outs,
         render_shout_outs: render_shout_outs,
-        getUrlVars: getUrlVars
+        getUrlVars: getUrlVars,
+        start_notifications: start_notifications,
+        request_notifications: request_notifications
     };
 
     return construct;

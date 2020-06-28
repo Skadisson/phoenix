@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications
 from bin.service import Environment
 import json
 
@@ -55,6 +55,9 @@ def phoenix(request):
     elif function == 'ShoutOuts':
         shout_outs = ShoutOuts.ShoutOuts()
         response = shout_outs.run()
+    elif function == 'Notifications':
+        notifications = Notifications.Notifications()
+        response = notifications.run()
     else:
         response = {'error': 'unknown function'}
 

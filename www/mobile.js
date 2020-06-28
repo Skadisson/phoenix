@@ -11,6 +11,7 @@ PSM = (function(window, document, $) {
     var favourite_card_ids = [];
     var shout_outs = [];
     var card_id_parameter = 0;
+    var notify_interval = 0;
 
     var construct = function() {
         self = this;
@@ -44,7 +45,15 @@ PSM = (function(window, document, $) {
         }
         self.load_favourites();
         self.load_shout_outs();
+        self.start_notifications();
 
+    };
+
+    function start_notifications() {
+        self.request_notifications();
+        if(self.notify_interval == 0) {
+            self.notify_interval = setInterval(self.request_notifications, 60000);
+        }
     };
 
     function getUrlVars() {
@@ -358,6 +367,33 @@ PSM = (function(window, document, $) {
         }
     };
 
+    function request_notifications() {
+        navigator.serviceWorker.register('service-worker.js', {scope: 'http://localhost:8090/'}).then(registration => {
+
+            var getUrl = 'http://localhost:1352/?function=Notifications';
+            self.request(getUrl, function(items) {
+                for(var i in items[0].notifications) {
+                    var notification = items[0].notifications[i];
+                    var title = 'Phoenix: ';
+                    if(notification['is_shout_out']) {
+                        title += 'Neuer ShoutOut';
+                    } else {
+                        title += 'Neuer Fakt';
+                    }
+                    var options = {
+                        icon: 'favicon-32x32.png',
+                        silent: true,
+                        body: notification['title']
+                    };
+                    registration.showNotification(title, options);
+                }
+            });
+
+        }).catch((error) => {
+            console.log('Registration failed with ' + error);
+        });
+    };
+
     function request(url, callback) {
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -405,7 +441,9 @@ PSM = (function(window, document, $) {
         flush_shout_outs: flush_shout_outs,
         add_shout_out: add_shout_out,
         render_shout_outs: render_shout_outs,
-        getUrlVars: getUrlVars
+        getUrlVars: getUrlVars,
+        start_notifications: start_notifications,
+        request_notifications: request_notifications
     };
 
     return construct;

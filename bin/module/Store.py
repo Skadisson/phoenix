@@ -1,10 +1,12 @@
-from bin.service import CardStorage, Logger
+from bin.service import CardStorage, Logger, NotificationStorage
+from bin.entity import User
 
 
 class Store:
 
     def __init__(self):
         self.storage = CardStorage.CardStorage()
+        self.notification_storage = NotificationStorage.NotificationStorage()
         self.logger = Logger.Logger()
 
     def run(self, title, text, keywords, external_link, card_id):
@@ -22,6 +24,9 @@ class Store:
 
         try:
 
+            """TODO: User Handling"""
+            user = User.User()
+            user.id = 1
             card_exists = False
             if card_id > 0:
                 card_exists = self.storage.card_exists(card_id)
@@ -43,6 +48,7 @@ class Store:
                 self.storage.update_card(card)
             else:
                 card_id = self.storage.create_card(title, text, keywords, external_link)
+                self.notification_storage.add_notification(card_id, title, user.id, False)
 
             result['items'].append({
                 'card_id': card_id

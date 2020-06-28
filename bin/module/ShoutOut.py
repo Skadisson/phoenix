@@ -1,4 +1,4 @@
-from bin.service import ShoutOutStorage, Logger
+from bin.service import ShoutOutStorage, Logger, NotificationStorage
 from bin.entity import User
 
 
@@ -6,6 +6,7 @@ class ShoutOut:
 
     def __init__(self):
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
+        self.notification_storage = NotificationStorage.NotificationStorage()
         self.logger = Logger.Logger()
 
     def run(self, card_id, text):
@@ -23,10 +24,13 @@ class ShoutOut:
             is_added = False
             if shout_out is not None:
                 is_added = True
+                notification_exists = self.notification_storage.un_notified_notification_exists(card_id, user.id)
+                if notification_exists is False:
+                    self.notification_storage.add_notification(card_id, text, user.id, True)
                 shout_out = dict(shout_out)
             result['items'].append({
                 'is_added': is_added,
-                'favourite': shout_out
+                'shout_out': shout_out
             })
 
         except Exception as e:
