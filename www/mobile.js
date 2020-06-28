@@ -10,9 +10,11 @@ PSM = (function(window, document, $) {
     var loading = 0;
     var favourite_card_ids = [];
     var shout_outs = [];
+    var card_id_parameter = 0;
 
     var construct = function() {
         self = this;
+        card_id_parameter = self.getUrlVars()['card_id'];
         self.init();
     };
 
@@ -35,10 +37,22 @@ PSM = (function(window, document, $) {
         self.flush_card_modal();
         self.flush_shout_outs();
         self.info();
-        self.search();
+        if(card_id_parameter > 0) {
+            self.search(card_id_parameter);
+        } else {
+            self.search();
+        }
         self.load_favourites();
         self.load_shout_outs();
 
+    };
+
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
     };
 
     function toggle_favourites() {
@@ -390,7 +404,8 @@ PSM = (function(window, document, $) {
         load_shout_outs: load_shout_outs,
         flush_shout_outs: flush_shout_outs,
         add_shout_out: add_shout_out,
-        render_shout_outs: render_shout_outs
+        render_shout_outs: render_shout_outs,
+        getUrlVars: getUrlVars
     };
 
     return construct;
