@@ -56,6 +56,9 @@ PS = (function(window, document, $) {
                             if(result.items[0].is_added) {
                                 self.render_notification('Shout Out erfolgreich');
                                 self.shout_outs();
+                                $('#shout-out input').val('');
+                                $('#shout-out').hide();
+                                $('.shout-outs').prepend('<p class="shout-out">ses: "' + text + '"</p>');
                                 $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
                                 $('#shout-out fieldset i').removeClass('fa-check');
                                 $('#shout-out fieldset i').removeClass('fa-times');
@@ -584,11 +587,8 @@ PS = (function(window, document, $) {
             for(var x in loaded_shout_outs) {
                 var loaded_shout_out = loaded_shout_outs[x];
                 if(loaded_shout_out.card_id == card['id']) {
-                    $('.shout-outs').append('<p class="shout-out">ses: "' + loaded_shout_out['text'] + '"</p>');
+                    $('.shout-outs').prepend('<p class="shout-out">ses: "' + loaded_shout_out['text'] + '"</p>');
                 }
-            }
-            if($('.shout-outs p', '#detail').length == 0) {
-                $('.shout-outs').append('<p class="shout-out">In letzter Zeit wurden zu dieser Karte keine Shout Outs gemacht.</p>');
             }
             if(is_toggled) {
                 $('#detail .far.fa-star').removeClass('far').addClass('fas');

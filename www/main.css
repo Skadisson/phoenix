@@ -438,17 +438,6 @@ a:hover > .source-tooltip {
     z-index:3;
 }
 
-.shout-outs {
-    margin-bottom:30px;
-    margin-left:15px;
-}
-
-.shout-out {
-    font-size:12px;
-    line-height:14px;
-    color: #16BAE7;
-}
-
 #shout-out {
     display:none;
     position: fixed;
@@ -483,6 +472,18 @@ a:hover > .source-tooltip {
 #shout-out input[type=text] {
     width: 510px;
     box-shadow:none;
+}
+
+.shout-outs {
+    width: 100%;
+}
+
+.shout-out {
+    background: #16BAE7;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px black;
+    margin: 5px 0;
 }
 
 #mobile-notice {
