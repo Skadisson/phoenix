@@ -45,7 +45,7 @@ PSM = (function(window, document, $) {
         }
         self.load_favourites();
         self.load_shout_outs();
-        self.start_notifications();
+        //self.start_notifications();
 
     };
 

@@ -41,7 +41,7 @@ PS = (function(window, document, $) {
 
             $('input[type=text]').focus();
             self.register_events();
-            self.start_notifications();
+            //self.start_notifications();
         });
     };
 
