@@ -1,8 +1,15 @@
 from sklearn import naive_bayes, feature_extraction, pipeline
 from bin.service import Logger, Environment, CardStorage
+import threading
+
+
+ready_states = []
+context_ids = []
 
 
 class SciKitLearn:
+
+    global ready_states, context_ids
 
     def __init__(self):
         self.logger = Logger.Logger()
@@ -11,47 +18,61 @@ class SciKitLearn:
 
     def phased_context_search(self, query, not_empty=None):
 
+        global context_ids
+        context_ids = []
+
         enable_git = self.environment.get_service_enable_git()
         if enable_git is True:
             cards = self.storage.get_all_cards(not_empty)
         else:
             cards = self.storage.get_jira_and_confluence_cards(not_empty)
-        normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
+        normalized_keywords, normalized_titles, normalized_texts, card_ids, normalized_packed = self.normalize_cards(cards)
 
+        self.phased_search(normalized_keywords, card_ids, query)
+        self.phased_search(normalized_titles, card_ids, query)
+        self.phased_search(normalized_texts, card_ids, query)
+
+        final_cards = self.storage.get_cards(context_ids)
         context_ids = []
-        self.phased_search(normalized_keywords, card_ids, query, context_ids)
-        self.phased_search(normalized_titles, card_ids, query, context_ids)
-        self.phased_search(normalized_texts, card_ids, query, context_ids)
+
+        final_sorted_cards = self.storage.sort_cards(final_cards, len(final_cards))
+        final_keywords, final_titles, final_texts, final_ids, final_packed = self.normalize_cards(final_sorted_cards)
+        self.phased_search(final_packed, final_ids, query)
 
         cards = self.storage.get_cards(list(set(context_ids)))
         sorted_cards = self.storage.sort_cards(cards, 9)
 
         return sorted_cards
 
-    def phased_search(self, documents, ids, query, context_ids, phase=None):
+    def phased_search(self, documents, ids, query):
 
-        if phase is None:
-            phase = len(ids)
+        global ready_states
+        total_count = len(ids)
+        chunk_size = int(round(total_count / 9))
+        document_chunks = self.chunks(documents, chunk_size)
+        id_chunks = list(self.chunks(ids, chunk_size))
+        processes = []
+        ready_states = []
 
-        if phase > 500:
-            chunk_documents = self.chunks(documents, phase)
-            chunk_ids = list(self.chunks(ids, phase))
-            phase = int(round(phase / 2))
-            i = 0
-            for chunked_documents in chunk_documents:
-                chunked_ids = chunk_ids[i]
-                self.phased_search(chunked_documents, chunked_ids, query, context_ids, phase)
-                i += 1
-        else:
-            try:
-                winning_context_ids = self.unphased_context_search(documents, ids, query)
-                context_ids += winning_context_ids
-            except Exception as e:
-                self.logger.add_entry(self.__class__.__name__, e)
+        i = 0
+        for document_chunk in document_chunks:
+            id_chunk = id_chunks[i]
+            processes.append(threading.Thread(target=self.context_search, args=(document_chunk, id_chunk, query)))
+            i += 1
 
-    def unphased_context_search(self, documents, ids, query):
+        for process in processes:
+            process.start()
 
-        context_ids = []
+        while len(ready_states) < len(processes):
+            pass
+
+        for process in processes:
+            process.join()
+
+    @staticmethod
+    def context_search(documents, ids, query):
+
+        global ready_states, context_ids
         docs_new = [query]
 
         text_clf = pipeline.Pipeline([
@@ -62,8 +83,7 @@ class SciKitLearn:
         text_context = text_clf.fit(documents, ids)
         text_id = text_context.predict(docs_new)
         context_ids.append(int(text_id.astype(int)))
-
-        return context_ids
+        ready_states.append(True)
 
     @staticmethod
     def chunks(lst, n):
@@ -93,6 +113,7 @@ class SciKitLearn:
         normalized_titles = []
         normalized_texts = []
         card_ids = []
+        normalized_packed = []
 
         for card in cards:
             normalized_keyword = ''
@@ -116,5 +137,6 @@ class SciKitLearn:
                 normalized_keywords.append(normalized_keyword)
                 normalized_titles.append(normalized_title)
                 normalized_texts.append(normalized_text)
+                normalized_packed.append('{}; {}; {}'.format(normalized_keyword, normalized_title, normalized_text))
 
-        return normalized_keywords, normalized_titles, normalized_texts, card_ids
+        return normalized_keywords, normalized_titles, normalized_texts, card_ids, normalized_packed
