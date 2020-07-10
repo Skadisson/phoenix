@@ -34,6 +34,7 @@ class SciKitLearn:
 
         final_cards = self.storage.get_cards(context_ids)
         filtered_cards = self.filter_cards(final_cards, query)
+
         sorted_cards = self.storage.sort_cards(filtered_cards, 9)
 
         return sorted_cards
@@ -91,9 +92,18 @@ class SciKitLearn:
             ('tfidf', feature_extraction.text.TfidfTransformer()),
             ('clf', naive_bayes.MultinomialNB()),
         ])
-        text_context = text_clf.fit(documents, ids)
-        text_id = text_context.predict(docs_new)
-        context_ids.append(int(text_id.astype(int)))
+
+        for i in range(1, 3):
+            if len(documents) > 0 and len(ids) > 0:
+                text_context = text_clf.fit(documents, ids)
+                text_id = text_context.predict(docs_new)
+                found_id = int(text_id.astype(int))
+                if found_id not in context_ids:
+                    context_ids.append(found_id)
+                index = ids.index(found_id)
+                del(documents[index])
+                del(ids[index])
+
         ready_states.append(True)
 
     @staticmethod
