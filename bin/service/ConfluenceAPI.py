@@ -37,7 +37,7 @@ class ConfluenceAPI:
             cached_total += cached_current
             stop = float(time.time())
             seconds = (stop - start)
-            print('>>> cached {} confluence entries of {} entries total after {} seconds'.format(cached_current, cached_total, seconds))
+            print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, confluence_space, cached_total, seconds))
             time.sleep(wait)
         confluence_entries = self.load_cached_entries()
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
