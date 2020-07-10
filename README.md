@@ -2,7 +2,7 @@ https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.h
 
 # phoenix
 
-![Screenshot](src/screenshot.png "Phoenix Screenshot")
+![Screenshot](src/Screenshot.png "Phoenix Screenshot")
 
 Neural Network Bulletin Board System using SciKit-Learn
 
