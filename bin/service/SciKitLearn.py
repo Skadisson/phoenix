@@ -33,28 +33,9 @@ class SciKitLearn:
         self.threaded_search(normalized_texts, card_ids, query)
 
         final_cards = self.storage.get_cards(context_ids)
-        filtered_cards = self.filter_cards(final_cards, query)
-
-        sorted_cards = self.storage.sort_cards(filtered_cards, 9)
+        sorted_cards = self.storage.sort_cards(final_cards, 9)
 
         return sorted_cards
-
-    @staticmethod
-    def filter_cards(cards, query):
-
-        filtered_cards = []
-        query_parts = query.split()
-        for query_part in query_parts:
-            for card in cards:
-                if card not in filtered_cards:
-                    if card['keywords'] is not None and query_part in card['keywords']:
-                        filtered_cards.append(card)
-                    elif card['title'] is not None and query_part in card['title']:
-                        filtered_cards.append(card)
-                    elif card['text'] is not None and query_part in card['text']:
-                        filtered_cards.append(card)
-
-        return filtered_cards
 
     def threaded_search(self, documents, ids, query):
 
