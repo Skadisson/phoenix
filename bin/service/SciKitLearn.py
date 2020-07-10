@@ -16,7 +16,7 @@ class SciKitLearn:
         self.environment = Environment.Environment()
         self.storage = CardStorage.CardStorage()
 
-    def phased_context_search(self, query, not_empty=None):
+    def search(self, query, not_empty=None):
 
         global context_ids
         context_ids = []
@@ -26,29 +26,35 @@ class SciKitLearn:
             cards = self.storage.get_all_cards(not_empty)
         else:
             cards = self.storage.get_jira_and_confluence_cards(not_empty)
-        normalized_keywords, normalized_titles, normalized_texts, card_ids, normalized_packed = self.normalize_cards(cards)
+        normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
 
-        self.phased_search(normalized_keywords, card_ids, query)
-        self.phased_search(normalized_titles, card_ids, query)
-        self.phased_search(normalized_texts, card_ids, query)
+        self.threaded_search(normalized_keywords, card_ids, query)
+        self.threaded_search(normalized_titles, card_ids, query)
+        self.threaded_search(normalized_texts, card_ids, query)
 
         final_cards = self.storage.get_cards(context_ids)
-        context_ids = []
 
-        final_sorted_cards = self.storage.sort_cards(final_cards, len(final_cards))
-        final_keywords, final_titles, final_texts, final_ids, final_packed = self.normalize_cards(final_sorted_cards)
-        self.phased_search(final_packed, final_ids, query)
+        filtered_cards = []
+        query_parts = query.split()
+        for query_part in query_parts:
+            for final_card in final_cards:
+                if final_card not in filtered_cards:
+                    if final_card['keywords'] is not None and query_part in final_card['keywords']:
+                        filtered_cards.append(final_card)
+                    elif final_card['title'] is not None and query_part in final_card['title']:
+                        filtered_cards.append(final_card)
+                    elif final_card['text'] is not None and query_part in final_card['text']:
+                        filtered_cards.append(final_card)
 
-        cards = self.storage.get_cards(list(set(context_ids)))
-        sorted_cards = self.storage.sort_cards(cards, 9)
+        sorted_cards = self.storage.sort_cards(filtered_cards, 9)
 
         return sorted_cards
 
-    def phased_search(self, documents, ids, query):
+    def threaded_search(self, documents, ids, query):
 
         global ready_states
         total_count = len(ids)
-        chunk_size = int(round(total_count / 9))
+        chunk_size = int(round(total_count / 10))
         document_chunks = self.chunks(documents, chunk_size)
         id_chunks = list(self.chunks(ids, chunk_size))
         processes = []
@@ -91,29 +97,11 @@ class SciKitLearn:
             yield lst[i:i + n]
 
     @staticmethod
-    def suggest_keywords(title, text, keywords, documents):
-
-        docs_new = [title + ' ' + text]
-
-        count_vectorizer = feature_extraction.text.CountVectorizer()
-        X_train_counts = count_vectorizer.fit_transform(documents)
-        tfidf_transformer = feature_extraction.text.TfidfTransformer()
-        X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
-        X_new_counts = count_vectorizer.transform(docs_new)
-        X_new_tfidf = tfidf_transformer.transform(X_new_counts)
-
-        clf_context = naive_bayes.MultinomialNB().fit(X_train_tfidf, keywords)
-        suggested_keywords = clf_context.predict(X_new_tfidf)
-
-        return suggested_keywords.astype(str)[0]
-
-    @staticmethod
     def normalize_cards(cards):
         normalized_keywords = []
         normalized_titles = []
         normalized_texts = []
         card_ids = []
-        normalized_packed = []
 
         for card in cards:
             normalized_keyword = ''
@@ -137,6 +125,5 @@ class SciKitLearn:
                 normalized_keywords.append(normalized_keyword)
                 normalized_titles.append(normalized_title)
                 normalized_texts.append(normalized_text)
-                normalized_packed.append('{}; {}; {}'.format(normalized_keyword, normalized_title, normalized_text))
 
-        return normalized_keywords, normalized_titles, normalized_texts, card_ids, normalized_packed
+        return normalized_keywords, normalized_titles, normalized_texts, card_ids

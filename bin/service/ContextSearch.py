@@ -15,12 +15,12 @@ class ContextSearch:
             sorted_cards = self.storage.sort_cards(title_cards, 9)
             return sorted_cards
 
-        return self.sci_kit_learn.phased_context_search(query, 'title')
+        return self.sci_kit_learn.search(query, 'title')
 
     def suggest_keywords(self, title, text):
 
         query = title + ' ' + text
-        cards = self.sci_kit_learn.phased_context_search(query, 'keywords')
+        cards = self.sci_kit_learn.search(query, 'keywords')
         card = cards[0]
         keywords = ','.join(card['keywords'])
 
