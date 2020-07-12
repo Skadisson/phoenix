@@ -43,7 +43,6 @@ class SciKitLearn:
         global ready_states
         total_count = len(ids)
         chunk_size = int(round(total_count / 10))
-        """chunk_size = total_count"""
         document_chunks = self.chunks(documents, chunk_size)
         id_chunks = list(self.chunks(ids, chunk_size))
         processes = []
