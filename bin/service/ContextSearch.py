@@ -14,7 +14,6 @@ class ContextSearch:
         if cards.count() == 0:
             cards = self.storage.search_cards_fulltext(query)
 
-        print(cards.count())
         if cards.count() == 0 or cards.count() > 9:
             sorted_cards = self.sci_kit_learn.search(query, 'title', cards)
         else:
