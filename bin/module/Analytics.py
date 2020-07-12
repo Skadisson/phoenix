@@ -42,7 +42,7 @@ class Analytics:
                 'query_count': query_count,
                 'desktop_count': desktop_count,
                 'mobile_count': mobile_count,
-                'average_loading_time': average_loading_time,
+                'average_loading_time': round(average_loading_time),
                 'is_git_active': is_git_active,
                 'jira_count': jira_count,
                 'confluence_count': confluence_count,
