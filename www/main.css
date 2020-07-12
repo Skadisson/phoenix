@@ -4,7 +4,7 @@ html, body {
 }
 body {
     background-color:white;
-    background-image:url(image/abstract-active-ash-color-235807.jpg);
+    background-image:url(image/abstract-active-ash-color-235807-blurred.jpg);
     background-size:cover;
     background-attachment: fixed;
     margin:0;
@@ -349,6 +349,10 @@ a:hover > .source-tooltip {
     height:98px;
     border-top:1px solid #333D3F;
     border-bottom:1px solid #333D3F;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-size: 100% 90%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left top, left bottom;
 }
 
 #header .dot {
@@ -420,6 +424,10 @@ a:hover > .source-tooltip {
     height:60px;
     border:1px solid #333D3F;
     background-color: #0F0F0F;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-size: 100% 90%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left top, left bottom;
 }
 
 #analytics h3 {
