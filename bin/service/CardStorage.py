@@ -1,16 +1,22 @@
 from bin.service import FavouriteStorage, ShoutOutStorage, Environment
 from bin.entity import Card
-from pymongo import MongoClient
 import time
+import pymongo
 
 
 class CardStorage:
 
     def __init__(self):
-        self.mongo = MongoClient()
+        self.mongo = pymongo.MongoClient()
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
         self.environment = Environment.Environment()
         self.favourite_card_ids = None
+        self.add_text_indices()
+
+    def add_text_indices(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        card_storage.create_index([('title', pymongo.TEXT), ('text', pymongo.TEXT)])
 
     def add_card(self, card):
         phoenix = self.mongo.phoenix
@@ -42,6 +48,12 @@ class CardStorage:
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
         cards = card_storage.find({'title': title})
+        return cards
+
+    def search_cards_fulltext(self, query):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'$text': {'$search': query}})
         return cards
 
     def get_jira_and_confluence_cards(self, not_empty=None):

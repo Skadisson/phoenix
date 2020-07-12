@@ -15,6 +15,11 @@ class ContextSearch:
             sorted_cards = self.storage.sort_cards(title_cards, 9)
             return sorted_cards
 
+        fulltext_cards = self.storage.search_cards_fulltext(query)
+        if fulltext_cards.count() > 0:
+            sorted_cards = self.storage.sort_cards(fulltext_cards, 9)
+            return sorted_cards
+
         return self.sci_kit_learn.search(query, 'title')
 
     def suggest_keywords(self, title, text):
