@@ -10,17 +10,17 @@ class ContextSearch:
 
     def search(self, query):
 
-        title_cards = self.storage.search_cards_by_title(query)
-        if title_cards.count() > 0:
-            sorted_cards = self.storage.sort_cards(title_cards, 9)
-            return sorted_cards
+        cards = self.storage.search_cards_by_title(query)
+        if cards.count() == 0:
+            cards = self.storage.search_cards_fulltext(query)
 
-        fulltext_cards = self.storage.search_cards_fulltext(query)
-        if fulltext_cards.count() > 0:
-            sorted_cards = self.storage.sort_cards(fulltext_cards, 9)
-            return sorted_cards
+        print(cards.count())
+        if cards.count() == 0 or cards.count() > 9:
+            sorted_cards = self.sci_kit_learn.search(query, 'title', cards)
+        else:
+            sorted_cards = self.storage.sort_cards(cards, 9)
 
-        return self.sci_kit_learn.search(query, 'title')
+        return sorted_cards
 
     def suggest_keywords(self, title, text):
 

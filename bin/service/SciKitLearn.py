@@ -16,16 +16,17 @@ class SciKitLearn:
         self.environment = Environment.Environment()
         self.storage = CardStorage.CardStorage()
 
-    def search(self, query, not_empty=None):
+    def search(self, query, not_empty=None, cards=None):
 
         global context_ids
         context_ids = []
 
-        enable_git = self.environment.get_service_enable_git()
-        if enable_git is True:
-            cards = self.storage.get_all_cards(not_empty)
-        else:
-            cards = self.storage.get_jira_and_confluence_cards(not_empty)
+        if cards is None:
+            enable_git = self.environment.get_service_enable_git()
+            if enable_git is True:
+                cards = self.storage.get_all_cards(not_empty)
+            else:
+                cards = self.storage.get_jira_and_confluence_cards(not_empty)
         normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
 
         self.threaded_search(normalized_keywords, card_ids, query)
@@ -42,6 +43,7 @@ class SciKitLearn:
         global ready_states
         total_count = len(ids)
         chunk_size = int(round(total_count / 10))
+        """chunk_size = total_count"""
         document_chunks = self.chunks(documents, chunk_size)
         id_chunks = list(self.chunks(ids, chunk_size))
         processes = []
