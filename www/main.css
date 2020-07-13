@@ -303,7 +303,22 @@ a:hover > .source-tooltip {
     z-index:400;
 }
 #favourites p {
-    color:#16BAE7;
+    color: #16BAE7;
+    padding: 5px 10px;
+    display: block;
+    overflow: hidden;
+}
+#favourites .fas.fa-star {
+    width: 20px;
+    height: 100%;
+    display: block;
+    float: left;
+}
+#favourites .card-title {
+    float: right;
+    width: 155px;
+    overflow: hidden;
+    display: block;
 }
 #favourites .favourite {
     opacity:0;
