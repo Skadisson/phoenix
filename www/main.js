@@ -551,11 +551,11 @@ PS = (function(window, document, $) {
         var title = card['title'];
         var author = !card['author'] ? '-' : card['author'];
         var source_logo = '';
-        if(card['relation_type'] == 'confluence' && card['type'] == 'idea') {
+        if(card['relation_type'] == 'confluence') {
             source_logo = 'image/confluence-logo.png';
-        } else if(card['relation_type'] == 'jira' && card['type'] == 'idea') {
+        } else if(card['relation_type'] == 'jira') {
             source_logo = 'image/jira4.png';
-        } else if(card['relation_type'] == 'git' && card['type'] == 'idea') {
+        } else if(card['relation_type'] == 'git') {
             source_logo = 'image/GitLab_Logo.png';
         } else {
             source_logo = 'image/phoenix_logo.png';
@@ -681,7 +681,12 @@ PS = (function(window, document, $) {
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
                 self.info();
-                self.search();
+                if(card_id > 0) {
+                    self.search(card_id);
+                    $('#keywords').val('');
+                } else {
+                    self.search();
+                }
                 self.favourites();
                 $('[name=title]', '#create').val('');
                 $('[name=text]', '#create').val('');
