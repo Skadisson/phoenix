@@ -188,8 +188,9 @@ class CardStorage:
         else:
             cards = self.get_jira_and_confluence_cards('title')
         self.load_favourite_card_ids()
+        shout_outs_exist = False
 
-        valid_cards = []
+        latest_cards = []
         for check_card in cards:
             if check_card['id'] in self.favourite_card_ids:
                 check_card['favourites'] = int(self.favourite_card_ids[check_card['id']])
@@ -197,12 +198,16 @@ class CardStorage:
                 check_card['favourites'] = 0
             shout_outs = self.so_storage.get_card_shout_outs(check_card['id'])
             check_card['shout_outs'] = shout_outs.count()
-            valid_cards.append(check_card)
+            if check_card['shout_outs'] > 0:
+                check_card['clicks'] = 1000000000000
+                if shout_outs_exist is False:
+                    shout_outs_exist = True
+            latest_cards.append(check_card)
 
-        valid_cards = sorted(valid_cards, key=lambda card: card['shout_outs'], reverse=False)
-        valid_cards = sorted(valid_cards, key=lambda card: card['favourites'], reverse=False)
+        latest_cards = sorted(latest_cards, key=lambda card: card['shout_outs'], reverse=False)
+        latest_cards = sorted(latest_cards, key=lambda card: card['favourites'], reverse=False)
+        latest_cards = self.sort_cards(latest_cards, count)
 
-        latest_cards = self.sort_cards(valid_cards, count)
         return latest_cards
 
     @staticmethod
