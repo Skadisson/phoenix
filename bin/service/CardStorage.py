@@ -10,7 +10,6 @@ class CardStorage:
         self.mongo = pymongo.MongoClient()
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
         self.environment = Environment.Environment()
-        self.favourite_card_ids = None
         self.add_text_indices()
 
     def add_text_indices(self):
@@ -187,25 +186,19 @@ class CardStorage:
             cards = self.get_all_cards('title')
         else:
             cards = self.get_jira_and_confluence_cards('title')
-        self.load_favourite_card_ids()
         shout_outs_exist = False
 
         latest_cards = []
         for check_card in cards:
-            if check_card['id'] in self.favourite_card_ids:
-                check_card['favourites'] = int(self.favourite_card_ids[check_card['id']])
-            else:
-                check_card['favourites'] = 0
             shout_outs = self.so_storage.get_card_shout_outs(check_card['id'])
             check_card['shout_outs'] = shout_outs.count()
             if check_card['shout_outs'] > 0:
-                check_card['clicks'] = 1000000000000
+                check_card['clicks'] += 1000000000000
                 if shout_outs_exist is False:
                     shout_outs_exist = True
             latest_cards.append(check_card)
 
         latest_cards = sorted(latest_cards, key=lambda card: card['shout_outs'], reverse=False)
-        latest_cards = sorted(latest_cards, key=lambda card: card['favourites'], reverse=False)
         latest_cards = self.sort_cards(latest_cards, count)
 
         return latest_cards
@@ -223,11 +216,6 @@ class CardStorage:
             sorted_cards.append(sorted_card)
 
         return sorted_cards
-
-
-    def load_favourite_card_ids(self):
-        favourite_storage = FavouriteStorage.FavouriteStorage()
-        self.favourite_card_ids = favourite_storage.get_ranked_favourite_card_ids()
 
     def create_card(self, title, text, keywords, external_link):
         card = Card.Card()
