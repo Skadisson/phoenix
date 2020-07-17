@@ -295,12 +295,14 @@ a:hover > .source-tooltip {
 }
 
 #favourites {
-    position:fixed;
-    left:5%;
-    top:150px;
-    overflow:hidden;
-    display:block;
-    z-index:400;
+    position: fixed;
+    left: 5%;
+    top: 150px;
+    display: block;
+    z-index: 400;
+    max-height: 75%;
+    overflow: overlay;
+    width: 250px;
 }
 #favourites p {
     color: #16BAE7;
