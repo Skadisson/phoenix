@@ -46,33 +46,36 @@ class Jira:
 
     def sync_entries(self, wait=2):
         failed_jira_keys = []
-        offset = 0
         max_results = 100
         cached_total = 0
-        jira_keys, total = self.request_service_jira_keys(offset, max_results)
-        while len(jira_keys) > 0:
-            start = float(time.time())
-            clean_cache = {}
-            for jira_id in jira_keys:
-                jira_key = jira_keys[jira_id]
-                try:
-                    clean_cache, failed_jira_keys = self.add_to_clean_cache(
-                        jira_key,
-                        failed_jira_keys,
-                        clean_cache,
-                        jira_id
-                    )
-                except Exception as err:
-                    self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
-            self.store_tickets(clean_cache)
-            cached_current = len(clean_cache)
-            cached_total += cached_current
-            stop = float(time.time())
-            seconds = (stop - start)
-            print('>>> cached {} jira entries of {} entries total after {} seconds'.format(cached_current, cached_total, seconds))
-            time.sleep(wait)
-            offset += max_results
-            jira_keys, total = self.request_service_jira_keys(offset, max_results)
+
+        projects = self.environment.get_map_jira_projects()
+        for project in projects:
+            offset = 0
+            jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
+            while len(jira_keys) > 0:
+                start = float(time.time())
+                clean_cache = {}
+                for jira_id in jira_keys:
+                    jira_key = jira_keys[jira_id]
+                    try:
+                        clean_cache, failed_jira_keys = self.add_to_clean_cache(
+                            jira_key,
+                            failed_jira_keys,
+                            clean_cache,
+                            jira_id
+                        )
+                    except Exception as err:
+                        self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
+                self.store_tickets(clean_cache)
+                cached_current = len(clean_cache)
+                cached_total += cached_current
+                stop = float(time.time())
+                seconds = (stop - start)
+                print('>>> cached {} jira entries of {} entries total after {} seconds in project "{}"'.format(cached_current, cached_total, seconds, project))
+                time.sleep(wait)
+                offset += max_results
+                jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
         jira_entries = self.load_tickets()
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)
@@ -202,12 +205,12 @@ class Jira:
             raise Exception("Request failed with status code {}".format(response['status']))
         return json.loads(content.decode("utf-8"))
 
-    def request_service_jira_keys(self, offset=0, max_results=100):
+    def request_service_jira_keys(self, offset=0, max_results=100, project='SERVICE'):
         jira_keys = {}
         total = 0
 
         tickets_endpoint = self.environment.get_endpoint_tickets()
-        data_url = tickets_endpoint.format(max_results, offset)
+        data_url = tickets_endpoint.format(project, max_results, offset)
         response, content = self.client.request(data_url, "GET")
         if response['status'] != '200':
             raise Exception("Request failed with status code {}".format(response['status']))

@@ -63,6 +63,10 @@ class Environment:
         service_yaml = self.load_yaml('map')
         return service_yaml['confluence_spaces']
 
+    def get_map_jira_projects(self):
+        service_yaml = self.load_yaml('map')
+        return service_yaml['jira_projects']
+
     def get_path_private_key(self):
         service_yaml = self.load_yaml('path')
         return service_yaml['private_key']
