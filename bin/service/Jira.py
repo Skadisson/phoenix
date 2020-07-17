@@ -72,7 +72,7 @@ class Jira:
                 cached_total += cached_current
                 stop = float(time.time())
                 seconds = (stop - start)
-                print('>>> cached {} jira entries of {} entries total after {} seconds in project "{}"'.format(cached_current, cached_total, seconds, project))
+                print('>>> cached {} jira entries of {} entries total in project "{}" after {} seconds'.format(cached_current, cached_total, project, seconds))
                 time.sleep(wait)
                 offset += max_results
                 jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
