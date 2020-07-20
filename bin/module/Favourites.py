@@ -25,8 +25,9 @@ class Favourites:
                 favourite = dict(favourite)
                 del(favourite['_id'])
                 dict_favourites.append(favourite)
+            favourites_by_name = sorted(dict_favourites, key=lambda fav: fav['card_title'], reverse=True)
             result['items'].append({
-                'favourites': dict_favourites
+                'favourites': favourites_by_name
             })
 
         except Exception as e:
