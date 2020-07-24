@@ -680,7 +680,6 @@ PS = (function(window, document, $) {
                 }
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
-                self.info();
                 if(card_id > 0) {
                     self.search(card_id);
                     $('#keywords').val('');
