@@ -577,6 +577,7 @@ PS = (function(window, document, $) {
         $('.source-tooltip', $template).text((card['relation_type'] ? card['relation_type'] : 'phoenix'));
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
+        $('p', $template).attr('data-card-link', external_link);
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
         $('.title', $template).html(title);
         $('.fas', $template).addClass(icon);
@@ -584,7 +585,22 @@ PS = (function(window, document, $) {
         $('.author', $template).text(author);
         $('#link-list').append($template);
         $($template).off('click');
-        $($template).click(function(event) {
+        $($template).on('click', function(event) {
+            event.preventDefault();
+            if($('.option-prompt', $template).hasClass('hidden')) {
+                $('.option-prompt', $template).removeClass('hidden');
+            } else {
+                $('.option-prompt', $template).addClass('hidden');
+            }
+        });
+        $($template).on('click', '[name=goto]', function(event) {
+            $('.option-prompt', $template).addClass('hidden');
+            event.preventDefault();
+            var external_link = $('p', $template).attr('data-card-link');
+            window.open(external_link);
+        });
+        $($template).on('click', '[name=details]', function(event) {
+            $('.option-prompt', $template).addClass('hidden');
             event.preventDefault();
             self.register_events();
             var card_id = $('p', this).attr('data-card-id');
