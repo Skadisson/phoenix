@@ -603,7 +603,7 @@ PS = (function(window, document, $) {
             $('.option-prompt', $template).addClass('hidden');
             event.preventDefault();
             self.register_events();
-            var card_id = $('p', this).attr('data-card-id');
+            var card_id = $('p', $template).attr('data-card-id');
             var is_toggled = self.is_favourite_toggled(card_id);
             var query = $('#keywords').val();
             var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
