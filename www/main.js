@@ -597,6 +597,12 @@ PS = (function(window, document, $) {
             $('.option-prompt', $template).addClass('hidden');
             event.preventDefault();
             var external_link = $('p', $template).attr('data-card-link');
+            var card_id = $('p', $template).attr('data-card-id');
+            var query = $('#keywords').val();
+            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.send();
             window.open(external_link);
         });
         $($template).on('click', '[name=details]', function(event) {
