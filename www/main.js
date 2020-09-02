@@ -279,7 +279,7 @@ PS = (function(window, document, $) {
                     xhr.onreadystatechange = function() {
                         if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                             self.finish_loading();
-                            self.render_notification('Autocomplete geladen');
+                            self.render_notification('Auto-Complete');
                             $('#auto-complete option').remove();
                             var result = JSON.parse(xhr.responseText);
                             if(typeof result.items[0].suggestions != 'undefined') {
@@ -537,6 +537,7 @@ PS = (function(window, document, $) {
     };
 
     function search(card_id=null) {
+        $('#auto-complete option').remove();
         self.start_dot_animation();
         if(card_id != null) {
             var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
