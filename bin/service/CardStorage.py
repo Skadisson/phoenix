@@ -55,6 +55,12 @@ class CardStorage:
         cards = card_storage.find({'$text': {'$search': query}})
         return cards
 
+    def search_cards_by_query(self, query):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        cards = card_storage.find({'title': {'$regex': str(query)}})
+        return cards
+
     def get_jira_and_confluence_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage

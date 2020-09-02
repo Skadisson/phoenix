@@ -13,6 +13,7 @@ PS = (function(window, document, $) {
     var loaded_shout_outs = [];
     var card_id_parameter = 0;
     var notify_interval = 0;
+    var autocomplete_timeout = 0;
 
     var construct = function() {
         self = this;
@@ -255,6 +256,49 @@ PS = (function(window, document, $) {
         for(var i in loaded_shout_outs) {
             var loaded_shout_out = loaded_shout_outs[i];
             $('p[data-card-id=' + loaded_shout_out.card_id + ']').addClass('flash-card');
+        }
+    };
+
+    function autoComplete() {
+        var query = $('#keywords').val();
+        if(query.length >= 2) {
+            if(autocomplete_timeout)
+                clearTimeout(autocomplete_timeout);
+            autocomplete_timeout = setTimeout(function() {
+
+                var getUrl = 'http://localhost:1352/?function=AutoComplete';
+                var formContentType = 'application/x-www-form-urlencoded';
+                var query = $('#keywords').val();
+                getUrl += '&query=' + query;
+
+                try {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', getUrl, true);
+                    self.start_loading();
+                    xhr.setRequestHeader('Content-type', formContentType);
+                    xhr.onreadystatechange = function() {
+                        if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                            self.finish_loading();
+                            self.render_notification('Autocomplete geladen');
+                            $('#auto-complete option').remove();
+                            var result = JSON.parse(xhr.responseText);
+                            if(typeof result.items[0].suggestions != 'undefined') {
+                                for(var i in result.items[0].suggestions) {
+                                    var suggestion = result.items[0].suggestions[i];
+                                    $('#auto-complete').append('<option value="' + suggestion + '"/>');
+                                }
+                            }
+                            if(autocomplete_timeout)
+                                clearTimeout(autocomplete_timeout);
+                        }
+                    };
+                    xhr.send();
+                } catch(e) {
+                    self.render_notification('Fehler', true);
+                    console.log(e.message);
+                }
+
+            }, 700);
         }
     };
 
@@ -806,7 +850,8 @@ PS = (function(window, document, $) {
         render_shout_outs: render_shout_outs,
         getUrlVars: getUrlVars,
         start_notifications: start_notifications,
-        request_notifications: request_notifications
+        request_notifications: request_notifications,
+        autoComplete: autoComplete
     };
 
     return construct;

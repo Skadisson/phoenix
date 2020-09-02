@@ -111,3 +111,17 @@ class Info:
     def get_shout_out_count(self):
         shout_outs = self.so_storage.get_shout_outs()
         return shout_outs.count()
+
+    def get_query_suggestions(self, query):
+        suggestions = []
+        queries = self.query_storage.get_queries_by_query(query)
+        queries_limited = queries[:5]
+        for query in queries_limited:
+            if query['query'] not in suggestions:
+                suggestions.append(query['query'])
+        cards = self.card_storage.search_cards_by_query(query)
+        cards_limited = cards[:5]
+        for card in cards_limited:
+            if card['title'] not in suggestions:
+                suggestions.append(card['title'])
+        return suggestions

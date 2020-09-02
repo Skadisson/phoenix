@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete
 from bin.service import Environment
 import json
 
@@ -17,6 +17,10 @@ def phoenix(request):
         query = request.args.get('query', None)
         search = Search.Search()
         response = search.run(query)
+    elif function == 'AutoComplete':
+        query = request.args.get('query', None)
+        auto_complete = AutoComplete.AutoComplete()
+        response = auto_complete.run(query)
     elif function == 'Click':
         card_id = int(request.args.get('card_id', 0))
         loading_seconds = int(request.args.get('loading_seconds', 0))
