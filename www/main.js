@@ -259,7 +259,11 @@ PS = (function(window, document, $) {
         }
     };
 
-    function autoComplete() {
+    function autoComplete(event) {
+        console.log(event);
+        if(event.keyCode == 13)
+            return;
+
         var query = $('#keywords').val();
         if(query.length >= 2) {
             if(autocomplete_timeout)

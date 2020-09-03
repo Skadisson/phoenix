@@ -33,7 +33,7 @@
     </div>
 
     <form id="search" action="" method="GET" autocomplete="off" onsubmit="main.search();return false;">
-        <input type="text" name="keywords" id="keywords" placeholder="" value="" list="auto-complete" onkeyup="main.autoComplete();" />
+        <input type="text" name="keywords" id="keywords" placeholder="" value="" list="auto-complete" onkeyup="main.autoComplete(event);" />
         <datalist id="auto-complete"></datalist>
         <button type="submit" class="fa fa-search"></button>
         <div id="link-list" class="link-list"></div>
