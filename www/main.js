@@ -260,7 +260,6 @@ PS = (function(window, document, $) {
     };
 
     function autoComplete(event) {
-        console.log(event);
         if(event.keyCode == 13)
             return;
 
