@@ -61,14 +61,18 @@ class CardStorage:
         cards = card_storage.find({'title': {'$regex': str(query)}})
         return cards
 
-    def get_jira_and_confluence_cards(self, not_empty=None):
+    def get_jira_confluence_and_phoenix_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
         if not_empty is not None:
-            cards = card_storage.find({'$and': [{'relation_type': {'$in': ['jira', 'confluence', None]}}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            jira_cards = card_storage.find({'$and': [{'relation_type': 'jira'}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            confluence_cards = card_storage.find({'$and': [{'relation_type': 'confluence'}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            phoenix_cards = card_storage.find({'$and': [{'relation_type': None}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
         else:
-            cards = card_storage.find({'relation_type': {'$in': ['jira', 'confluence', None]}})
-        return cards
+            jira_cards = card_storage.find({'relation_type': 'jira'})
+            confluence_cards = card_storage.find({'relation_type': 'confluence'})
+            phoenix_cards = card_storage.find({'relation_type': None})
+        return jira_cards, confluence_cards, phoenix_cards
 
     def get_jira_and_confluence_ideas(self):
         phoenix = self.mongo.phoenix
@@ -100,11 +104,14 @@ class CardStorage:
         cards = card_storage.find({'relation_type': 'confluence'})
         return cards
 
-    def get_git_cards(self):
+    def get_git_cards(self, not_empty=None):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find({'relation_type': 'git'})
-        return cards
+        if not_empty is not None:
+            git_cards = card_storage.find({'$and': [{'relation_type': 'git'}, {not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+        else:
+            git_cards = card_storage.find({'relation_type': 'git'})
+        return git_cards
 
     def get_confluence_card(self, confluence_id):
         phoenix = self.mongo.phoenix
@@ -188,10 +195,13 @@ class CardStorage:
 
     def get_latest_cards(self, count):
         git_enabled = self.environment.get_service_enable_git()
+
+        cards = []
         if git_enabled:
-            cards = self.get_all_cards('title')
-        else:
-            cards = self.get_jira_and_confluence_cards('title')
+            cards += list(self.get_git_cards('title'))
+
+        jira_cards, confluence_cards, phoenix_cards = self.get_jira_confluence_and_phoenix_cards('title')
+        cards += list(jira_cards) + list(confluence_cards) + list(phoenix_cards)
         shout_outs_exist = False
 
         latest_cards = []

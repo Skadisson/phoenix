@@ -20,22 +20,39 @@ class SciKitLearn:
 
         global context_ids
         context_ids = []
+        enable_git = self.environment.get_service_enable_git()
 
         if cards is None:
-            enable_git = self.environment.get_service_enable_git()
+            sorted_cards = []
+            packs_of_cards = []
             if enable_git is True:
-                cards = self.storage.get_all_cards(not_empty)
-            else:
-                cards = self.storage.get_jira_and_confluence_cards(not_empty)
-        normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
+                packs_of_cards.append(list(self.storage.get_git_cards(not_empty)))
 
-        self.threaded_search(normalized_keywords, card_ids, query)
-        self.threaded_search(normalized_titles, card_ids, query)
-        self.threaded_search(normalized_texts, card_ids, query)
+            jira_cards, confluence_cards, phoenix_cards = self.storage.get_jira_confluence_and_phoenix_cards(not_empty)
+            packs_of_cards.append(list(jira_cards))
+            packs_of_cards.append(list(confluence_cards))
+            packs_of_cards.append(list(phoenix_cards))
 
-        final_cards = self.storage.get_cards(context_ids)
-        sorted_cards = self.storage.sort_cards(final_cards, 9)
+            for pack_of_cards in packs_of_cards:
+                normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(pack_of_cards)
+                self.threaded_search(normalized_keywords, card_ids, query)
+                self.threaded_search(normalized_titles, card_ids, query)
+                self.threaded_search(normalized_texts, card_ids, query)
+                final_cards = self.storage.get_cards(context_ids)
+                sorted_cards += self.storage.sort_cards(final_cards, 3)
 
+        else:
+
+            normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
+
+            self.threaded_search(normalized_keywords, card_ids, query)
+            self.threaded_search(normalized_titles, card_ids, query)
+            self.threaded_search(normalized_texts, card_ids, query)
+
+            final_cards = self.storage.get_cards(context_ids)
+            sorted_cards = self.storage.sort_cards(final_cards, 9)
+
+        sorted_cards = self.storage.sort_cards(sorted_cards, len(sorted_cards))
         return sorted_cards
 
     def threaded_search(self, documents, ids, query):

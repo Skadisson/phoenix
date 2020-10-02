@@ -16,8 +16,8 @@ class ContextSearch:
         if cards.count() == 0:
             cards = self.storage.get_all_cards('title')
 
-        if cards.count() > 9:
-            sorted_cards = self.sci_kit_learn.search(query, 'title', cards)
+        if cards.count() <= 0 or cards.count() > 9:
+            sorted_cards = self.sci_kit_learn.search(query, 'title', None)
         else:
             sorted_cards = self.storage.sort_cards(cards, 9)
 
