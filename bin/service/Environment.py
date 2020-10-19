@@ -1,8 +1,6 @@
 import yaml
 import os
 
-from yaml import CLoader as Loader
-
 
 class Environment:
     """Environmental variable library"""
@@ -113,4 +111,4 @@ class Environment:
 
     def load_yaml(self, name):
         file = open("{}env\\{}.yaml".format(self.base_path, name), "r", encoding='utf8')
-        return yaml.load(file, Loader=Loader)
+        return yaml.load(file, Loader=yaml.FullLoader)
