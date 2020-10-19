@@ -5,14 +5,6 @@ import os
 class Environment:
     """Environmental variable library"""
 
-    def __init__(self):
-        self.base_path = None
-        self.init_base_path()
-
-    def init_base_path(self):
-        file_path = os.path.realpath(__file__)
-        self.base_path = '\\'.join(file_path.split('\\')[0:-3]) + '\\'
-
     def get_service_host(self):
         service_yaml = self.load_yaml('service')
         return service_yaml['host']
@@ -110,5 +102,6 @@ class Environment:
         return service_yaml['info']
 
     def load_yaml(self, name):
-        file = open("{}env\\{}.yaml".format(self.base_path, name), "r", encoding='utf8')
+        path = os.path.join("env", f"{name}.yaml")
+        file = open(path, "r", encoding='utf8')
         return yaml.load(file, Loader=yaml.FullLoader)
