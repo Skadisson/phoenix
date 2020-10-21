@@ -14,6 +14,7 @@ PS = (function(window, document, $) {
     var card_id_parameter = 0;
     var notify_interval = 0;
     var autocomplete_timeout = 0;
+    var host_name = window.location.hostname;
 
     var construct = function() {
         self = this;
@@ -59,7 +60,7 @@ PS = (function(window, document, $) {
             var text = $('#shout-out input').val();
             var card_id = $('#detail input[name=card_id]').val();
             if(card_id > 0 && text && event.keyCode == 13) {
-                var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+                var getUrl = 'http://' + host_name + ':1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
                 var formContentType = 'application/x-www-form-urlencoded';
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', getUrl, true);
@@ -175,7 +176,7 @@ PS = (function(window, document, $) {
             $('#analytics').hide();
             return;
         }
-        var getUrl = 'http://localhost:1352/?function=Analytics';
+        var getUrl = 'http://' + host_name + ':1352/?function=Analytics';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -228,7 +229,7 @@ PS = (function(window, document, $) {
     };
 
     function shout_outs() {
-        var getUrl = 'http://localhost:1352/?function=ShoutOuts';
+        var getUrl = 'http://' + host_name + ':1352/?function=ShoutOuts';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -269,7 +270,7 @@ PS = (function(window, document, $) {
                 clearTimeout(autocomplete_timeout);
             autocomplete_timeout = setTimeout(function() {
 
-                var getUrl = 'http://localhost:1352/?function=AutoComplete';
+                var getUrl = 'http://' + host_name + ':1352/?function=AutoComplete';
                 var formContentType = 'application/x-www-form-urlencoded';
                 var query = $('#keywords').val();
                 getUrl += '&query=' + query;
@@ -306,7 +307,7 @@ PS = (function(window, document, $) {
     };
 
     function info(callback) {
-        var getUrl = 'http://localhost:1352/?function=Ping';
+        var getUrl = 'http://' + host_name + ':1352/?function=Ping';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -349,7 +350,7 @@ PS = (function(window, document, $) {
     };
 
     function favourites() {
-        var getUrl = 'http://localhost:1352/?function=Favourites';
+        var getUrl = 'http://' + host_name + ':1352/?function=Favourites';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -392,7 +393,7 @@ PS = (function(window, document, $) {
     };
 
     function toggle_favourite(card_id) {
-        var getUrl = 'http://localhost:1352/?function=Favourite&card_id=' + card_id;
+        var getUrl = 'http://' + host_name + ':1352/?function=Favourite&card_id=' + card_id;
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -423,7 +424,7 @@ PS = (function(window, document, $) {
     };
 
     function latest_cards() {
-        var getUrl = 'http://localhost:1352/?function=Latest';
+        var getUrl = 'http://' + host_name + ':1352/?function=Latest';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -456,7 +457,7 @@ PS = (function(window, document, $) {
     };
 
     function keywords(title, text, $keyword_field) {
-        var getUrl = 'http://localhost:1352/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
+        var getUrl = 'http://' + host_name + ':1352/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -543,10 +544,10 @@ PS = (function(window, document, $) {
         $('#auto-complete option').remove();
         self.start_dot_animation();
         if(card_id != null) {
-            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
+            var getUrl = 'http://' + host_name + ':1352/?function=Search&query=' + encodeURIComponent(card_id);
         } else {
             var keywords = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(keywords);
+            var getUrl = 'http://' + host_name + ':1352/?function=Search&query=' + encodeURIComponent(keywords);
         }
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -647,7 +648,7 @@ PS = (function(window, document, $) {
             var external_link = $('p', $template).attr('data-card-link');
             var card_id = $('p', $template).attr('data-card-id');
             var query = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var getUrl = 'http://' + host_name + ':1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
@@ -660,7 +661,7 @@ PS = (function(window, document, $) {
             var card_id = $('p', $template).attr('data-card-id');
             var is_toggled = self.is_favourite_toggled(card_id);
             var query = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var getUrl = 'http://' + host_name + ':1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
@@ -715,7 +716,7 @@ PS = (function(window, document, $) {
             var keywords = $('[name=keywords]', '#edit').val();
             var external_link = $('[name=external_link]', '#edit').val();
             card_id = $('[name=card_id]', '#edit').val();
-            var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
+            var getUrl = 'http://' + host_name + ':1352/?function=Store&title=' + encodeURIComponent(title)
                         + '&keywords=' + encodeURIComponent(keywords)
                         + '&card_id=' + encodeURIComponent(card_id)
                         + '&text=' + encodeURIComponent(text)
@@ -725,7 +726,7 @@ PS = (function(window, document, $) {
             var text = $('[name=text]', '#create').val();
             var keywords = $('[name=keywords]', '#create').val();
             var external_link = $('[name=external_link]', '#create').val();
-            var getUrl = 'http://localhost:1352/?function=Store&title=' + encodeURIComponent(title)
+            var getUrl = 'http://' + host_name + ':1352/?function=Store&title=' + encodeURIComponent(title)
                         + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords)
                         + '&external_link=' + encodeURIComponent(external_link);
         }
@@ -780,9 +781,9 @@ PS = (function(window, document, $) {
     };
 
     function request_notifications() {
-        navigator.serviceWorker.register('service-worker.js', {scope: 'http://localhost:8090/'}).then(registration => {
+        navigator.serviceWorker.register('service-worker.js', {scope: 'http://' + host_name + ':8090/'}).then(registration => {
 
-            var getUrl = 'http://localhost:1352/?function=Notifications';
+            var getUrl = 'http://' + host_name + ':1352/?function=Notifications';
             var formContentType = 'application/x-www-form-urlencoded';
             try {
                 var xhr = new XMLHttpRequest();
