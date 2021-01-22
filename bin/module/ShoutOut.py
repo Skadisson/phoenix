@@ -1,5 +1,4 @@
-from bin.service import ShoutOutStorage, Logger, NotificationStorage
-from bin.entity import User
+from bin.service import ShoutOutStorage, Logger, NotificationStorage, UserStorage
 
 
 class ShoutOut:
@@ -17,9 +16,8 @@ class ShoutOut:
         }
         try:
 
-            """TODO: User Handling"""
-            user = User.User()
-            user.id = 1
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             shout_out = self.so_storage.add_shout_out(card_id, text, user.id)
             is_added = False
             if shout_out is not None:

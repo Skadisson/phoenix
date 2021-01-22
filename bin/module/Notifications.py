@@ -1,5 +1,4 @@
-from bin.service import Logger, NotificationStorage
-from bin.entity import User
+from bin.service import Logger, NotificationStorage, UserStorage
 
 
 class Notifications:
@@ -16,9 +15,8 @@ class Notifications:
         }
         try:
 
-            """TODO: User Handling"""
-            user = User.User()
-            user.id = 1
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             dict_notifications = []
             notifications = self.notification_storage.get_notifications(user.id)
             self.notification_storage.flag_notifications_as_notified(notifications)

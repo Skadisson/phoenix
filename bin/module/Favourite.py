@@ -1,5 +1,4 @@
-from bin.service import CardStorage, FavouriteStorage, Logger
-from bin.entity import User
+from bin.service import CardStorage, FavouriteStorage, Logger, UserStorage
 
 
 class Favourite:
@@ -17,9 +16,8 @@ class Favourite:
         }
         try:
 
-            """TODO: User Handling"""
-            user = User.User()
-            user.id = 1
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             card = self.card_storage.get_card(card_id)
             favourite, is_added = self.favourite_storage.toggle_favourite(card, user)
             if favourite is not None:

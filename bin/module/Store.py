@@ -1,5 +1,4 @@
-from bin.service import CardStorage, Logger, NotificationStorage
-from bin.entity import User
+from bin.service import CardStorage, Logger, NotificationStorage, UserStorage
 
 
 class Store:
@@ -24,9 +23,8 @@ class Store:
 
         try:
 
-            """TODO: User Handling"""
-            user = User.User()
-            user.id = 1
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             card_exists = False
             if card_id > 0:
                 card_exists = self.storage.card_exists(card_id)
@@ -37,13 +35,12 @@ class Store:
                 card['text'] = text
                 card['external_link'] = external_link
                 card['keywords'] = keywords.split(',')
-                """TODO: User Handling"""
                 if card['editors'] is None:
                     card['editors'] = []
-                if 'ses' not in card['editors']:
-                    card['editors'].append('ses')
+                if user.short not in card['editors']:
+                    card['editors'].append(user.short)
                 if card['author'] is None:
-                    card['author'] = 'ses'
+                    card['author'] = user.short
                 card['type'] = 'fact'
                 self.storage.update_card(card)
             else:

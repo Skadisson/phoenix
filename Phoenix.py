@@ -1,11 +1,17 @@
 from werkzeug.wrappers import Request, Response
 from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete
-from bin.service import Environment
+from bin.service import Environment, UserStorage
 import json
 
 
 @Request.application
 def phoenix(request):
+
+    user_storage = UserStorage.UserStorage()
+    user_exists = user_storage.user_exists()
+    if user_exists is False:
+        user_storage.create_user()
+
     function = request.args.get('function', None)
     if function == 'Ping':
         ping = Ping.Ping()

@@ -1,4 +1,4 @@
-from bin.service import Info, Logger
+from bin.service import Info, Logger, UserStorage
 
 
 class Ping:
@@ -14,9 +14,13 @@ class Ping:
             'error': None
         }
         try:
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             fact_count = self.info.get_fact_count()
             idea_count = self.info.get_idea_count()
             result['items'].append({
+                'user_name': user['name'],
+                'user_short': user['short'],
                 'fact_count': fact_count,
                 'idea_count': idea_count
             })

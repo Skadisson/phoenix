@@ -1,5 +1,4 @@
-from bin.service import FavouriteStorage, Logger
-from bin.entity import User
+from bin.service import FavouriteStorage, Logger, UserStorage
 
 
 class Favourites:
@@ -16,9 +15,8 @@ class Favourites:
         }
         try:
 
-            """TODO: User Handling"""
-            user = User.User()
-            user.id = 1
+            user_storage = UserStorage.UserStorage()
+            user = user_storage.get_user()
             favourites = self.storage.get_user_favourites(user)
             dict_favourites = []
             for favourite in favourites:

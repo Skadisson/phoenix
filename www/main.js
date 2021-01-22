@@ -320,6 +320,10 @@ PS = (function(window, document, $) {
                     self.render_notification('Info geladen');
                     $('#keywords').attr('placeholder', '');
                     var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0].user_name != 'undefined' && typeof result.items[0].user_short != 'undefined') {
+                        $('p', '.user-name').remove();
+                        $('.user-name').append('<p>' + result.items[0].user_name + ' (' + result.items[0].user_short + ')</p>');
+                    }
                     if(typeof result.items[0].idea_count != 'undefined' && typeof result.items[0].fact_count != 'undefined') {
                         $('#keywords').attr('placeholder', "Suche Dein Thema in " + result.items[0].idea_count + " Ideen und " + result.items[0].fact_count + " Fakten");
                         var total_count = result.items[0].idea_count + result.items[0].fact_count;
