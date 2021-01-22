@@ -6,6 +6,9 @@ import time
 class QueryStorage:
 
     def __init__(self):
+        """
+        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
+        """
         self.mongo = MongoClient()
 
     def store_query(self, card_id, searched_query, loading_seconds, frontend):

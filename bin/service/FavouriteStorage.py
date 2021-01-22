@@ -6,6 +6,9 @@ import time
 class FavouriteStorage:
 
     def __init__(self):
+        """
+        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
+        """
         self.mongo = MongoClient()
 
     def add_favourite(self, card, user):

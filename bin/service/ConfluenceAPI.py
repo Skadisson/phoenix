@@ -10,6 +10,9 @@ import time
 class ConfluenceAPI:
 
     def __init__(self):
+        """
+        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
+        """
         self.mongo = MongoClient()
         self.environment = Environment.Environment()
         self.logger = Logger.Logger()

@@ -101,6 +101,10 @@ class Environment:
         service_yaml = self.load_yaml('endpoint')
         return service_yaml['info']
 
+    def get_endpoint_mongo_db_cloud(self):
+        service_yaml = self.load_yaml('endpoint')
+        return service_yaml['mongo_db_cloud']
+
     def load_yaml(self, name):
         path = os.path.join("env", f"{name}.yaml")
         file = open(path, "r", encoding='utf8')
