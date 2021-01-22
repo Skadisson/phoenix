@@ -7,12 +7,9 @@ import pymongo
 class CardStorage:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = pymongo.MongoClient()
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
         self.environment = Environment.Environment()
+        self.mongo = pymongo.MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.add_text_indices()
 
     def add_text_indices(self):

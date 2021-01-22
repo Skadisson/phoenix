@@ -7,11 +7,8 @@ import time
 class ShoutOutStorage:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.shout_out_life_time = 60 * 60 * 24
         self.shout_out_life_time *= self.environment.get_service_shout_out_liftime_days()
 

@@ -7,11 +7,8 @@ import time
 class NotificationStorage:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
 
     def add_notification(self, card_id, title, user_id=0, is_shout_out=False):
         phoenix = self.mongo.phoenix

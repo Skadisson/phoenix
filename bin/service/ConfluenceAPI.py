@@ -10,11 +10,8 @@ import time
 class ConfluenceAPI:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.logger = Logger.Logger()
         self.confluence = Confluence(
             self.environment.get_endpoint_confluence_host(),
@@ -42,6 +39,9 @@ class ConfluenceAPI:
             seconds = (stop - start)
             print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, confluence_space, cached_total, seconds))
             time.sleep(wait)
+        self.transfer_entries()
+
+    def transfer_entries(self):
         confluence_entries = self.load_cached_entries()
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
         created_current = len(created_card_ids)

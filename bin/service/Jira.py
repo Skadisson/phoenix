@@ -15,11 +15,8 @@ import time
 class Jira:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.logger = Logger.Logger()
         self.token = None
         self.consumer = None
@@ -79,6 +76,9 @@ class Jira:
                 time.sleep(wait)
                 offset += max_results
                 jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
+        self.transfer_entries()
+
+    def transfer_entries(self):
         jira_entries = self.load_tickets()
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)

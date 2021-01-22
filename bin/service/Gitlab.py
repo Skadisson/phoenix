@@ -10,11 +10,8 @@ import time
 class Gitlab:
 
     def __init__(self):
-        """
-        TODO: bin.service.Environment.Environment.get_endpoint_mongo_db_cloud
-        """
-        self.mongo = MongoClient()
         self.environment = Environment.Environment()
+        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.logger = Logger.Logger()
         self.card_transfer = CardTransfer.CardTransfer()
 
@@ -55,6 +52,9 @@ class Gitlab:
                     time.sleep(wait)
             else:
                 run = False
+        self.transfer_entries()
+
+    def transfer_entries(self):
         cached_commits = self.load_cached_commits()
         created_card_ids = self.card_transfer.transfer_git(cached_commits)
         created_current = len(created_card_ids)
