@@ -7,6 +7,9 @@ import pymongo
 class CardStorage:
 
     def __init__(self):
+        """
+        TODO: pymongo.MongoClient("mongodb+srv://<username>:<password>@<cluster-url>")
+        """
         self.mongo = pymongo.MongoClient()
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
         self.environment = Environment.Environment()
