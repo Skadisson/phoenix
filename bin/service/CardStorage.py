@@ -206,13 +206,14 @@ class CardStorage:
 
         latest_cards = []
         for check_card in cards:
-            shout_outs = self.so_storage.get_card_shout_outs(check_card['id'])
-            check_card['shout_outs'] = shout_outs.count()
-            if check_card['shout_outs'] > 0:
-                check_card['clicks'] += 1000000000000
-                if shout_outs_exist is False:
-                    shout_outs_exist = True
-            latest_cards.append(check_card)
+            if check_card['clicks'] > 0:
+                shout_outs = self.so_storage.get_card_shout_outs(check_card['id'])
+                check_card['shout_outs'] = shout_outs.count()
+                if check_card['shout_outs'] > 0:
+                    check_card['clicks'] += 1000000000000
+                    if shout_outs_exist is False:
+                        shout_outs_exist = True
+                latest_cards.append(check_card)
 
         latest_cards = sorted(latest_cards, key=lambda card: card['shout_outs'], reverse=False)
         latest_cards = self.sort_cards(latest_cards, count)
