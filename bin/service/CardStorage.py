@@ -1,4 +1,4 @@
-from bin.service import FavouriteStorage, ShoutOutStorage, Environment
+from bin.service import FavouriteStorage, ShoutOutStorage, Environment, UserStorage
 from bin.entity import Card
 import time
 import pymongo
@@ -234,6 +234,9 @@ class CardStorage:
         return sorted_cards
 
     def create_card(self, title, text, keywords, external_link):
+        user_storage = UserStorage.UserStorage()
+        user = user_storage.get_user()
+
         card = Card.Card()
         card.id = self.get_next_card_id()
         card.title = title
@@ -243,9 +246,8 @@ class CardStorage:
         card.changed = time.time()
         card.external_link = external_link
         card.type = 'fact'
-        """TODO: user handling"""
-        card.author = 'ses'
-        card.editors = ['ses']
+        card.author = user['short']
+        card.editors = [user['short']]
         self.store_card(dict(card))
 
         return card.id

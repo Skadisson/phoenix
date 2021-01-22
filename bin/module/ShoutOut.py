@@ -18,14 +18,16 @@ class ShoutOut:
 
             user_storage = UserStorage.UserStorage()
             user = user_storage.get_user()
-            shout_out = self.so_storage.add_shout_out(card_id, text, user.id)
+            shout_out = self.so_storage.add_shout_out(card_id, text, user['id'])
             is_added = False
             if shout_out is not None:
                 is_added = True
-                notification_exists = self.notification_storage.un_notified_notification_exists(card_id, user.id)
+                notification_exists = self.notification_storage.un_notified_notification_exists(card_id, user['id'])
                 if notification_exists is False:
-                    self.notification_storage.add_notification(card_id, text, user.id, True)
+                    self.notification_storage.add_notification(card_id, text, user['id'], True)
                 shout_out = dict(shout_out)
+                shout_out['short'] = user['short']
+                shout_out['name'] = user['name']
             result['items'].append({
                 'is_added': is_added,
                 'shout_out': shout_out

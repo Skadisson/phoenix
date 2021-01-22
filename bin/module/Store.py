@@ -37,15 +37,15 @@ class Store:
                 card['keywords'] = keywords.split(',')
                 if card['editors'] is None:
                     card['editors'] = []
-                if user.short not in card['editors']:
-                    card['editors'].append(user.short)
+                if user['short'] not in card['editors']:
+                    card['editors'].append(user['short'])
                 if card['author'] is None:
-                    card['author'] = user.short
+                    card['author'] = user['short']
                 card['type'] = 'fact'
                 self.storage.update_card(card)
             else:
                 card_id = self.storage.create_card(title, text, keywords, external_link)
-                self.notification_storage.add_notification(card_id, title, user.id, False)
+                self.notification_storage.add_notification(card_id, title, user['id'], False)
 
             result['items'].append({
                 'card_id': card_id

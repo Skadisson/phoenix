@@ -18,7 +18,7 @@ class Notifications:
             user_storage = UserStorage.UserStorage()
             user = user_storage.get_user()
             dict_notifications = []
-            notifications = self.notification_storage.get_notifications(user.id)
+            notifications = self.notification_storage.get_notifications(user['id'])
             self.notification_storage.flag_notifications_as_notified(notifications)
             for notification in notifications:
                 notification = dict(notification)

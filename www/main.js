@@ -49,6 +49,7 @@ PS = (function(window, document, $) {
 
     function register_events() {
         $('body').off('click');
+        $('body').on('click', '.user-name', self.change_username);
         $('body').on('click', '.fa-bullseye', self.suggest_keywords);
         $('body').on('click', '.fa-external-link-square-alt', self.open_external_link);
         $('body #shout-out').on('click', '.fa-times-circle', function() {
@@ -74,9 +75,11 @@ PS = (function(window, document, $) {
                             if(result.items[0].is_added) {
                                 self.render_notification('Shout Out erfolgreich');
                                 self.shout_outs();
+                                text = result.items[0].text
+                                short = result.items[0].short
                                 $('#shout-out input').val('');
                                 $('#shout-out').hide();
-                                $('.shout-outs').prepend('<p class="shout-out">ses: "' + text + '"</p>');
+                                $('.shout-outs').prepend('<p class="shout-out">' + short + ': "' + text + '"</p>');
                                 $('#shout-out fieldset i').removeClass('fa-ellipsis-h');
                                 $('#shout-out fieldset i').removeClass('fa-check');
                                 $('#shout-out fieldset i').removeClass('fa-times');
@@ -156,6 +159,40 @@ PS = (function(window, document, $) {
             $notification.remove();
         });
     }
+
+    function change_username() {
+        var user_name = prompt("Vor- und Nachname", '');
+        if(user_name == null) {
+            return;
+        }
+        while(user_name.split(" ").length == 1) {
+            user_name = prompt("Vor- und Nachname (getrennt mit Leerzeichen)", user_name);
+        }
+        var getUrl = 'http://' + host_name + ':1352/?function=Name&name=' + encodeURIComponent(user_name);
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.message != 'undefined') {
+                        self.render_notification(result.message);
+                    }
+                    if(typeof result.success != 'undefined' && result.success == true) {
+                        self.info();
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
 
     function suggest_keywords() {
         var $keyword_field = $('[name=keywords]', $(this).parent());
@@ -680,7 +717,7 @@ PS = (function(window, document, $) {
             for(var x in loaded_shout_outs) {
                 var loaded_shout_out = loaded_shout_outs[x];
                 if(loaded_shout_out.card_id == card['id']) {
-                    $('.shout-outs').prepend('<p class="shout-out">ses: "' + loaded_shout_out['text'] + '"</p>');
+                    $('.shout-outs').prepend('<p class="shout-out">' + loaded_shout_out['name'] + ': "' + loaded_shout_out['text'] + '"</p>');
                 }
             }
             if(is_toggled) {
@@ -750,7 +787,7 @@ PS = (function(window, document, $) {
                     var $changed_card = $('[data-card-id=' + card_id + ']');
                     $('.date', $changed_card).text('soeben geändert');
                     $('.title', $changed_card).text(title);
-                    $('.author', $changed_card).text('ses'); // TODO: user handling
+                    $('.author', $changed_card).text('');
                     $('.keywords', $changed_card).text(keywords);
                 }
                 self.finish_loading();
@@ -860,7 +897,8 @@ PS = (function(window, document, $) {
         getUrlVars: getUrlVars,
         start_notifications: start_notifications,
         request_notifications: request_notifications,
-        autoComplete: autoComplete
+        autoComplete: autoComplete,
+        change_username: change_username
     };
 
     return construct;

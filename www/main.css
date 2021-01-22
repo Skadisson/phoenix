@@ -422,6 +422,17 @@ a:hover > .source-tooltip {
     cursor:pointer;
 }
 
+.user-name {
+    position: absolute;
+    width: 400px;
+    left: 50%;
+    top: 99px;
+    margin-left: -200px;
+    padding: 0;
+    text-align: center;
+    cursor:pointer;
+}
+
 #analytics {
     visibilty:hidden;
     display:none;

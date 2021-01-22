@@ -23,7 +23,7 @@ class FavouriteStorage:
         favourite = Favourite.Favourite()
         favourite.id = favourite_id
         favourite.created = time.time()
-        favourite.user_id = user.id
+        favourite.user_id = user['id']
         favourite.card_id = card['id']
         favourite.card_title = card['title']
         return favourite
@@ -31,7 +31,7 @@ class FavouriteStorage:
     def find_favourite(self, card, user):
         phoenix = self.mongo.phoenix
         favourite_storage = phoenix.favourite_storage
-        favourite = favourite_storage.find_one({'card_id': card['id'], 'user_id': user.id})
+        favourite = favourite_storage.find_one({'card_id': card['id'], 'user_id': user['id']})
         return favourite
 
     def favourite_exists(self, card, user):
@@ -71,7 +71,7 @@ class FavouriteStorage:
     def get_user_favourites(self, user):
         phoenix = self.mongo.phoenix
         favourite_storage = phoenix.favourite_storage
-        user_favourites = favourite_storage.find({'user_id': user.id})
+        user_favourites = favourite_storage.find({'user_id': user['id']})
         return user_favourites
 
     def load_favourites(self):
@@ -83,7 +83,7 @@ class FavouriteStorage:
     def remove_favourite(self, card, user):
         phoenix = self.mongo.phoenix
         favourite_storage = phoenix.favourite_storage
-        favourite_storage.remove({'card_id': card['id'], 'user_id': user.id})
+        favourite_storage.remove({'card_id': card['id'], 'user_id': user['id']})
 
     def toggle_favourite(self, card, user):
         favourite = None
