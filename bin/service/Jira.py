@@ -63,7 +63,8 @@ class Jira:
                             jira_key,
                             failed_jira_keys,
                             clean_cache,
-                            jira_id
+                            jira_id,
+                            wait
                         )
                     except Exception as err:
                         self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
@@ -94,7 +95,7 @@ class Jira:
             else:
                 jira_storage.insert_one(tickets[jira_id])
 
-    def add_to_clean_cache(self, jira_key, failed_jira_keys, clean_cache, jira_id):
+    def add_to_clean_cache(self, jira_key, failed_jira_keys, clean_cache, jira_id, wait=2):
         ticket = None
         try:
             ticket_data = self.request_ticket_data(jira_key)
@@ -117,7 +118,7 @@ class Jira:
         except Exception as e:
             self.logger.add_entry(self.__class__.__name__, e)
             failed_jira_keys.append(jira_key)
-        time.sleep(0.5)
+        time.sleep(wait)
         if ticket is not None:
             clean_cache[str(jira_id)] = ticket
         return clean_cache, failed_jira_keys
