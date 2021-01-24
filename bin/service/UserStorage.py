@@ -1,14 +1,9 @@
-from bin.service import Environment
+from bin.service import Storage
 from bin.entity import User
-import pymongo
 import uuid
 
 
-class UserStorage:
-
-    def __init__(self):
-        self.environment = Environment.Environment()
-        self.mongo = pymongo.MongoClient(self.environment.get_endpoint_mongo_db_cloud())
+class UserStorage(Storage.Storage):
 
     def get_user(self):
         phoenix = self.mongo.phoenix

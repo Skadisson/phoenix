@@ -1,14 +1,12 @@
 from bin.entity import ShoutOut
-from bin.service import Environment
-from pymongo import MongoClient
+from bin.service import Storage
 import time
 
 
-class ShoutOutStorage:
+class ShoutOutStorage(Storage.Storage):
 
     def __init__(self):
-        self.environment = Environment.Environment()
-        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
+        super().__init__()
         self.shout_out_life_time = 60 * 60 * 24
         self.shout_out_life_time *= self.environment.get_service_shout_out_liftime_days()
 

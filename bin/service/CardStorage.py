@@ -1,15 +1,14 @@
-from bin.service import FavouriteStorage, ShoutOutStorage, Environment, UserStorage
+from bin.service import FavouriteStorage, ShoutOutStorage, UserStorage, Storage
 from bin.entity import Card
 import time
 import pymongo
 
 
-class CardStorage:
+class CardStorage(Storage.Storage):
 
     def __init__(self):
+        super().__init__()
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
-        self.environment = Environment.Environment()
-        self.mongo = pymongo.MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.add_text_indices()
 
     def add_text_indices(self):

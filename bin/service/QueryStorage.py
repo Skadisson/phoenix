@@ -1,14 +1,9 @@
 from bin.entity import Query
-from bin.service import Environment
-from pymongo import MongoClient
+from bin.service import Storage
 import time
 
 
-class QueryStorage:
-
-    def __init__(self):
-        self.environment = Environment.Environment()
-        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
+class QueryStorage(Storage.Storage):
 
     def store_query(self, card_id, searched_query, loading_seconds, frontend):
         if searched_query != '' or card_id > 0:
