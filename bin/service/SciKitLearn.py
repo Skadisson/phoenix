@@ -1,6 +1,7 @@
 from sklearn import naive_bayes, feature_extraction, pipeline
 from bin.service import Logger, Environment, CardStorage
 import threading
+import re
 
 
 ready_states = []
@@ -39,7 +40,8 @@ class SciKitLearn:
                 self.threaded_search(normalized_titles, card_ids, query)
                 self.threaded_search(normalized_texts, card_ids, query)
                 final_cards = self.storage.get_cards(context_ids)
-                sorted_cards += self.storage.sort_cards(final_cards, 3)
+                filtered_cards = self.filter_cards(final_cards, query)
+                sorted_cards += self.storage.sort_cards(filtered_cards, 3)
 
         else:
 
@@ -50,7 +52,8 @@ class SciKitLearn:
             self.threaded_search(normalized_texts, card_ids, query)
 
             final_cards = self.storage.get_cards(context_ids)
-            sorted_cards = self.storage.sort_cards(final_cards, 9)
+            filtered_cards = self.filter_cards(final_cards, query)
+            sorted_cards = self.storage.sort_cards(filtered_cards, 9)
 
         sorted_cards = self.storage.sort_cards(sorted_cards, len(sorted_cards))
         return sorted_cards
@@ -98,7 +101,7 @@ class SciKitLearn:
         ])
 
         for i in range(1, 3):
-            if len(documents) > 0 and len(ids) > 0:
+            if len(documents) > 0 and len(ids) > 0 and len(documents) == len(ids):
                 text_context = text_clf.fit(documents, ids)
                 text_id = text_context.predict(docs_new)
                 found_id = int(text_id.astype(int))
@@ -146,3 +149,18 @@ class SciKitLearn:
                 normalized_texts.append(normalized_text)
 
         return normalized_keywords, normalized_titles, normalized_texts, card_ids
+
+    @staticmethod
+    def filter_cards(cards, query):
+        filtered_cards = []
+        words = query.split(' ')
+        for card in cards:
+            text = str(card['title']) + " " + str(card['text'])
+            if card['keywords'] is not None:
+                text += " " + str(' '.join(card['keywords']))
+            for word in words:
+                count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), text))
+                if count > 0:
+                    filtered_cards.append(card)
+                    break
+        return filtered_cards

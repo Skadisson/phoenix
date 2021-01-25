@@ -31,7 +31,8 @@ class Search:
             for card in cards:
                 if '_id' in card:
                     del(card['_id'])
-                found_cards.append(card)
+                if card not in found_cards:
+                    found_cards.append(card)
             result['items'].append({
                 'query': query,
                 'count': len(found_cards),
