@@ -3,7 +3,7 @@ from bin.service import JiraSignature
 from bin.service import Logger
 from bin.service import CardTransfer
 from bin.service import RegEx
-from pymongo import MongoClient
+from bin.service import Storage
 import oauth2 as oauth
 from urllib import parse
 import json
@@ -12,11 +12,11 @@ import pickle
 import time
 
 
-class Jira:
+class Jira(Storage.Storage):
 
     def __init__(self):
+        super().__init__()
         self.environment = Environment.Environment()
-        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.logger = Logger.Logger()
         self.token = None
         self.consumer = None

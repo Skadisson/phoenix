@@ -14,7 +14,10 @@ class CardStorage(Storage.Storage):
     def add_text_indices(self):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        card_storage.create_index([('title', pymongo.TEXT), ('text', pymongo.TEXT)])
+        try:
+            card_storage.create_index([('title', pymongo.TEXT), ('text', pymongo.TEXT)])
+        except Exception as e:
+            print(e)
 
     def add_card(self, card):
         phoenix = self.mongo.phoenix

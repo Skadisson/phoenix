@@ -2,16 +2,16 @@ from bin.service import Environment
 from bin.service import Logger
 from bin.service import CardTransfer
 from bin.service import RegEx
+from bin.service import Storage
 from atlassian import Confluence
-from pymongo import MongoClient
 import time
 
 
-class ConfluenceAPI:
+class ConfluenceAPI(Storage.Storage):
 
     def __init__(self):
+        super().__init__()
         self.environment = Environment.Environment()
-        self.mongo = MongoClient(self.environment.get_endpoint_mongo_db_cloud())
         self.logger = Logger.Logger()
         self.confluence = Confluence(
             self.environment.get_endpoint_confluence_host(),
