@@ -12,7 +12,7 @@ class Search:
 
     def run(self, query):
 
-        if query is '':
+        if query == '':
             return self.latest.run()
 
         result = {
