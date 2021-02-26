@@ -100,10 +100,10 @@ PSM = (function(window, document, $) {
     function search(card_id=null) {
         self.flush_marbles();
         if(card_id != null) {
-            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
+            var getUrl = 'http://localhost:8100/?function=Search&query=' + encodeURIComponent(card_id);
         } else {
             var keywords = $('#keywords').val();
-            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(keywords);
+            var getUrl = 'http://localhost:8100/?function=Search&query=' + encodeURIComponent(keywords);
         }
         self.request(getUrl, function(items) {
             if(typeof items[0].cards != 'undefined') {
@@ -177,7 +177,7 @@ PSM = (function(window, document, $) {
     };
 
     function info() {
-        var getUrl = 'http://localhost:1352/?function=Ping';
+        var getUrl = 'http://localhost:8100/?function=Ping';
         self.request(getUrl, function(items) {
             if(typeof items[0].idea_count != 'undefined' && typeof items[0].fact_count != 'undefined') {
                 $('#keywords').attr('placeholder', '');
@@ -199,7 +199,7 @@ PSM = (function(window, document, $) {
         if(card_id > 0) {
             self.track_click(card_id);
 
-            var getUrl = 'http://localhost:1352/?function=Search&query=' + encodeURIComponent(card_id);
+            var getUrl = 'http://localhost:8100/?function=Search&query=' + encodeURIComponent(card_id);
             self.request(getUrl, function(items) {
                 if(typeof items[0].cards != 'undefined') {
                     var cards = items[0].cards;
@@ -261,7 +261,7 @@ PSM = (function(window, document, $) {
 
     function track_click(card_id) {
         var query = $('#keywords').val();
-        var getUrl = 'http://localhost:1352/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=-1&frontend=mobile';
+        var getUrl = 'http://localhost:8100/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=-1&frontend=mobile';
         self.request(getUrl);
     };
 
@@ -270,7 +270,7 @@ PSM = (function(window, document, $) {
     };
 
     function load_favourites() {
-        var getUrl = 'http://localhost:1352/?function=Favourites';
+        var getUrl = 'http://localhost:8100/?function=Favourites';
         self.request(getUrl, function(items) {
             if(typeof items[0].favourites !== 'undefined') {
                 self.flush_favourites();
@@ -291,7 +291,7 @@ PSM = (function(window, document, $) {
     };
 
     function load_shout_outs() {
-        var getUrl = 'http://localhost:1352/?function=ShoutOuts';
+        var getUrl = 'http://localhost:8100/?function=ShoutOuts';
         self.request(getUrl, function(items) {
             if(typeof items[0].shout_outs !== 'undefined') {
                 shout_outs = [];
@@ -323,7 +323,7 @@ PSM = (function(window, document, $) {
     function add_favourite(event) {
         var card_id = $(event.currentTarget).attr('data-card-id');
         if(card_id > 0) {
-            var getUrl = 'http://localhost:1352/?function=Favourite&card_id=' + card_id;
+            var getUrl = 'http://localhost:8100/?function=Favourite&card_id=' + card_id;
             self.request(getUrl, function(items) {
                 self.load_favourites();
                 if(items[0].is_added) {
@@ -345,7 +345,7 @@ PSM = (function(window, document, $) {
             var card_id = parseInt($('[name=card_id]').val());
             var text = $('[name=shout_out]').val();
             if(card_id > 0 && text != '') {
-                var getUrl = 'http://localhost:1352/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+                var getUrl = 'http://localhost:8100/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
                 self.request(getUrl, function(items) {
                     // TODO: user handling
                     $('.shout_outs').prepend('<p class="shout_out">ses: "' + text + '"</p>');
@@ -370,7 +370,7 @@ PSM = (function(window, document, $) {
     function request_notifications() {
         navigator.serviceWorker.register('service-worker.js', {scope: 'http://localhost:8090/'}).then(registration => {
 
-            var getUrl = 'http://localhost:1352/?function=Notifications';
+            var getUrl = 'http://localhost:8100/?function=Notifications';
             self.request(getUrl, function(items) {
                 for(var i in items[0].notifications) {
                     var notification = items[0].notifications[i];
