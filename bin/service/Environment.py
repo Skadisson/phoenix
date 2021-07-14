@@ -9,6 +9,10 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['host']
 
+    def get_use_ssl(self):
+        service_yaml = self.load_yaml('service')
+        return service_yaml['use_ssl']
+
     def get_service_port(self):
         service_yaml = self.load_yaml('service')
         return service_yaml['port_webservice']

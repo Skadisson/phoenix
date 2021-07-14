@@ -15,7 +15,7 @@ PS = (function(window, document, $) {
     var notify_interval = 0;
     var autocomplete_timeout = 0;
     var host_name = window.location.hostname;
-    var host_protocol = 'https'
+    var host_protocol = 'http'
     var host_port = '8110'
 
     var construct = function() {

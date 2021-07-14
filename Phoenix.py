@@ -84,4 +84,8 @@ if __name__ == '__main__':
     env = Environment.Environment()
     port = env.get_service_port()
     host = env.get_service_host()
-    run_simple(hostname=host, port=port, application=phoenix, ssl_context='adhoc')
+    use_ssl = env.get_use_ssl()
+    if use_ssl is True:
+        run_simple(hostname=host, port=port, application=phoenix, ssl_context='adhoc')
+    else:
+        run_simple(hostname=host, port=port, application=phoenix)
