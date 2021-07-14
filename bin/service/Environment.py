@@ -11,7 +11,11 @@ class Environment:
 
     def get_service_port(self):
         service_yaml = self.load_yaml('service')
-        return service_yaml['port']
+        return service_yaml['port_webservice']
+
+    def get_server_port(self):
+        service_yaml = self.load_yaml('service', True)
+        return service_yaml['port_webserver']
 
     def get_service_enable_git(self):
         service_yaml = self.load_yaml('service')
@@ -105,7 +109,10 @@ class Environment:
         service_yaml = self.load_yaml('endpoint')
         return service_yaml['mongo_db_cloud']
 
-    def load_yaml(self, name):
-        path = os.path.join("env", f"{name}.yaml")
+    def load_yaml(self, name, skip_one=False):
+        if skip_one:
+            path = os.path.join("..", "env", f"{name}.yaml")
+        else:
+            path = os.path.join("env", f"{name}.yaml")
         file = open(path, "r", encoding='utf8')
         return yaml.load(file, Loader=yaml.FullLoader)

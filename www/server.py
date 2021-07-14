@@ -1,8 +1,9 @@
 import http.server
 import socketserver
+from bin.service import Environment
 
-
-PORT = 8111
+env = Environment.Environment()
+PORT = env.get_server_port()
 Handler = http.server.SimpleHTTPRequestHandler
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
     print("serving at port", PORT)

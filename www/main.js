@@ -15,6 +15,8 @@ PS = (function(window, document, $) {
     var notify_interval = 0;
     var autocomplete_timeout = 0;
     var host_name = window.location.hostname;
+    var host_protocol = 'https'
+    var host_port = '8110'
 
     var construct = function() {
         self = this;
@@ -61,7 +63,7 @@ PS = (function(window, document, $) {
             var text = $('#shout-out input').val();
             var card_id = $('#detail input[name=card_id]').val();
             if(card_id > 0 && text && event.keyCode == 13) {
-                var getUrl = 'http://' + host_name + ':8110/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
+                var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=ShoutOut&card_id=' + card_id + '&text=' + encodeURIComponent(text);
                 var formContentType = 'application/x-www-form-urlencoded';
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', getUrl, true);
@@ -168,7 +170,7 @@ PS = (function(window, document, $) {
         while(user_name.split(" ").length == 1) {
             user_name = prompt("Vor- und Nachname (getrennt mit Leerzeichen)", user_name);
         }
-        var getUrl = 'http://' + host_name + ':8110/?function=Name&name=' + encodeURIComponent(user_name);
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Name&name=' + encodeURIComponent(user_name);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -213,7 +215,7 @@ PS = (function(window, document, $) {
             $('#analytics').hide();
             return;
         }
-        var getUrl = 'http://' + host_name + ':8110/?function=Analytics';
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Analytics';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -266,7 +268,7 @@ PS = (function(window, document, $) {
     };
 
     function shout_outs() {
-        var getUrl = 'http://' + host_name + ':8110/?function=ShoutOuts';
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=ShoutOuts';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -307,7 +309,7 @@ PS = (function(window, document, $) {
                 clearTimeout(autocomplete_timeout);
             autocomplete_timeout = setTimeout(function() {
 
-                var getUrl = 'http://' + host_name + ':8110/?function=AutoComplete';
+                var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=AutoComplete';
                 var formContentType = 'application/x-www-form-urlencoded';
                 var query = $('#keywords').val();
                 getUrl += '&query=' + query;
@@ -344,7 +346,7 @@ PS = (function(window, document, $) {
     };
 
     function info(callback) {
-        var getUrl = 'http://' + host_name + ':8110/?function=Ping';
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Ping';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -391,7 +393,7 @@ PS = (function(window, document, $) {
     };
 
     function favourites() {
-        var getUrl = 'http://' + host_name + ':8110/?function=Favourites';
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Favourites';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -434,7 +436,7 @@ PS = (function(window, document, $) {
     };
 
     function toggle_favourite(card_id) {
-        var getUrl = 'http://' + host_name + ':8110/?function=Favourite&card_id=' + card_id;
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Favourite&card_id=' + card_id;
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -465,7 +467,7 @@ PS = (function(window, document, $) {
     };
 
     function latest_cards() {
-        var getUrl = 'http://' + host_name + ':8110/?function=Latest';
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Latest';
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -498,7 +500,7 @@ PS = (function(window, document, $) {
     };
 
     function keywords(title, text, $keyword_field) {
-        var getUrl = 'http://' + host_name + ':8110/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Keywords&title=' + encodeURIComponent(title) + '&text=' + encodeURIComponent(text);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
             var xhr = new XMLHttpRequest();
@@ -585,10 +587,10 @@ PS = (function(window, document, $) {
         $('#auto-complete option').remove();
         self.start_dot_animation();
         if(card_id != null) {
-            var getUrl = 'http://' + host_name + ':8110/?function=Search&query=' + encodeURIComponent(card_id);
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(card_id);
         } else {
             var keywords = $('#keywords').val();
-            var getUrl = 'http://' + host_name + ':8110/?function=Search&query=' + encodeURIComponent(keywords);
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(keywords);
         }
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -689,7 +691,7 @@ PS = (function(window, document, $) {
             var external_link = $('p', $template).attr('data-card-link');
             var card_id = $('p', $template).attr('data-card-id');
             var query = $('#keywords').val();
-            var getUrl = 'http://' + host_name + ':8110/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
@@ -702,7 +704,7 @@ PS = (function(window, document, $) {
             var card_id = $('p', $template).attr('data-card-id');
             var is_toggled = self.is_favourite_toggled(card_id);
             var query = $('#keywords').val();
-            var getUrl = 'http://' + host_name + ':8110/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
@@ -757,7 +759,7 @@ PS = (function(window, document, $) {
             var keywords = $('[name=keywords]', '#edit').val();
             var external_link = $('[name=external_link]', '#edit').val();
             card_id = $('[name=card_id]', '#edit').val();
-            var getUrl = 'http://' + host_name + ':8110/?function=Store&title=' + encodeURIComponent(title)
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Store&title=' + encodeURIComponent(title)
                         + '&keywords=' + encodeURIComponent(keywords)
                         + '&card_id=' + encodeURIComponent(card_id)
                         + '&text=' + encodeURIComponent(text)
@@ -767,7 +769,7 @@ PS = (function(window, document, $) {
             var text = $('[name=text]', '#create').val();
             var keywords = $('[name=keywords]', '#create').val();
             var external_link = $('[name=external_link]', '#create').val();
-            var getUrl = 'http://' + host_name + ':8110/?function=Store&title=' + encodeURIComponent(title)
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Store&title=' + encodeURIComponent(title)
                         + '&text=' + encodeURIComponent(text) + '&keywords=' + encodeURIComponent(keywords)
                         + '&external_link=' + encodeURIComponent(external_link);
         }
@@ -824,7 +826,7 @@ PS = (function(window, document, $) {
     function request_notifications() {
         navigator.serviceWorker.register('service-worker.js', {scope: 'http://' + host_name + ':8080/'}).then(registration => {
 
-            var getUrl = 'http://' + host_name + ':8110/?function=Notifications';
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Notifications';
             var formContentType = 'application/x-www-form-urlencoded';
             try {
                 var xhr = new XMLHttpRequest();
