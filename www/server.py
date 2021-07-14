@@ -1,8 +1,8 @@
 import http.server
 import socketserver
-from bin.service import Environment
+import bin.service.Environment
 
-env = Environment.Environment()
+env = bin.service.Environment.Environment()
 PORT = env.get_server_port()
 Handler = http.server.SimpleHTTPRequestHandler
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
