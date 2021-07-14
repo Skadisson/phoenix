@@ -84,4 +84,4 @@ if __name__ == '__main__':
     env = Environment.Environment()
     port = env.get_service_port()
     host = env.get_service_host()
-    run_simple(hostname=host, port=port, application=phoenix)
+    run_simple(hostname=host, port=port, application=phoenix, ssl_context='adhoc')
