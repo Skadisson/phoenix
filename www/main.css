@@ -196,7 +196,7 @@ input[type=text] {
     position:relative;
     min-width:140px;
     background-position: center center;
-    background-width: 245px;
+    background-size: contain;
 }
 p .type {
     position:absolute;
@@ -594,6 +594,14 @@ a:hover > .source-tooltip {
     right:20px;
     bottom:20px;
     text-align: right;
+}
+
+#detail {
+    background-color: #16BAE7;
+    background-position: top center;
+    background-size: contain;
+    background-blend-mode: lighten;
+    background-repeat: no-repeat;
 }
 
 .flash-card {

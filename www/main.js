@@ -490,6 +490,7 @@ PS = (function(window, document, $) {
                         self.stop_dot_animation(result.items[0].count);
                         self.render_shout_outs();
                     }
+                    self.render_screenshots();
                 }
             };
             xhr.send();
@@ -613,6 +614,7 @@ PS = (function(window, document, $) {
                         self.stop_dot_animation(result.items[0].count);
                         self.render_shout_outs();
                     }
+                    self.render_screenshots();
                 }
             };
             xhr.send();
@@ -709,6 +711,7 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.send();
             $('#detail').modal();
+            $('#detail').css('background-image', $('p[data-card-id=' + card_id + ']').css('background-image'));
             $('[name=card_id]', '#detail').val(card['id']);
             $('[name=title]', '#detail').val(card['title']);
             $('[name=text]', '#detail').val(card['text']);
@@ -748,10 +751,23 @@ PS = (function(window, document, $) {
             });
             return false;
         });
-        self.render_screenshot($template, external_link);
     };
 
-    function render_screenshot($card, url) {
+    function render_screenshots() {
+        $('[data-card-id]').each(function() {
+            var card_id = $(this).data('card-id');
+            if(parseInt(card_id) > 0) {
+                self.render_screenshot(card_id);
+            }
+        });
+    };
+
+    function render_screenshot(card_id) {
+        var $screenshotCard = $('p[data-card-id=' + card_id + ']');
+        var url = "" + $screenshotCard.data('card-link');
+        if(url == '')
+            return;
+
         var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Screenshot&url=' + encodeURI(url);
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -759,17 +775,18 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.setRequestHeader('Content-type', formContentType);
             self.start_loading();
-            self.start_dot_animation();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
-                    $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
-                    if(typeof result.items.count > 0) {
+                    if(result.items.length > 0) {
                         var screenshot = result.items[0];
                         self.render_notification('Screenshot geladen');
-                        $card.css('background-image', 'url("screenshots/' + screenshot + '")');
-                        self.stop_dot_animation(result.items.length);
+                        $screenshotCard.css({
+                            'background-image': 'url(screenshots/' + screenshot + ')',
+                            'color': 'black',
+                            'text-shadow': '0 0 5px white'
+                        });
                         self.render_shout_outs();
                     }
                 }
@@ -905,6 +922,7 @@ PS = (function(window, document, $) {
         info: info,
         latest_cards: latest_cards,
         render_card: render_card,
+        render_screenshots: render_screenshots,
         render_screenshot: render_screenshot,
         store_card: store_card,
         keywords: keywords,
