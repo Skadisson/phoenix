@@ -748,6 +748,37 @@ PS = (function(window, document, $) {
             });
             return false;
         });
+        self.render_screenshot($template, external_link);
+    };
+
+    function render_screenshot($card, url) {
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Screenshot&url=' + encodeURI(url);
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            self.start_dot_animation();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    $('#link-list').html('');
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items.count > 0) {
+                        var screenshot = result.items[0];
+                        self.render_notification('Screenshot geladen');
+                        $card.css('background-image', 'url("screenshots/' + screenshot + '")');
+                        self.stop_dot_animation(result.items.length);
+                        self.render_shout_outs();
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
     };
 
     function store_card(func) {
@@ -874,6 +905,7 @@ PS = (function(window, document, $) {
         info: info,
         latest_cards: latest_cards,
         render_card: render_card,
+        render_screenshot: render_screenshot,
         store_card: store_card,
         keywords: keywords,
         register_events: register_events,

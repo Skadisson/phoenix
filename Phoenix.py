@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot
 from bin.service import Environment, UserStorage
 import json
 
@@ -72,6 +72,10 @@ def phoenix(request):
     elif function == 'Notifications':
         notifications = Notifications.Notifications()
         response = notifications.run()
+    elif function == 'Screenshot':
+        url = str(request.args.get('url', ''))
+        screenshot = Screenshot.Screenshot()
+        response = screenshot.run(url)
     else:
         response = {'error': 'unknown function'}
 

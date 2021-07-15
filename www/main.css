@@ -195,6 +195,8 @@ input[type=text] {
     overflow: hidden;
     position:relative;
     min-width:140px;
+    background-position: center center;
+    background-width: 245px;
 }
 p .type {
     position:absolute;
@@ -612,7 +614,7 @@ a:hover > .source-tooltip {
 }
 
 @media only screen and (max-width: 1400px) {
-    #mobile-notice {
+    /*#mobile-notice {
         display:block;
-    }
+    }*/
 }
