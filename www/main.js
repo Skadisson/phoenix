@@ -661,7 +661,7 @@ PS = (function(window, document, $) {
         var editors = !card['editors'] ? '' : card['editors'].join(', ');
         $template.removeClass('hidden');
         $template.removeClass('card-template');
-        $template.attr('href', external_link);
+        $template.attr('href', '#');
         $template.attr('rel', 'modal:detail');
         if(source_logo) {
             $('img.source-logo', $template).attr('src', source_logo);
@@ -681,14 +681,16 @@ PS = (function(window, document, $) {
         $($template).off('click');
         $($template).on('click', function(event) {
             event.preventDefault();
-            var external_link = $('p', $template).attr('data-card-link');
             var card_id = $('p', $template).attr('data-card-id');
             var query = $('#keywords').val();
             var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
-            window.open(external_link);
+            var external_link = $('p', $template).attr('data-card-link');
+            if(external_link != '#') {
+                window.open(external_link);
+            }
         });
         $('.edit', $template).on('click', function(event) {
             event.preventDefault();

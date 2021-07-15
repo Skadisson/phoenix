@@ -624,16 +624,19 @@ a:hover > .source-tooltip {
 
 #detail {
     background-color: #16BAE7;
+    padding-top: 100px;
 }
 
 #detail .screenshot {
-    position:relative;
+    position:absolute;
     width:100%;
     height:100px;
     background-position: top center;
     background-size: cover;
     background-repeat: no-repeat;
     background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868.jpg);
+    left:0;
+    top:0;
 }
 
 .flash-card {
