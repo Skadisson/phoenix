@@ -190,13 +190,22 @@ input[type=text] {
     background: #16BAE7;
     border-radius: 10px;
     padding: 5px 10px;
-    color:beige;
+    color:black;
     box-shadow: 1px 1px 3px black;
     overflow: hidden;
     position:relative;
     min-width:140px;
+}
+p .screenshot {
+    position:absolute;
+    left:0;
+    top:0;
+    display:block;
+    width:100%;
+    height:100%;
     background-position: center center;
-    background-size: contain;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 p .type {
     position:absolute;
@@ -598,9 +607,14 @@ a:hover > .source-tooltip {
 
 #detail {
     background-color: #16BAE7;
+}
+
+#detail .screenshot {
+    position:relative;
+    width:100%;
+    height:100px;
     background-position: top center;
-    background-size: contain;
-    background-blend-mode: lighten;
+    background-size: cover;
     background-repeat: no-repeat;
 }
 

@@ -711,7 +711,7 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.send();
             $('#detail').modal();
-            $('#detail').css('background-image', $('p[data-card-id=' + card_id + ']').css('background-image'));
+            $('#detail .screenshot').css('background-image', $('p[data-card-id=' + card_id + ']').css('background-image'));
             $('[name=card_id]', '#detail').val(card['id']);
             $('[name=title]', '#detail').val(card['title']);
             $('[name=text]', '#detail').val(card['text']);
@@ -754,7 +754,7 @@ PS = (function(window, document, $) {
     };
 
     function render_screenshots() {
-        $('[data-card-id]').each(function() {
+        $('p[data-card-id]').each(function() {
             var card_id = $(this).data('card-id');
             if(parseInt(card_id) > 0) {
                 self.render_screenshot(card_id);
@@ -782,11 +782,7 @@ PS = (function(window, document, $) {
                     if(result.items.length > 0) {
                         var screenshot = result.items[0];
                         self.render_notification('Screenshot geladen');
-                        $screenshotCard.css({
-                            'background-image': 'url(screenshots/' + screenshot + ')',
-                            'color': 'black',
-                            'text-shadow': '0 0 5px white'
-                        });
+                        $('.screenshot', $screenshotCard).css({'background-image': 'url(screenshots/' + screenshot + ')'});
                         self.render_shout_outs();
                     }
                 }
