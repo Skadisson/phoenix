@@ -41,7 +41,7 @@ class SciKitLearn:
                 self.threaded_search(normalized_texts, card_ids, query)
                 final_cards = self.storage.get_cards(context_ids)
                 filtered_cards = self.filter_cards(final_cards, query)
-                sorted_cards += self.storage.sort_cards(filtered_cards, 3)
+                sorted_cards += self.storage.sort_cards(filtered_cards, 2)
 
         else:
 
@@ -53,7 +53,7 @@ class SciKitLearn:
 
             final_cards = self.storage.get_cards(context_ids)
             filtered_cards = self.filter_cards(final_cards, query)
-            sorted_cards = self.storage.sort_cards(filtered_cards, 9)
+            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
 
         sorted_cards = self.storage.sort_cards(sorted_cards, len(sorted_cards))
         return sorted_cards

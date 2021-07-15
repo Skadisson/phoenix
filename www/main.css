@@ -89,11 +89,13 @@ form {
     position:fixed;
 }
 button[type=submit] {
-    margin-left: -50px;
     width: 50px;
     border: none;
     background: transparent;
     color:#E3DECA;
+    position: absolute;
+    right: 0;
+    top: 10px;
 }
 [readonly] {
     font-family: 'Montserrat', sans-serif !important;
@@ -106,7 +108,7 @@ input[type=text] {
     border-color:#ccc;
     border-radius:15px;
     height:20px;
-    width:720px;
+    width:100%;
     padding:8px 43px 8px 13px;
     outline-width: 0;
     font-size:16px;
@@ -114,6 +116,10 @@ input[type=text] {
     color:#0F0F0F;
     box-shadow: 1px 1px 5px black;
     resize:none;
+}
+#detail input[type=text],
+#detail textarea {
+    width: 87%;
 }
 #image-copyright {
     position:fixed;
@@ -148,15 +154,6 @@ input[type=text] {
     left:5px;
     top:5px;
 }
-.link-list .option-prompt {
-    position:absolute;
-    display:block;
-    width:100%;
-    height:100%;
-    left:0;
-    top:0;
-    background: rgba(0,0,0,0.5);
-}
 .link-list button {
     border: none;
     color: white;
@@ -179,33 +176,20 @@ input[type=text] {
     border-left:1px solid black;
 }
 .link-list > a {
-    display: flex;
+    display: block;
     justify-content: space-between;
     position:relative;
-    margin-right: 2%;
-    max-width:245px;
+    width:100%;
 }
 .link-list p {
     display: block;
     background: #16BAE7;
     border-radius: 10px;
     padding: 5px 10px;
-    color:black;
+    color:white;
     box-shadow: 1px 1px 3px black;
     overflow: hidden;
     position:relative;
-    min-width:140px;
-}
-p .screenshot {
-    position:absolute;
-    left:0;
-    top:0;
-    display:block;
-    width:100%;
-    height:100%;
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
 }
 p .type {
     position:absolute;
@@ -219,6 +203,7 @@ a:hover > .source-tooltip {
 .source-tooltip {
     opacity:0;
     position: absolute;
+    left: 0;
     border-radius: 10px;
     background-color: #333D3F;
     color: #FD5A2F;
@@ -243,7 +228,9 @@ a:hover > .source-tooltip {
 }
 .link-list p span {
     display:inline-block;
-    width: 100%;
+    width: 70%;
+    margin-left: 32%;
+    text-align: left;
 }
 .link-list p span.date {
     font-weight:bold;
@@ -254,7 +241,6 @@ a:hover > .source-tooltip {
     font-weight:bold;
     font-size:14px;
     line-height:16px;
-    margin: 20px 0 10px;
     padding:5px 0;
 }
 .link-list p span.id {
@@ -272,14 +258,45 @@ a:hover > .source-tooltip {
     font-size:12px;
     line-height:12px;
 }
+.link-list p span.screenshot {
+    position:absolute;
+    left:0;
+    top:0;
+    display:block;
+    width:30%;
+    height:100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-left: 0;
+    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868.jpg);
+}
 .link-list p a, .link-list p a:link, .link-list p a:visited, .link-list p a:hover, .link-list p a:active {
     color:#635C3B;
     width: 100%;
     display:inline-block;
 }
 .link-list .plus {
-    font-size:32px;
-    line-height:32px;
+    font-size: 32px;
+    line-height: 32px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+}
+.link-list .edit {
+    font-size: 28px;
+    line-height: 28px;
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: 0;
 }
 .jquery-modal fieldset {
     border:none;
@@ -616,6 +633,7 @@ a:hover > .source-tooltip {
     background-position: top center;
     background-size: cover;
     background-repeat: no-repeat;
+    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868.jpg);
 }
 
 .flash-card {

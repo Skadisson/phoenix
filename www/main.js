@@ -661,7 +661,7 @@ PS = (function(window, document, $) {
         var editors = !card['editors'] ? '' : card['editors'].join(', ');
         $template.removeClass('hidden');
         $template.removeClass('card-template');
-        $template.attr('href', '#edit');
+        $template.attr('href', external_link);
         $template.attr('rel', 'modal:detail');
         if(source_logo) {
             $('img.source-logo', $template).attr('src', source_logo);
@@ -674,33 +674,12 @@ PS = (function(window, document, $) {
         $('p', $template).attr('data-card-link', external_link);
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
         $('.title', $template).html(title);
-        $('.fas', $template).addClass(icon);
+        $('.type .fas', $template).addClass(icon);
         $('.keywords', $template).text(keywords);
         $('.author', $template).text(author);
         $('#link-list').append($template);
         $($template).off('click');
-        $($template).on('click', function(event) {
-            event.preventDefault();
-            if($('.option-prompt', $template).hasClass('hidden')) {
-                $('.option-prompt', $template).removeClass('hidden');
-            } else {
-                $('.option-prompt', $template).addClass('hidden');
-            }
-        });
-        $($template).on('click', '[name=goto]', function(event) {
-            $('.option-prompt', $template).addClass('hidden');
-            event.preventDefault();
-            var external_link = $('p', $template).attr('data-card-link');
-            var card_id = $('p', $template).attr('data-card-id');
-            var query = $('#keywords').val();
-            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', getUrl, true);
-            xhr.send();
-            window.open(external_link);
-        });
-        $($template).on('click', '[name=details]', function(event) {
-            $('.option-prompt', $template).addClass('hidden');
+        $('.edit', $template).on('click', function(event) {
             event.preventDefault();
             self.register_events();
             var card_id = $('p', $template).attr('data-card-id');
@@ -711,7 +690,7 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.send();
             $('#detail').modal();
-            $('#detail .screenshot').css('background-image', $('p[data-card-id=' + card_id + ']').css('background-image'));
+            $('#detail .screenshot').css('background-image', $('p[data-card-id=' + card_id + '] .screenshot').css('background-image'));
             $('[name=card_id]', '#detail').val(card['id']);
             $('[name=title]', '#detail').val(card['title']);
             $('[name=text]', '#detail').val(card['text']);

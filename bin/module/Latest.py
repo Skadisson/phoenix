@@ -15,7 +15,7 @@ class Latest:
         }
         try:
 
-            max_cards = 9
+            max_cards = 6
             cards = self.storage.get_latest_cards(max_cards)
             result['items'].append({
                 'cards': cards,
