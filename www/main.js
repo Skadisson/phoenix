@@ -417,9 +417,12 @@ PS = (function(window, document, $) {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
                     self.render_notification('Favoriten geladen');
-                    $('#favourites').html('');
                     var result = JSON.parse(xhr.responseText);
                     if(result.items.length > 0 && typeof result.items[0].favourites != 'undefined') {
+                        if(result.items[0].favourites.length > 0) {
+                            $('.bottom-left').hide();
+                        }
+                        $('#favourites').html('');
                         var favourites = result.items[0].favourites;
                         for(var i in favourites) {
                             var favourite = favourites[i];
