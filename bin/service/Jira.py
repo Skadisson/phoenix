@@ -49,7 +49,7 @@ class Jira(Storage.Storage):
         max_results = 100
         cached_total = 0
 
-        projects = self.environment.get_map_jira_projects()
+        projects = self.request_service_jira_projects()
         for project in projects:
             offset = 0
             jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
@@ -227,6 +227,21 @@ class Jira(Storage.Storage):
             total = int(raw_data['total'])
 
         return jira_keys, total
+
+    def request_service_jira_projects(self):
+        projects = []
+
+        projects_endpoint = self.environment.get_endpoint_projects()
+        response, content = self.client.request(projects_endpoint, "GET")
+        if response['status'] != '200':
+            raise Exception("Request failed with status code {}".format(response['status']))
+        response_data = content.decode("utf-8")
+        raw_data = json.loads(response_data)
+        for project in raw_data:
+            if project['key'] not in projects:
+                projects.append(project['key'])
+
+        return projects
 
     def request_info(self):
         info_endpoint = self.environment.get_endpoint_info()

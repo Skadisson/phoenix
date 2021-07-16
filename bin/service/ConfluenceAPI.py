@@ -23,11 +23,11 @@ class ConfluenceAPI(Storage.Storage):
 
     def sync_entries(self, wait=2):
         cached_total = 0
-        confluence_spaces = self.environment.get_map_confluence_spaces()
-        for confluence_space in confluence_spaces:
+        space_keys = self.load_space_keys()
+        for space_key in space_keys:
             start = float(time.time())
             confluence_entries = {}
-            space_entries = self.load_entries_from_space(confluence_space)
+            space_entries = self.load_entries_from_space(space_key)
             confluence_ids = []
             for confluence_id in space_entries:
                 confluence_ids.append(confluence_id)
@@ -37,9 +37,19 @@ class ConfluenceAPI(Storage.Storage):
             cached_total += cached_current
             stop = float(time.time())
             seconds = (stop - start)
-            print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, confluence_space, cached_total, seconds))
+            print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, space_key, cached_total, seconds))
             time.sleep(wait)
         self.transfer_entries()
+
+    def load_space_keys(self):
+        space_keys = []
+
+        spaces = self.confluence.get_all_spaces()
+        for space in spaces:
+            if space['key'] not in space_keys:
+                space_keys.append(space['key'])
+
+        return space_keys
 
     def transfer_entries(self):
         confluence_entries = self.load_cached_entries()
