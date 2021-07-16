@@ -649,6 +649,17 @@ a:hover > .source-tooltip {
     line-height: 14px;
 }
 
+.bottom-right {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 230px;
+}
+
+.bottom-right .title {
+    margin-bottom: 10px;
+}
+
 .flash-card {
   -moz-animation: flash_card 2s ease-out;
   -moz-animation-iteration-count: infinite;
