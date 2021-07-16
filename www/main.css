@@ -269,7 +269,7 @@ a:hover > .source-tooltip {
     background-size: cover;
     background-repeat: no-repeat;
     margin-left: 0;
-    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868.jpg);
+    background-image:url(image/placeholder.png);
 }
 .link-list p a, .link-list p a:link, .link-list p a:visited, .link-list p a:hover, .link-list p a:active {
     color:#635C3B;
@@ -634,7 +634,7 @@ a:hover > .source-tooltip {
     background-position: top center;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image:url(image/bird-s-eye-view-of-seashore-during-daytime-3426868.jpg);
+    background-image:url(image/placeholder.png);
     left:0;
     top:0;
 }
