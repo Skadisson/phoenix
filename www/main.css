@@ -391,7 +391,7 @@ a:hover > .source-tooltip {
 .fa-star {
     cursor:pointer;
 }
-.fa-bullhorn {
+#detail .fa-bullhorn {
     cursor:pointer;
     position: absolute;
     right: 30px;
@@ -658,15 +658,6 @@ a:hover > .source-tooltip {
 
   -ms-animation: flash_card 2s ease-out;
   -ms-animation-iteration-count: infinite;
-}
-
-.so-marker {
-    position: absolute;
-    left: 130px;
-    top: 0;
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    opacity: 0.5;
 }
 
 @keyframes flash_card {

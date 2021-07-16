@@ -295,9 +295,9 @@ PS = (function(window, document, $) {
         for(var i in loaded_shout_outs) {
             var loaded_shout_out = loaded_shout_outs[i];
             $('p[data-card-id=' + loaded_shout_out.card_id + ']').addClass('flash-card');
-            if($('p[data-card-id=' + loaded_shout_out.card_id + '] .so-marker').length == 0) {
-                $('p[data-card-id=' + loaded_shout_out.card_id + ']').append('<img class="so-marker blink" src="image/so_marker.png" />');
-            }
+            $('p[data-card-id=' + loaded_shout_out.card_id + '] .type i').removeClass('fa-check-circle');
+            $('p[data-card-id=' + loaded_shout_out.card_id + '] .type i').removeClass('fa-question-circle');
+            $('p[data-card-id=' + loaded_shout_out.card_id + '] .type i').addClass('fa-bullhorn');
         }
     };
 
