@@ -671,6 +671,10 @@ a:hover > .source-tooltip {
     margin-bottom: 10px;
 }
 
+.nothing-found {
+    display: none;
+}
+
 .flash-card {
   -moz-animation: flash_card 2s ease-out;
   -moz-animation-iteration-count: infinite;

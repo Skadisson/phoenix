@@ -629,6 +629,11 @@ PS = (function(window, document, $) {
                         }
                         self.stop_dot_animation(result.items[0].count);
                         self.render_shout_outs();
+                        if(result.items[0].count == 0) {
+                            $('.nothing-found').show();
+                        } else {
+                            $('.nothing-found').hide();
+                        }
                     }
                     self.render_screenshots();
                 }
