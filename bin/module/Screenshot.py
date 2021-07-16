@@ -37,7 +37,7 @@ class Screenshot:
             if os.path.isfile(full_path) is True and (time.time() - os.stat(full_path).st_mtime) > one_day:
                 os.remove(full_path)
             if os.path.isfile(full_path) is False:
-                options = argparse.Namespace(URL=None, ajax_max_timeouts='1400,1800', cookie=None, crop=None, custom_js=None, format='png', header=None, http_password=None, http_username=None, imagemagick_binary=None, input_file=None, label=False, label_bg_color='NavajoWhite', label_size=60, log_level='DEBUG', multiprotocol=False, no_error_file=False, no_xserver=False, output_directory='www/screenshots', port=None, proxy=None, proxy_auth=None, proxy_type=None, quality=75, renderer='phantomjs', renderer_binary=None, single_output_file=md5_filename, ssl=True, timeout=30, verbosity=2, window_size='1024,768', workers=4)
+                options = argparse.Namespace(URL=None, ajax_max_timeouts='1400,1800', cookie=None, crop=None, custom_js=None, format='png', header=None, http_password=None, http_username=None, imagemagick_binary=None, input_file=None, label=False, label_bg_color='NavajoWhite', label_size=60, log_level='DEBUG', multiprotocol=False, no_error_file=False, no_xserver=False, output_directory='www/screenshots', port=None, proxy=None, proxy_auth=None, proxy_type=None, quality=75, renderer='phantomjs', renderer_binary=None, single_output_file=md5_filename, ssl=True, timeout=30, verbosity=2, window_size='1920,1080', workers=4)
                 take_screenshot([url], options)
                 os.rename(md5_filename, full_path)
             result['items'].append(md5_filename)

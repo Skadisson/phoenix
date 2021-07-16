@@ -660,7 +660,7 @@ PS = (function(window, document, $) {
         var editors = !card['editors'] ? '' : card['editors'].join(', ');
         $template.removeClass('hidden');
         $template.removeClass('card-template');
-        $template.attr('href', '#');
+        $template.attr('href', '');
         $template.attr('rel', 'modal:detail');
         if(source_logo) {
             $('img.source-logo', $template).attr('src', source_logo);
@@ -687,7 +687,7 @@ PS = (function(window, document, $) {
             xhr.open('GET', getUrl, true);
             xhr.send();
             var external_link = $('p', $template).attr('data-card-link');
-            if(external_link != '#') {
+            if(external_link != '') {
                 window.open(external_link);
             }
         });
