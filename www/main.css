@@ -56,8 +56,8 @@ body {
   }
 }
 .blink {
-  animation: blink 1s step-start 0s infinite;
-  -webkit-animation: blink 1s step-start 0s infinite;
+  animation: blink 2s step-start 0s infinite;
+  -webkit-animation: blink 2s step-start 0s infinite;
 }
 a, a:active, a:link, a:visited, a:hover {
     color:#FCF7E0;
@@ -650,14 +650,23 @@ a:hover > .source-tooltip {
 }
 
 .flash-card {
-  -moz-animation: flash_card 1.5s ease-out;
+  -moz-animation: flash_card 2s ease-out;
   -moz-animation-iteration-count: infinite;
 
-  -webkit-animation: flash_card 1.5s ease-out;
+  -webkit-animation: flash_card 2s ease-out;
   -webkit-animation-iteration-count: infinite;
 
-  -ms-animation: flash_card 1.5s ease-out;
+  -ms-animation: flash_card 2s ease-out;
   -ms-animation-iteration-count: infinite;
+}
+
+.so-marker {
+    position: absolute;
+    left: 130px;
+    top: 0;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    opacity: 0.5;
 }
 
 @keyframes flash_card {
