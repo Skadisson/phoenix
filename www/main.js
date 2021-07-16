@@ -15,8 +15,9 @@ PS = (function(window, document, $) {
     var notify_interval = 0;
     var autocomplete_timeout = 0;
     var host_name = window.location.hostname;
-    var host_protocol = 'http'
-    var host_port = '8110'
+    var host_protocol = 'http';
+    var host_port = '8110';
+    var tip_interval = 0;
 
     var construct = function() {
         self = this;
@@ -33,6 +34,8 @@ PS = (function(window, document, $) {
     };
 
     function init() {
+        self.randomize_tips();
+        self.tip_interval = setInterval(self.randomize_tips, 60000);
         self.info(function() {
             self.fill_analytics();
             self.shout_outs();
@@ -47,6 +50,14 @@ PS = (function(window, document, $) {
             self.register_events();
             //self.start_notifications();
         });
+    };
+
+    function randomize_tips() {
+        var $tips = $('#tipOfTheDay li');
+        var tip_count = $tips.length;
+        var visible_tip = Math.floor((Math.random() * tip_count) + 1);
+        $tips.hide();
+        $('#tipOfTheDay li:nth-child(' + visible_tip + ')').show();
     };
 
     function register_events() {
@@ -941,7 +952,8 @@ PS = (function(window, document, $) {
         start_notifications: start_notifications,
         request_notifications: request_notifications,
         autoComplete: autoComplete,
-        change_username: change_username
+        change_username: change_username,
+        randomize_tips: randomize_tips
     };
 
     return construct;
