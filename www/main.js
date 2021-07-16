@@ -77,8 +77,7 @@ PS = (function(window, document, $) {
                             if(result.items[0].is_added) {
                                 self.render_notification('Shout Out erfolgreich');
                                 self.shout_outs();
-                                text = result.items[0].text
-                                short = result.items[0].short
+                                var short = result.items[0]['shout_out']['short']
                                 $('#shout-out input').val('');
                                 $('#shout-out').hide();
                                 $('.shout-outs').prepend('<p class="shout-out">' + short + ': "' + text + '"</p>');
@@ -704,6 +703,7 @@ PS = (function(window, document, $) {
             xhr.send();
             $('#detail').modal();
             $('#detail .screenshot').css('background-image', $('p[data-card-id=' + card_id + '] .screenshot').css('background-image'));
+            $('.jquery-modal.blocker').css('background-image', $('p[data-card-id=' + card_id + '] .screenshot').css('background-image'));
             $('[name=card_id]', '#detail').val(card['id']);
             $('[name=title]', '#detail').val(card['title']);
             $('[name=text]', '#detail').val(card['text']);

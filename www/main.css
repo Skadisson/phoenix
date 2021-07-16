@@ -28,7 +28,10 @@ body {
 }
 .blocker {
     background-color:rgba(0, 0, 0, 0.75);
-    z-index:200;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    z-index:500;
 }
 .modal {
     background: white;
@@ -116,10 +119,6 @@ input[type=text] {
     color:#0F0F0F;
     box-shadow: 1px 1px 5px black;
     resize:none;
-}
-#detail input[type=text],
-#detail textarea {
-    width: 87%;
 }
 #image-copyright {
     position:fixed;
@@ -327,7 +326,7 @@ a:hover > .source-tooltip {
     top:150px;
     overflow:hidden;
     display:block;
-    z-index:400;
+    z-index:1000;
 }
 #log p {
     color:#16BAE7;
@@ -544,7 +543,7 @@ a:hover > .source-tooltip {
     margin-top: -60px;
     border-radius: 10px;
     box-shadow: 2px 2px 8px black;
-    z-index: 400;
+    z-index: 700;
 }
 
 #shout-out .fa-times-circle {
@@ -573,7 +572,7 @@ a:hover > .source-tooltip {
 }
 
 .shout-out {
-    background: #16BAE7;
+    background: white;
     padding: 5px;
     border-radius: 5px;
     box-shadow: 1px 1px 2px black;
@@ -623,20 +622,31 @@ a:hover > .source-tooltip {
 }
 
 #detail {
+    position: absolute;
+    left: 15px;
     background-color: #16BAE7;
-    padding-top: 100px;
+    padding-top: 200px;
+    font-size: 12px;
+    line-height: 14px;
 }
 
 #detail .screenshot {
     position:absolute;
     width:100%;
-    height:100px;
+    height:200px;
     background-position: top center;
     background-size: cover;
     background-repeat: no-repeat;
     background-image:url(image/placeholder.png);
     left:0;
     top:0;
+}
+
+#detail input[type=text],
+#detail textarea {
+    width: 87%;
+    font-size: 12px;
+    line-height: 14px;
 }
 
 .flash-card {
