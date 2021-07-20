@@ -1,68 +1,132 @@
 from sklearn import naive_bayes, feature_extraction, pipeline
-from bin.service import Logger, Environment, CardStorage
+from bin.service import Logger, Environment, CardStorage, NormalCache
 import threading
 import re
+import time
 
 
 ready_states = []
 context_ids = []
+probabilities = []
 
 
 class SciKitLearn:
 
-    global ready_states, context_ids
+    global ready_states, context_ids, probabilities
 
     def __init__(self):
         self.logger = Logger.Logger()
         self.environment = Environment.Environment()
         self.storage = CardStorage.CardStorage()
+        self.normal_cache = NormalCache.NormalCache()
 
     def search(self, query, not_empty=None, cards=None):
 
-        global context_ids
+        global context_ids, probabilities
         context_ids = []
-        enable_git = self.environment.get_service_enable_git()
+        probabilities = []
 
+        search_profile = {}
         if cards is None:
-            sorted_cards = []
-            packs_of_cards = []
-            if enable_git is True:
-                packs_of_cards.append(list(self.storage.get_git_cards(not_empty)))
 
-            jira_cards, confluence_cards, phoenix_cards = self.storage.get_jira_confluence_and_phoenix_cards(not_empty)
-            packs_of_cards.append(list(jira_cards))
-            packs_of_cards.append(list(confluence_cards))
-            packs_of_cards.append(list(phoenix_cards))
+            search_profile['load_normalized_cards'] = time.time()
+            documents, card_ids = self.normal_cache.load_normalized_cards(not_empty)
+            search_profile['card_count'] = len(documents)
+            search_profile['load_normalized_cards'] = time.time() - search_profile['load_normalized_cards']
 
-            for pack_of_cards in packs_of_cards:
-                normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(pack_of_cards)
-                self.threaded_search(normalized_keywords, card_ids, query)
-                self.threaded_search(normalized_titles, card_ids, query)
-                self.threaded_search(normalized_texts, card_ids, query)
-                final_cards = self.storage.get_cards(context_ids)
-                filtered_cards = self.filter_cards(final_cards, query)
-                sorted_cards += self.storage.sort_cards(filtered_cards, 2)
+            search_profile['threaded_search'] = time.time()
+            self.threaded_search(documents, card_ids, query)
+            search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
+
+            search_profile['get_cards'] = time.time()
+            final_cards = self.storage.get_cards(context_ids)
+            self.add_probabilities(final_cards)
+            search_profile['get_cards'] = time.time() - search_profile['get_cards']
+
+            if len(final_cards) >= 100:
+                search_profile['context_search'] = time.time()
+                documents = []
+                card_ids = []
+                for final_card in final_cards:
+                    normalized_keyword, normalized_title, normalized_text, card_id = self.normal_cache.normalize_card(final_card)
+                    if card_id > 0 and (normalized_keyword != '' or normalized_title != '' or normalized_text != ''):
+                        card_ids.append(card_id)
+                        documents.append(normalized_keyword + ' ' + normalized_title + ' ' + normalized_text)
+                if len(documents) > 0:
+                    context_ids = []
+                    self.context_search(documents, card_ids, query, 6)
+                    final_cards = self.storage.get_cards(context_ids)
+                    self.add_probabilities(final_cards)
+                search_profile['context_search'] = time.time() - search_profile['context_search']
+
+            search_profile['filter_cards'] = time.time()
+            filtered_cards = self.filter_cards(final_cards, query)
+            search_profile['filter_cards'] = time.time() - search_profile['filter_cards']
+
+            search_profile['sort_cards'] = time.time()
+            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
+            search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
         else:
 
-            normalized_keywords, normalized_titles, normalized_texts, card_ids = self.normalize_cards(cards)
+            search_profile['normalize_cards'] = time.time()
+            documents, card_ids = self.normal_cache.normalize_cards(cards)
+            search_profile['card_count'] = len(documents)
+            search_profile['normalize_cards'] = time.time() - search_profile['normalize_cards']
 
-            self.threaded_search(normalized_keywords, card_ids, query)
-            self.threaded_search(normalized_titles, card_ids, query)
-            self.threaded_search(normalized_texts, card_ids, query)
+            search_profile['threaded_search'] = time.time()
+            self.threaded_search(documents, card_ids, query)
+            search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
 
+            search_profile['get_cards'] = time.time()
             final_cards = self.storage.get_cards(context_ids)
-            filtered_cards = self.filter_cards(final_cards, query)
-            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
+            self.add_probabilities(final_cards)
+            search_profile['get_cards'] = time.time() - search_profile['get_cards']
 
-        sorted_cards = self.storage.sort_cards(sorted_cards, len(sorted_cards))
+            if len(final_cards) >= 100:
+                search_profile['context_search'] = time.time()
+                documents = []
+                card_ids = []
+                for final_card in final_cards:
+                    normalized_keyword, normalized_title, normalized_text, card_id = self.normal_cache.normalize_card(final_card)
+                    if card_id > 0 and (normalized_keyword != '' or normalized_title != '' or normalized_text != ''):
+                        card_ids.append(card_id)
+                        documents.append(normalized_keyword + ' ' + normalized_title + ' ' + normalized_text)
+                if len(documents) > 0:
+                    context_ids = []
+                    self.context_search(documents, card_ids, query, 6)
+                    final_cards = self.storage.get_cards(context_ids)
+                    self.add_probabilities(final_cards)
+                search_profile['context_search'] = time.time() - search_profile['context_search']
+
+            search_profile['filter_cards'] = time.time()
+            filtered_cards = self.filter_cards(final_cards, query)
+            search_profile['filter_cards'] = time.time() - search_profile['filter_cards']
+
+            search_profile['sort_cards'] = time.time()
+            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
+            search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
+
+        self.logger.add_entry(self.__class__.__name__, search_profile)
+
         return sorted_cards
+
+    @staticmethod
+    def add_probabilities(final_cards):
+        global context_ids, probabilities
+        for final_card in final_cards:
+            card_id = final_card['id']
+            probability_index = context_ids.index(card_id)
+            final_card['probability'] = probabilities[probability_index]
 
     def threaded_search(self, documents, ids, query):
 
         global ready_states
         total_count = len(ids)
-        chunk_size = int(round(total_count / 10))
+        if total_count > 100:
+            chunk_size = int(round(total_count / 100))
+        else:
+            chunk_size = int(round(total_count / 10))
         if chunk_size > 0:
             document_chunks = self.chunks(documents, chunk_size)
             id_chunks = list(self.chunks(ids, chunk_size))
@@ -76,7 +140,7 @@ class SciKitLearn:
         i = 0
         for document_chunk in document_chunks:
             id_chunk = id_chunks[i]
-            processes.append(threading.Thread(target=self.context_search, args=(document_chunk, id_chunk, query)))
+            processes.append(threading.Thread(target=self.context_search, args=(document_chunk, id_chunk, query, 3)))
             i += 1
 
         for process in processes:
@@ -89,9 +153,9 @@ class SciKitLearn:
             process.join()
 
     @staticmethod
-    def context_search(documents, ids, query):
+    def context_search(documents, ids, query, max_results=3):
 
-        global ready_states, context_ids
+        global ready_states, context_ids, probabilities
         docs_new = [query]
 
         text_clf = pipeline.Pipeline([
@@ -100,13 +164,18 @@ class SciKitLearn:
             ('clf', naive_bayes.MultinomialNB()),
         ])
 
-        for i in range(1, 3):
+        for i in range(0, max_results):
             if len(documents) > 0 and len(ids) > 0 and len(documents) == len(ids):
                 text_context = text_clf.fit(documents, ids)
                 text_id = text_context.predict(docs_new)
+                predicted_probabilities = text_context.predict_proba(docs_new)
+                probability_list = list(predicted_probabilities[0])
+                probability_index = ids.index(text_id)
+                text_probability = probability_list[probability_index]
                 found_id = int(text_id.astype(int))
                 if found_id not in context_ids:
                     context_ids.append(found_id)
+                    probabilities.append(text_probability)
                 index = ids.index(found_id)
                 del(documents[index])
                 del(ids[index])
@@ -117,38 +186,6 @@ class SciKitLearn:
     def chunks(lst, n):
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
-
-    @staticmethod
-    def normalize_cards(cards):
-        normalized_keywords = []
-        normalized_titles = []
-        normalized_texts = []
-        card_ids = []
-
-        for card in cards:
-            normalized_keyword = ''
-            normalized_title = ''
-            normalized_text = ''
-            if card['title'] is not None:
-                normalized_title = str(card['title'])
-            if card['text'] is not None:
-                normalized_text = str(card['text'])
-            if card['keywords'] is not None:
-                normalized_keyword = str(' '.join(card['keywords']))
-            card_id = int(card['id'])
-            if card_id > 0:
-                if normalized_keyword == '':
-                    normalized_keyword = 'empty'
-                if normalized_title == '':
-                    normalized_title = 'empty'
-                if normalized_text == '':
-                    normalized_text = 'empty'
-                card_ids.append(card_id)
-                normalized_keywords.append(normalized_keyword)
-                normalized_titles.append(normalized_title)
-                normalized_texts.append(normalized_text)
-
-        return normalized_keywords, normalized_titles, normalized_texts, card_ids
 
     @staticmethod
     def filter_cards(cards, query):

@@ -17,7 +17,7 @@ class ContextSearch:
             cards = self.storage.get_all_cards('title')
 
         if cards.count() <= 0 or cards.count() > 6:
-            sorted_cards = self.sci_kit_learn.search(query, 'title', None)
+            sorted_cards = self.sci_kit_learn.search(query, 'normal_title', None)
         else:
             sorted_cards = self.storage.sort_cards(cards, 6)
 
@@ -26,7 +26,7 @@ class ContextSearch:
     def suggest_keywords(self, title, text):
 
         query = title + ' ' + text
-        cards = self.sci_kit_learn.search(query, 'keywords')
+        cards = self.sci_kit_learn.search(query, 'normal_keyword')
         card = cards[0]
         keywords = ','.join(card['keywords'])
 

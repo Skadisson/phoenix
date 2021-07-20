@@ -1,5 +1,5 @@
 from bin.entity import Card
-from bin.service import CardStorage
+from bin.service import CardStorage, NormalCache
 import time
 import copy
 import datetime
@@ -11,6 +11,7 @@ class CardTransfer:
         self.jira_tickets = []
         self.confluence_entries = []
         self.storage = CardStorage.CardStorage()
+        self.normal_cache = NormalCache.NormalCache()
 
     def transfer_jira(self, jira_tickets):
         start = time.time()
@@ -28,7 +29,10 @@ class CardTransfer:
                     self.storage.add_card(jira_card)
                     created_jira_card_ids.append(jira_card['id'])
                 elif jira_card['author'] is None:
-                    self.update_jira_card(ticket['id'], jira_card)
+                    jira_card = self.update_jira_card(ticket['id'], jira_card)
+                    self.storage.update_card(jira_card)
+                if jira_card is not None:
+                    self.normal_cache.normalize_card(jira_card)
                 now = time.time()
                 if current % step == 0:
                     percentage = round((current / total) * 100)
@@ -55,6 +59,8 @@ class CardTransfer:
                 elif confluence_card['author'] is None:
                     self.update_confluence_card(confluence_entry, confluence_card)
                     self.storage.update_card(confluence_card)
+                if confluence_card is not None:
+                    self.normal_cache.normalize_card(confluence_card)
                 now = time.time()
                 if current % step == 0:
                     percentage = round((current / total) * 100)
@@ -81,6 +87,8 @@ class CardTransfer:
                 elif git_card['author'] is None:
                     self.update_git_card(git_entry['id'], git_card)
                     self.storage.update_card(git_card)
+                if git_card is not None:
+                    self.normal_cache.normalize_card(git_card)
                 now = time.time()
                 if current % step == 0:
                     percentage = round((current / total) * 100)
@@ -137,6 +145,8 @@ class CardTransfer:
             if 'keywords' in ticket and ticket['keywords'] is not None:
                 updated_jira_card['keywords'] = ticket['keywords']
             updated_jira_card['changed'] = time.time()
+            jira_card = updated_jira_card
+        return jira_card
 
     def create_confluence_card(self, confluence_id, confluence_entry, card_id):
         confluence_card = Card.Card()

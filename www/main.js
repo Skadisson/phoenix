@@ -10,6 +10,7 @@ PS = (function(window, document, $) {
     var interval = 0;
     var dot_interval = 0;
     var loading_seconds = 0;
+    var last_search_time = 0;
     var loaded_shout_outs = [];
     var card_id_parameter = 0;
     var notify_interval = 0;
@@ -636,6 +637,7 @@ PS = (function(window, document, $) {
             self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    last_search_time = loading_seconds
                     self.finish_loading();
                     $('#link-list').html('');
                     var result = JSON.parse(xhr.responseText);
@@ -716,6 +718,11 @@ PS = (function(window, document, $) {
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
         $('.title', $template).html(title);
         $('.type .fas', $template).addClass(icon);
+        if(card['probability']) {
+            $('.probability').text((Math.round(card['probability'] * 10000)/100) + '%');
+        } else {
+            $('.probability').text('100%');
+        }
         $('.keywords', $template).text(keywords);
         $('.author', $template).text(author);
         $('#link-list').append($template);
@@ -724,7 +731,7 @@ PS = (function(window, document, $) {
             event.preventDefault();
             var card_id = $('p', $template).attr('data-card-id');
             var query = $('#keywords').val();
-            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(loading_seconds) + '&frontend=desktop';
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Click&card_id=' + encodeURIComponent(card_id) + '&query=' + encodeURIComponent(query) + '&loading_seconds=' + encodeURIComponent(last_search_time) + '&frontend=desktop';
             var xhr = new XMLHttpRequest();
             xhr.open('GET', getUrl, true);
             xhr.send();
