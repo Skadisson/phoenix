@@ -126,7 +126,9 @@ PS = (function(window, document, $) {
     };
 
     function finish_loading() {
-        loading--;
+        if(loading > 0) {
+            loading--;
+        }
         if(loading == 0) {
             $('#loaded').val(100);
         } else {
@@ -209,6 +211,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -280,6 +283,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -305,6 +309,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -358,6 +363,7 @@ PS = (function(window, document, $) {
                     };
                     xhr.send();
                 } catch(e) {
+                    self.finish_loading();
                     self.render_notification('Fehler', true);
                     console.log(e.message);
                 }
@@ -408,6 +414,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -441,6 +448,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -484,6 +492,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -519,6 +528,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -544,6 +554,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -648,6 +659,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -811,6 +823,7 @@ PS = (function(window, document, $) {
             };
             xhr.send();
         } catch(e) {
+            self.finish_loading();
             self.render_notification('Fehler', true);
             console.log(e.message);
         }
@@ -925,6 +938,7 @@ PS = (function(window, document, $) {
                 };
                 xhr.send();
             } catch(e) {
+                self.finish_loading();
                 self.render_notification('Fehler', true);
                 console.log(e.message);
             }
