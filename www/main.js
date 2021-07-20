@@ -122,6 +122,8 @@ PS = (function(window, document, $) {
         self.start_timer();
         loading++;
         var current_progress = Math.round(100 / loading);
+        if(loading == 1)
+            $('#loaded').fadeIn();
         $('#loaded').val(current_progress);
         $('.loading').stop().animate({'opacity': 1}, 200);
     };
@@ -132,6 +134,7 @@ PS = (function(window, document, $) {
         }
         if(loading == 0) {
             $('#loaded').val(100);
+            $('#loaded').fadeOut();
         } else {
             var current_progress = Math.round(100 / loading);
             $('#loaded').val(current_progress);
