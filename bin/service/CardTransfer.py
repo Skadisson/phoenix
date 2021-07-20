@@ -13,9 +13,14 @@ class CardTransfer:
         self.storage = CardStorage.CardStorage()
 
     def transfer_jira(self, jira_tickets):
+        start = time.time()
         created_jira_card_ids = []
         if jira_tickets is not None:
+            total = jira_tickets.count()
+            step = round(total/10)
+            current = 0
             for ticket in jira_tickets:
+                current += 1
                 jira_card = self.storage.get_jira_card(ticket['id'])
                 if jira_card is None:
                     card_id = self.storage.get_next_card_id()
@@ -24,13 +29,23 @@ class CardTransfer:
                     created_jira_card_ids.append(jira_card['id'])
                 elif jira_card['author'] is None:
                     self.update_jira_card(ticket['id'], jira_card)
+                now = time.time()
+                if current % step == 0:
+                    percentage = round((current / total) * 100)
+                    minutes = round((now - start) / 60, ndigits=2)
+                    print('>>> transfered {} % of jira entries after {} minutes ({}/{})'.format(percentage, minutes, current, total))
 
         return created_jira_card_ids
 
     def transfer_confluence(self, confluence_entries):
+        start = time.time()
         created_confluence_card_ids = []
         if confluence_entries is not None:
+            total = confluence_entries.count()
+            step = round(total/10)
+            current = 0
             for confluence_entry in confluence_entries:
+                current += 1
                 confluence_card = self.storage.get_confluence_card(confluence_entry['id'])
                 if confluence_card is None:
                     card_id = self.storage.get_next_card_id()
@@ -40,13 +55,23 @@ class CardTransfer:
                 elif confluence_card['author'] is None:
                     self.update_confluence_card(confluence_entry, confluence_card)
                     self.storage.update_card(confluence_card)
+                now = time.time()
+                if current % step == 0:
+                    percentage = round((current / total) * 100)
+                    minutes = round((now - start) / 60, ndigits=2)
+                    print('>>> transfered {} % of confluence entries after {} minutes ({}/{})'.format(percentage, minutes, current, total))
 
         return created_confluence_card_ids
 
     def transfer_git(self, git_entries):
+        start = time.time()
         created_git_card_ids = []
         if git_entries is not None:
+            total = git_entries.count()
+            step = round(total/10)
+            current = 0
             for git_entry in git_entries:
+                current += 1
                 git_card = self.storage.get_git_card(git_entry['id'])
                 if git_card is None:
                     card_id = self.storage.get_next_card_id()
@@ -56,6 +81,11 @@ class CardTransfer:
                 elif git_card['author'] is None:
                     self.update_git_card(git_entry['id'], git_card)
                     self.storage.update_card(git_card)
+                now = time.time()
+                if current % step == 0:
+                    percentage = round((current / total) * 100)
+                    minutes = round((now - start) / 60, ndigits=2)
+                    print('>>> transfered {} % of git entries after {} minutes ({}/{})'.format(percentage, minutes, current, total))
 
         return created_git_card_ids
 
@@ -172,3 +202,6 @@ class CardTransfer:
             if updated_confluence_card['created'] is None:
                 updated_confluence_card['created'] = self.timestamp_from_atlassian_time(confluence_entry['created'])
             updated_confluence_card['changed'] = self.timestamp_from_atlassian_time(confluence_entry['created'])
+
+    def close(self):
+        self.storage.close()

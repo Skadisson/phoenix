@@ -9,6 +9,19 @@ body {
     background-attachment: fixed;
     margin:0;
 }
+progress[value] {
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    z-index: 10;
+    background-color:#1A1E1F;
+}
+progress[value]::-webkit-progress-value {
+    background-color: #16BAE7;
+}
 #beta-ribbon {
     z-index: 800;
     position: fixed;

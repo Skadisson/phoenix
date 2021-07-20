@@ -97,7 +97,7 @@ class CardStorage(Storage.Storage):
     def get_jira_card(self, ticket_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        card = card_storage.find_one({'relation_type': 'jira', 'relation_id': ticket_id})
+        card = card_storage.find_one({'relation_type': 'jira', 'relation_id': ticket_id}, no_cursor_timeout=True)
         return card
 
     def get_confluence_cards(self):
@@ -118,13 +118,13 @@ class CardStorage(Storage.Storage):
     def get_confluence_card(self, confluence_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        card = card_storage.find_one({'relation_type': 'confluence', 'relation_id': confluence_id})
+        card = card_storage.find_one({'relation_type': 'confluence', 'relation_id': confluence_id}, no_cursor_timeout=True)
         return card
 
     def get_git_card(self, git_id):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        card = card_storage.find_one({'relation_type': 'git', 'relation_id': git_id})
+        card = card_storage.find_one({'relation_type': 'git', 'relation_id': git_id}, no_cursor_timeout=True)
         return card
 
     def get_timed_facts(self, target_time):
@@ -254,3 +254,8 @@ class CardStorage(Storage.Storage):
         self.store_card(dict(card))
 
         return card.id
+
+    def close(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        card_storage.close()

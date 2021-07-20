@@ -54,6 +54,7 @@ class ConfluenceAPI(Storage.Storage):
     def transfer_entries(self):
         confluence_entries = self.load_cached_entries()
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
+        self.card_transfer.close()
         created_current = len(created_card_ids)
         print('>>> confluence synchronization completed, {} new cards created'.format(created_current))
 
@@ -105,6 +106,6 @@ class ConfluenceAPI(Storage.Storage):
         try:
             phoenix = self.mongo.phoenix
             confluence_storage = phoenix.confluence_storage
-            return confluence_storage.find()
+            return confluence_storage.find(no_cursor_timeout=True)
         except Exception as e:
             self.logger.add_entry(self.__class__.__name__, str(e))

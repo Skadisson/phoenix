@@ -120,11 +120,19 @@ PS = (function(window, document, $) {
     function start_loading() {
         self.start_timer();
         loading++;
+        var current_progress = Math.round(100 / loading);
+        $('#loaded').val(current_progress);
         $('.loading').stop().animate({'opacity': 1}, 200);
     };
 
     function finish_loading() {
         loading--;
+        if(loading == 0) {
+            $('#loaded').val(100);
+        } else {
+            var current_progress = Math.round(100 / loading);
+            $('#loaded').val(current_progress);
+        }
         if(loading == 0) {
             self.stop_timer();
             $('.loading').stop().animate({'opacity': 0}, 200);

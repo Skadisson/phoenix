@@ -83,6 +83,7 @@ class Jira(Storage.Storage):
         jira_entries = self.load_tickets()
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)
+        self.card_transfer.close()
         print('>>> jira synchronization completed, {} new cards created'.format(created_current))
 
     def store_tickets(self, tickets):
@@ -131,7 +132,7 @@ class Jira(Storage.Storage):
     def load_tickets(self):
         phoenix = self.mongo.phoenix
         jira_storage = phoenix.jira_storage
-        return jira_storage.find()
+        return jira_storage.find(no_cursor_timeout=True)
 
     def retrieve_token(self):
         self.token = self.load_token()
