@@ -83,7 +83,6 @@ class Jira(Storage.Storage):
         jira_entries = self.load_tickets()
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)
-        self.card_transfer.close()
         print('>>> jira synchronization completed, {} new cards created'.format(created_current))
 
     def store_tickets(self, tickets):

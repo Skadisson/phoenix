@@ -254,8 +254,3 @@ class CardStorage(Storage.Storage):
         self.store_card(dict(card))
 
         return card.id
-
-    def close(self):
-        phoenix = self.mongo.phoenix
-        card_storage = phoenix.card_storage
-        card_storage.close()

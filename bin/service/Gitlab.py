@@ -57,7 +57,6 @@ class Gitlab:
     def transfer_entries(self):
         cached_commits = self.load_cached_commits()
         created_card_ids = self.card_transfer.transfer_git(cached_commits)
-        self.card_transfer.close()
         created_current = len(created_card_ids)
         print('>>> gitlab synchronization completed, {} new cards created'.format(created_current))
 

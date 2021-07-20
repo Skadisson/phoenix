@@ -54,7 +54,6 @@ class ConfluenceAPI(Storage.Storage):
     def transfer_entries(self):
         confluence_entries = self.load_cached_entries()
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
-        self.card_transfer.close()
         created_current = len(created_card_ids)
         print('>>> confluence synchronization completed, {} new cards created'.format(created_current))
 

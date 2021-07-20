@@ -202,6 +202,3 @@ class CardTransfer:
             if updated_confluence_card['created'] is None:
                 updated_confluence_card['created'] = self.timestamp_from_atlassian_time(confluence_entry['created'])
             updated_confluence_card['changed'] = self.timestamp_from_atlassian_time(confluence_entry['created'])
-
-    def close(self):
-        self.storage.close()
