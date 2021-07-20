@@ -721,7 +721,7 @@ PS = (function(window, document, $) {
         if(card['probability']) {
             $('.probability').text((Math.round(card['probability'] * 10000)/100) + '%');
         } else {
-            $('.probability').text('100%');
+            $('.probability').text('');
         }
         $('.keywords', $template).text(keywords);
         $('.author', $template).text(author);
