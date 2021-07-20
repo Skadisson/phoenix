@@ -824,7 +824,6 @@ PS = (function(window, document, $) {
                         var screenshot = result.items[0];
                         self.render_notification('Screenshot geladen');
                         $('.screenshot', $screenshotCard).css({'background-image': 'url(screenshots/' + screenshot + ')'});
-                        self.render_shout_outs();
                     }
                 }
             };
