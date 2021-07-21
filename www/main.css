@@ -734,3 +734,8 @@ a:hover > .source-tooltip {
     margin: 0 0 0 -380px;
     padding: 0;
 }
+
+.edit i.fas:hover,
+.plus i.fas:hover {
+    text-shadow:0 0 5px white;
+}
