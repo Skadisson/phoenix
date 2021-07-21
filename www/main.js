@@ -722,9 +722,9 @@ PS = (function(window, document, $) {
         $('.title', $template).html(title);
         $('.type .fas', $template).addClass(icon);
         if(card['probability']) {
-            $('.probability').text((Math.round(card['probability'] * 10000)) + ' %');
+            $('.probability').html('<i class="fas fa-bullseye"></i> ' + (Math.round(card['probability'] * 10000)) + ' %');
         } else {
-            $('.probability').text('');
+            $('.probability').html('');
         }
         $('.keywords', $template).text(keywords);
         $('.author', $template).text(author);

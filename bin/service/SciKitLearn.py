@@ -107,7 +107,7 @@ class SciKitLearn:
             sorted_cards = self.storage.sort_cards(filtered_cards, 6)
             search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
-        self.logger.add_entry(self.__class__.__name__, search_profile)
+        """self.logger.add_entry(self.__class__.__name__, search_profile)"""
 
         return sorted_cards
 
