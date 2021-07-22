@@ -1,14 +1,16 @@
 from bin.module import Latest
-from bin.service import ContextSearch, CardStorage, Logger
+from bin.service import ContextSearch, CardStorage, Logger, UserStorage, AchievementStorage
 
 
 class Search:
 
     def __init__(self):
         self.search = ContextSearch.ContextSearch()
-        self.storage = CardStorage.CardStorage()
+        self.card_storage = CardStorage.CardStorage()
         self.latest = Latest.Latest()
         self.logger = Logger.Logger()
+        self.user_storage = UserStorage.UserStorage()
+        self.achievement_storage = AchievementStorage.AchievementStorage()
 
     def run(self, query):
 
@@ -25,8 +27,10 @@ class Search:
             found_cards = []
             if query.isnumeric():
                 card_ids = [int(query)]
-                cards = self.storage.get_cards(card_ids)
+                cards = self.card_storage.get_cards(card_ids)
             else:
+                user = self.user_storage.get_user()
+                self.achievement_storage.track_search_triggered(user['id'])
                 cards = self.search.search(query)
             for card in cards:
                 if '_id' in card:

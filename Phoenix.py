@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot, Achievements
 from bin.service import Environment, UserStorage
 import json
 
@@ -76,6 +76,9 @@ def phoenix(request):
         url = str(request.args.get('url', ''))
         screenshot = Screenshot.Screenshot()
         response = screenshot.run(url)
+    elif function == 'Achievements':
+        achievements = Achievements.Achievements()
+        response = achievements.run()
     else:
         response = {'error': 'unknown function'}
 

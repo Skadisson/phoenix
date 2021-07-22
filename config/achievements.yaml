@@ -1,0 +1,150 @@
+curator:
+  title: "Kurator"
+  type: "Bronze"
+  description: "Hat 10 Fakten erstellt"
+  requirement: "facts_created >= 10"
+archivar:
+  title: "Archivar"
+  type: "Silber"
+  description: "Hat 100 Fakten erstellt"
+  requirement: "facts_created >= 100"
+scholar:
+  title: "Gelehrter"
+  type: "Gold"
+  description: "Hat 1000 Fakten erstellt"
+  requirement: "facts_created >= 1000"
+perfectionist:
+  title: "Perfektionist"
+  type: "Silber"
+  description: "Hat 100 Fakten editiert"
+  requirement: "facts_edited >= 100"
+developer:
+  title: "Entwickler"
+  type: "Bronze"
+  description: "Hat 1 Shout Out erstellt"
+  requirement: "shout_outs_created >= 1"
+socialite:
+  title: "Socialite"
+  type: "Silber"
+  description: "Hat 10 Shout Outs erstellt"
+  requirement: "shout_outs_created >= 10"
+conductor:
+  title: "Dirigent"
+  type: "Gold"
+  description: "Hat 100 Shout Outs erstellt"
+  requirement: "shout_outs_created >= 100"
+moderator:
+  title: "Moderator"
+  type: "Silber"
+  description: "Hat auf 10 Shout Outs reagiert"
+  requirement: "shout_outs_reacted >= 100"
+explorer:
+  title: "Erkunder"
+  type: "Bronze"
+  description: "Hat 10 Suchen gestartet"
+  requirement: "searches_triggered >= 10"
+seeker:
+  title: "Suchender"
+  type: "Silber"
+  description: "Hat 100 Suchen gestartet"
+  requirement: "searches_triggered >= 100"
+power_user:
+  title: "Power User"
+  type: "Gold"
+  description: "Hat 1000 Suchen gestartet"
+  requirement: "searches_triggered >= 1000"
+man_of_the_hour:
+  title: "Frau/Mann der Stunde"
+  type: "Gold"
+  description: "Hat 100 Suchen an einem Tag gestartet"
+  requirement: "searches_triggered_today >= 100"
+pragmatic:
+  title: "Pragmatist"
+  type: "Bronze"
+  description: "Hat 10 Ideen zu Fakten gemacht"
+  requirement: "ideas_edited >= 10"
+who_tested_it:
+  title: "Wer hat's getestet?"
+  type: "Silber"
+  description: "Hat 10 QA Tickets geöffnet"
+  requirement: "qa_tickets_clicked >= 10"
+is_the_server_running:
+  title: "Läuft der Server noch?"
+  type: "Silber"
+  description: "Hat 10 DevOps Tickets geöffnet"
+  requirement: "devops_tickets_clicked >= 10"
+what_are_they_doing:
+  title: "Was machen die so?"
+  type: "Silber"
+  description: "Hat 10 Produkt Tickets geöffnet"
+  requirement: "product_tickets_clicked >= 10"
+go_make_a_service_ticket:
+  title: "Erstell ein Service-Ticket"
+  type: "Silber"
+  description: "Hat 10 Service Tickets geöffnet"
+  requirement: "service_tickets_clicked >= 10"
+multi_user:
+  title: "Multi-User"
+  type: "Bronze"
+  description: "Hat 10 Favoriten erstellt"
+  requirement: "favourites_created >= 10"
+juggler:
+  title: "Jongleur"
+  type: "Silber"
+  description: "Hat 20 Favoriten erstellt"
+  requirement: "favourites_created >= 20"
+controller:
+  title: "Kontrolleur"
+  type: "Gold"
+  description: "Hat 50 Favoriten erstellt"
+  requirement: "favourites_created >= 50"
+overseer:
+  title: "Beobachter"
+  type: "Silber"
+  description: "Hat 20 Favoriten entfernt"
+  requirement: "favourites_deleted >= 20"
+quick_learner:
+  title: "Schlauer Fuchs"
+  type: "Gold"
+  description: "Hat an einem Tag 30 Karten angeklickt"
+  requirement: "cards_clicked_today >= 30"
+pioneer:
+  title: "Pionier"
+  type: "Bronze"
+  description: "Hat 10 Karten angeklickt"
+  requirement: "cards_clicked >= 10"
+conqueror:
+  title: "Eroberer"
+  type: "Silber"
+  description: "Hat 100 Karten angeklickt"
+  requirement: "cards_clicked >= 100"
+overlord:
+  title: "Overlord"
+  type: "Gold"
+  description: "Hat 1000 Karten angeklickt"
+  requirement: "cards_clicked >= 1000"
+super_commander:
+  title: "Super Commander"
+  type: "Gold"
+  description: "Hat 30 Shout Outs an einem Tag erstellt"
+  requirement: "shout_outs_created_today >= 30"
+watcher:
+  title: "Beobachter"
+  type: "Bronze"
+  description: "Hat sich 100 mal eingeloggt"
+  requirement: "logged_in >= 100"
+agent:
+  title: "Agent"
+  type: "Silber"
+  description: "Hat sich 1000 mal eingeloggt"
+  requirement: "logged_in >= 1000"
+secret_agent:
+  title: "Geheim Agent"
+  type: "Gold"
+  description: "Hat sich 10000 mal eingeloggt"
+  requirement: "logged_in >= 10000"
+refreshing:
+  title: "Refreshing"
+  type: "Silber"
+  description: "Hat sich an einem Tag 100 mal eingeloggt"
+  requirement: "logged_in_today >= 100"

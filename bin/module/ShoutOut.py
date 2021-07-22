@@ -1,4 +1,4 @@
-from bin.service import ShoutOutStorage, Logger, NotificationStorage, UserStorage
+from bin.service import ShoutOutStorage, Logger, NotificationStorage, UserStorage, AchievementStorage
 
 
 class ShoutOut:
@@ -7,6 +7,8 @@ class ShoutOut:
         self.so_storage = ShoutOutStorage.ShoutOutStorage()
         self.notification_storage = NotificationStorage.NotificationStorage()
         self.logger = Logger.Logger()
+        self.achievement_storage = AchievementStorage.AchievementStorage()
+        self.user_storage = UserStorage.UserStorage()
 
     def run(self, card_id, text):
         result = {
@@ -16,9 +18,10 @@ class ShoutOut:
         }
         try:
 
-            user_storage = UserStorage.UserStorage()
-            user = user_storage.get_user()
+            user = self.user_storage.get_user()
+            shout_outs_before = self.so_storage.get_card_shout_outs(card_id)
             shout_out = self.so_storage.add_shout_out(card_id, text, user['id'])
+            self.achievement_storage.track_shout_out(user['id'], shout_outs_before.count())
             is_added = False
             if shout_out is not None:
                 is_added = True

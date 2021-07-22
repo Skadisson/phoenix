@@ -4,7 +4,7 @@ from bin.service import CardStorage, Logger
 class Latest:
 
     def __init__(self):
-        self.storage = CardStorage.CardStorage()
+        self.card_storage = CardStorage.CardStorage()
         self.logger = Logger.Logger()
 
     def run(self):
@@ -16,7 +16,7 @@ class Latest:
         try:
 
             max_cards = 6
-            cards = self.storage.get_latest_cards(max_cards)
+            cards = self.card_storage.get_latest_cards(max_cards)
             result['items'].append({
                 'cards': cards,
                 'count': max_cards

@@ -38,7 +38,7 @@ PS = (function(window, document, $) {
         self.randomize_tips();
         self.tip_interval = setInterval(self.randomize_tips, 60000);
         self.info(function() {
-            self.fill_analytics();
+            self.fill_popout_headers();
             self.shout_outs();
             if(card_id_parameter > 0) {
                 self.search(card_id_parameter);
@@ -282,6 +282,42 @@ PS = (function(window, document, $) {
                             $('.log-entries').prepend('<p class="log">Keine Einträge vorhanden</p>')
                         }
                         $('#analytics').show();
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.finish_loading();
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
+
+    function toggle_achievements() {
+        if($('#achievements').is(':not(:hidden)')) {
+            $('#achievements').hide();
+            return;
+        }
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Achievements';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Achievements geladen');
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                        $('#achievements p').remove();
+                        var achievement_count = result.items[0]['achievements'].length;
+                        for(var i = 0; i < achievement_count; i++) {
+                            var achievement = result.items[0]['achievements'][i];
+                            $('#achievements').append('<p class="' + achievement['type'] + '"><span class="fas fa-medal"> </span><span class="label">' + achievement['title'] + '</span> ● ' + achievement['description'] + '</p>');
+                        }
+                        $('#achievements').show();
                     }
                 }
             };
@@ -897,10 +933,12 @@ PS = (function(window, document, $) {
         };
     };
 
-    function fill_analytics() {
-        var $header = $('#analytics .header');
+    function fill_popout_headers() {
+        var $analyticsHeader = $('#analytics .header');
+        var $achievementsHeader = $('#achievements .header');
         for(var i = 0; i<996; i++) {
-            $header.append('<div class="analytics-dot" />');
+            $analyticsHeader.append('<div class="analytics-dot" />');
+            $achievementsHeader.append('<div class="achievements-dot" />');
         }
     };
 
@@ -984,7 +1022,8 @@ PS = (function(window, document, $) {
         stop_dot_animation: stop_dot_animation,
         randomize: randomize,
         toggle_analytics: toggle_analytics,
-        fill_analytics: fill_analytics,
+        toggle_achievements: toggle_achievements,
+        fill_popout_headers: fill_popout_headers,
         shout_outs: shout_outs,
         render_shout_outs: render_shout_outs,
         getUrlVars: getUrlVars,

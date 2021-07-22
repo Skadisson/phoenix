@@ -472,6 +472,10 @@ a:hover > .source-tooltip {
     cursor:pointer;
 }
 
+.fa-trophy {
+    cursor:pointer;
+}
+
 .user-name {
     position: absolute;
     width: 400px;
@@ -552,6 +556,81 @@ a:hover > .source-tooltip {
     margin-left:1px;
     margin-top:1px;
     z-index:3;
+}
+
+#achievements {
+    visibilty:hidden;
+    display:none;
+    width:400px;
+    min-height:400px;
+    position:fixed;
+    bottom:30px;
+    left:10px;
+    background-color: #0F0F0F;
+    padding:10px;
+    font-size:12px;
+    line-height:14px;
+    z-index:600;
+}
+
+#achievements .logo {
+    position:absolute;
+    top: 0px;
+    left: 50%;
+    margin-left: -82px;
+    z-index: 10;
+}
+
+#achievements .header {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    width:418px;
+    height:60px;
+    border:1px solid #333D3F;
+    background-color: #0F0F0F;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-size: 100% 90%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left top, left bottom;
+}
+
+#achievements h3 {
+    margin-top:60px;
+}
+
+#achievements .achievements-dot {
+    position:relative;
+    float:left;
+    background-color: #1A1E1F;
+    background-color: #FD5A2F;
+    width:4px;
+    height:4px;
+    margin-left:1px;
+    margin-top:1px;
+    z-index:3;
+}
+
+#achievements .fa-medal {
+    margin-right: 10px;
+    font-size: 15px;
+    line-height: 15px;
+}
+
+#achievements .label {
+    font-weight:bold;
+}
+
+#achievements .Bronze span {
+    color:#cd7f32;
+}
+
+#achievements .Silber span {
+    color:#c0c0c0;
+}
+
+#achievements .Gold span {
+    color:#ffd700;
 }
 
 #shout-out {
