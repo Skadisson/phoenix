@@ -35,16 +35,18 @@ class AchievementStorage(Storage.Storage):
     def update_achievements(self, user_id):
         achievement = dict(self.get_achievement(user_id))
         achievements = self.read_achievements()
+        new_achievements = []
         for label in achievements:
             requirement = str(achievements[label]['requirement']).split(' >= ')
             if requirement[0] not in achievement:
                 raise Exception(f"Requirement for {label} in {self.achievements_path} is missing or faulty.")
             if achievement[requirement[0]] >= int(requirement[1]) and label not in achievement['labels']:
+                new_achievements.append(achievements[label])
                 achievement['labels'].append(label)
                 self.update_achievement(user_id, achievement)
 
         current_achievements = self.read_achievements_for_labels(achievement['labels'])
-        return current_achievements
+        return current_achievements, new_achievements
 
     def track_login(self, user_id):
         achievement = self.get_achievement(user_id)

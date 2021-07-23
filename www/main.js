@@ -111,6 +111,7 @@ PS = (function(window, document, $) {
                             $('#shout-out fieldset i').removeClass('fa-times');
                             $('#shout-out fieldset i').addClass('fa-times');
                         }
+                        self.flash_new_achievements();
                     }
                 };
                 xhr.send();
@@ -211,6 +212,7 @@ PS = (function(window, document, $) {
                     if(typeof result.success != 'undefined' && result.success == true) {
                         self.info();
                     }
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -282,6 +284,7 @@ PS = (function(window, document, $) {
                             $('.log-entries').prepend('<p class="log">Keine Einträge vorhanden</p>')
                         }
                         $('#analytics').show();
+                        self.flash_new_achievements();
                     }
                 }
             };
@@ -318,6 +321,43 @@ PS = (function(window, document, $) {
                             $('#achievements').append('<p class="' + achievement['type'] + '"><span class="fas fa-medal"> </span><span class="label">' + achievement['title'] + '</span> ● ' + achievement['description'] + '</p>');
                         }
                         $('#achievements').show();
+                        self.flash_new_achievements();
+                    }
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.finish_loading();
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
+    };
+
+    function flash_new_achievements() {
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Achievements';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.finish_loading();
+                    self.render_notification('Achievements checked');
+                    var result = JSON.parse(xhr.responseText);
+                    if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                        var achievement_count = result.items[0]['new_achievements'].length;
+                        for(var i = 0; i < achievement_count; i++) {
+                            var achievement = result.items[0]['new_achievements'][i];
+                            var $newAchievement = $('<p class="new-achievement"><span class="info">Neues Achievement<br /></span><span class="fas fa-star spin"> </span><span class="label">' + achievement['title'] + '</span></p>');
+                            $('body').append($newAchievement);
+                            $newAchievement.hide();
+                            $newAchievement.fadeIn();
+                            setTimeout(function() {
+                                $newAchievement.fadeOut();
+                            }, 6000);
+                        }
                     }
                 }
             };
@@ -345,6 +385,7 @@ PS = (function(window, document, $) {
                     if(typeof result.items[0].shout_outs != 'undefined') {
                         loaded_shout_outs = result.items[0].shout_outs;
                     }
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -399,6 +440,7 @@ PS = (function(window, document, $) {
                             }
                             if(autocomplete_timeout)
                                 clearTimeout(autocomplete_timeout);
+                            self.flash_new_achievements();
                         }
                     };
                     xhr.send();
@@ -449,6 +491,7 @@ PS = (function(window, document, $) {
                             $('.link-list').remove();
                             $('.fa-notes-medical').remove();
                         }
+                        self.flash_new_achievements();
                     }
                 }
             };
@@ -484,6 +527,7 @@ PS = (function(window, document, $) {
                             self.render_favourite(favourite);
                         }
                     }
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -528,6 +572,7 @@ PS = (function(window, document, $) {
                             $('#detail .fas.fa-star').removeClass('fas').addClass('far');
                         }
                     }
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -564,6 +609,7 @@ PS = (function(window, document, $) {
                         self.render_shout_outs();
                     }
                     self.render_screenshots();
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -590,6 +636,7 @@ PS = (function(window, document, $) {
                     if(typeof result.items[0].suggested_keywords != 'undefined') {
                         $keyword_field.val(result.items[0].suggested_keywords);
                     }
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -696,6 +743,7 @@ PS = (function(window, document, $) {
                         }
                     }
                     self.render_screenshots();
+                    self.flash_new_achievements();
                 }
             };
             xhr.send();
@@ -778,6 +826,7 @@ PS = (function(window, document, $) {
             if(external_link != '') {
                 window.open(external_link);
             }
+            self.flash_new_achievements();
         });
         $('.edit', $template).on('click', function(event) {
             event.preventDefault();
@@ -980,6 +1029,7 @@ PS = (function(window, document, $) {
                                 };
                                 registration.showNotification(title, options);
                             }
+                            self.flash_new_achievements();
                         }
                     }
                 };
@@ -1031,7 +1081,8 @@ PS = (function(window, document, $) {
         request_notifications: request_notifications,
         autoComplete: autoComplete,
         change_username: change_username,
-        randomize_tips: randomize_tips
+        randomize_tips: randomize_tips,
+        flash_new_achievements: flash_new_achievements
     };
 
     return construct;

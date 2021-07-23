@@ -621,15 +621,15 @@ a:hover > .source-tooltip {
     font-weight:bold;
 }
 
-#achievements .Bronze span {
+.Bronze span {
     color:#cd7f32;
 }
 
-#achievements .Silber span {
+.Silber span {
     color:#c0c0c0;
 }
 
-#achievements .Gold span {
+.Gold span {
     color:#ffd700;
 }
 
@@ -817,4 +817,59 @@ a:hover > .source-tooltip {
 .edit i.fas:hover,
 .plus i.fas:hover {
     text-shadow:0 0 5px white;
+}
+
+.new-achievement {
+    position: fixed;
+    display: block;
+    top: 50%;
+    width: 100%;
+    height: 74px;
+    margin-top: -37px;
+    font-size: 30px;
+    text-shadow: 0 0 10px white;
+    line-height: 32px;
+    text-align: center;
+    background: black;
+    padding: 10px 0;
+    overflow: hidden;
+}
+.new-achievement .info {
+    font-size: 10px;
+    line-height: 12px;
+}
+
+.new-achievement .spin {
+    margin-right: 15px;
+}
+
+.spin {
+  animation: spin-animation 2s infinite;
+  display: inline-block;
+}
+
+@keyframes spin-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+.flash-text {
+  -moz-animation: flash_text 2s ease-out;
+  -moz-animation-iteration-count: infinite;
+
+  -webkit-animation: flash_text 2s ease-out;
+  -webkit-animation-iteration-count: infinite;
+
+  -ms-animation: flash_text 2s ease-out;
+  -ms-animation-iteration-count: infinite;
+}
+
+@keyframes flash_text {
+    0% { text-shadow: 0px 0px 10px black; }
+    50% { text-shadow: 0px 0px 10px #16BAE7; }
+    100% { text-shadow: 0px 0px 10px black; }
 }

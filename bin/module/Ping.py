@@ -19,19 +19,13 @@ class Ping:
             user = self.user_storage.get_user()
             self.achievement_storage.track_login(user['id'])
             self.achievement_storage.create_achievement(user['id'])
-            achievements = self.achievement_storage.update_achievements(user['id'])
-            achievement = self.achievement_storage.get_achievement(user['id'])
-            if '_id' in achievement:
-                del(achievement['_id'])
             fact_count = self.info.get_fact_count()
             idea_count = self.info.get_idea_count()
             result['items'].append({
                 'user_name': user['name'],
                 'user_short': user['short'],
                 'fact_count': fact_count,
-                'idea_count': idea_count,
-                'achievement': dict(achievement),
-                'achievements': achievements
+                'idea_count': idea_count
             })
 
         except Exception as e:

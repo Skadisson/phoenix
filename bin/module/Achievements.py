@@ -17,12 +17,13 @@ class Achievements:
         try:
             user = self.user_storage.get_user()
             achievement = self.achievement_storage.get_achievement(user['id'])
-            achievements = self.achievement_storage.update_achievements(user['id'])
+            achievements, new_achievements = self.achievement_storage.update_achievements(user['id'])
             if '_id' in achievement:
                 del(achievement['_id'])
             result['items'].append({
                 'achievement': dict(achievement),
-                'achievements': achievements
+                'achievements': achievements,
+                'new_achievements': new_achievements
             })
 
         except Exception as e:
