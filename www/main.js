@@ -311,7 +311,7 @@ PS = (function(window, document, $) {
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
-                    self.render_notification('Achievements geladen');
+                    self.render_notification('Achievements');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
                         $('#achievements p').remove();
@@ -344,7 +344,6 @@ PS = (function(window, document, $) {
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
-                    self.render_notification('Achievements checked');
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
                         var achievement_count = result.items[0]['new_achievements'].length;
