@@ -50,6 +50,7 @@ class Jira(Storage.Storage):
         cached_total = 0
 
         projects = self.request_service_jira_projects()
+        jira_ids = []
         for project in projects:
             offset = 0
             jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
@@ -57,6 +58,9 @@ class Jira(Storage.Storage):
                 start = float(time.time())
                 clean_cache = {}
                 for jira_id in jira_keys:
+                    exists = self.entry_exists(jira_id)
+                    if exists is True:
+                        continue
                     jira_key = jira_keys[jira_id]
                     try:
                         clean_cache, failed_jira_keys = self.add_to_clean_cache(
@@ -66,6 +70,7 @@ class Jira(Storage.Storage):
                             jira_id,
                             wait
                         )
+                        jira_ids.append(jira_id)
                     except Exception as err:
                         self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
                 self.store_tickets(clean_cache)
@@ -77,13 +82,18 @@ class Jira(Storage.Storage):
                 time.sleep(wait)
                 offset += max_results
                 jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
-        self.transfer_entries()
+        self.transfer_entries(jira_ids)
 
-    def transfer_entries(self):
-        jira_entries = self.load_tickets()
+    def transfer_entries(self, jira_ids=None):
+        jira_entries = self.load_tickets(jira_ids)
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)
         print('>>> jira synchronization completed, {} new cards created'.format(created_current))
+
+    def entry_exists(self, jira_id):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        return jira_storage.find_one({'id': jira_id})
 
     def store_tickets(self, tickets):
         phoenix = self.mongo.phoenix
@@ -128,10 +138,13 @@ class Jira(Storage.Storage):
         jira_storage = phoenix.jira_storage
         return jira_storage.find_one({'id': jira_id})
 
-    def load_tickets(self):
+    def load_tickets(self, jira_ids=None):
         phoenix = self.mongo.phoenix
         jira_storage = phoenix.jira_storage
-        return jira_storage.find(no_cursor_timeout=True)
+        if jira_ids is None:
+            return jira_storage.find(no_cursor_timeout=True)
+        else:
+            return jira_storage.find({'id': {'$in': jira_ids}}, no_cursor_timeout=True)
 
     def retrieve_token(self):
         self.token = self.load_token()

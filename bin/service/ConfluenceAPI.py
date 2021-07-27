@@ -24,12 +24,15 @@ class ConfluenceAPI(Storage.Storage):
     def sync_entries(self, wait=2):
         cached_total = 0
         space_keys = self.load_space_keys()
+        confluence_ids = []
         for space_key in space_keys:
             start = float(time.time())
             confluence_entries = {}
             space_entries = self.load_entries_from_space(space_key)
-            confluence_ids = []
             for confluence_id in space_entries:
+                exists = self.entry_exists(confluence_id)
+                if exists is True:
+                    continue
                 confluence_ids.append(confluence_id)
                 confluence_entries[confluence_id] = space_entries[confluence_id]
             self.cache_entries(confluence_entries)
@@ -39,7 +42,7 @@ class ConfluenceAPI(Storage.Storage):
             seconds = (stop - start)
             print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, space_key, cached_total, seconds))
             time.sleep(wait)
-        self.transfer_entries()
+        self.transfer_entries(confluence_ids)
 
     def load_space_keys(self):
         space_keys = []
@@ -51,11 +54,17 @@ class ConfluenceAPI(Storage.Storage):
 
         return space_keys
 
-    def transfer_entries(self):
-        confluence_entries = self.load_cached_entries()
+    def transfer_entries(self, confluence_ids=None):
+        confluence_entries = self.load_cached_entries(confluence_ids)
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
         created_current = len(created_card_ids)
         print('>>> confluence synchronization completed, {} new cards created'.format(created_current))
+
+    def entry_exists(self, confluence_id):
+        phoenix = self.mongo.phoenix
+        confluence_storage = phoenix.confluence_storage
+        entry = confluence_storage.find_one({'id': confluence_id}, no_cursor_timeout=True)
+        return entry is not None
 
     def load_entries_from_space(self, space='CS'):
 
@@ -101,10 +110,13 @@ class ConfluenceAPI(Storage.Storage):
         except Exception as e:
             self.logger.add_entry(self.__class__.__name__, str(e))
 
-    def load_cached_entries(self):
+    def load_cached_entries(self, confluence_ids=None):
         try:
             phoenix = self.mongo.phoenix
             confluence_storage = phoenix.confluence_storage
-            return confluence_storage.find(no_cursor_timeout=True)
+            if confluence_ids is None:
+                return confluence_storage.find(no_cursor_timeout=True)
+            else:
+                return confluence_storage.find({'id': {'$in': confluence_ids}}, no_cursor_timeout=True)
         except Exception as e:
             self.logger.add_entry(self.__class__.__name__, str(e))

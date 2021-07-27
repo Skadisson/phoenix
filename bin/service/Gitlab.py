@@ -18,6 +18,7 @@ class Gitlab:
     def sync_commits(self, wait=2):
         private_token = self.environment.get_endpoint_git_private_token()
         url = self.environment.get_endpoint_git_projects()
+        git_ids = []
         cached_total = 0
         page = 0
         run = True
@@ -35,6 +36,9 @@ class Gitlab:
                         self.logger.add_entry(self.__class__.__name__, str(err) + "; with space " + project['id'])
                         project_commits = []
                     for project_commit in project_commits:
+                        exists = self.commit_exists(project_commit['id'])
+                        if exists is True:
+                            continue
                         commit = {
                             'id': project_commit['id'],
                             'title': project_commit['title'],
@@ -42,6 +46,7 @@ class Gitlab:
                             'created': project_commit['authored_date'],
                             'project': project['id']
                         }
+                        git_ids.append(project_commit['id'])
                         commits[project_commit['id']] = commit
                     self.store_commits(commits)
                     cached_current = len(commits)
@@ -52,13 +57,19 @@ class Gitlab:
                     time.sleep(wait)
             else:
                 run = False
-        self.transfer_entries()
+        self.transfer_entries(git_ids)
 
-    def transfer_entries(self):
-        cached_commits = self.load_cached_commits()
+    def transfer_entries(self, git_ids=None):
+        cached_commits = self.load_cached_commits(git_ids)
         created_card_ids = self.card_transfer.transfer_git(cached_commits)
         created_current = len(created_card_ids)
         print('>>> gitlab synchronization completed, {} new cards created'.format(created_current))
+
+    def commit_exists(self, git_id):
+        phoenix = self.mongo.phoenix
+        gitlab_storage = phoenix.gitlab_storage
+        commit = gitlab_storage.find_one({'id': git_id})
+        return commit is not None
 
     def get_project_commits(self, project_id):
         private_token = self.environment.get_endpoint_git_private_token()
@@ -85,10 +96,13 @@ class Gitlab:
         json_raw = f.read().decode('utf-8')
         return json.loads(json_raw)
 
-    def load_cached_commits(self):
+    def load_cached_commits(self, git_ids=None):
         phoenix = self.mongo.phoenix
         gitlab_storage = phoenix.gitlab_storage
-        return gitlab_storage.find(no_cursor_timeout=True)
+        if git_ids is None:
+            return gitlab_storage.find()
+        else:
+            return gitlab_storage.find({'id': {'$in': git_ids}})
 
     def store_commits(self, commits):
         phoenix = self.mongo.phoenix
