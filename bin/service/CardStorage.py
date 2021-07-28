@@ -24,13 +24,19 @@ class CardStorage(Storage.Storage):
         card_storage = phoenix.card_storage
         card_storage.insert_one(card)
 
-    def get_all_cards(self, not_empty=None):
+    def get_all_cards(self, not_empty=None, include_jira=True):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
         if not_empty is not None:
-            cards = card_storage.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            if include_jira:
+                cards = card_storage.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            else:
+                cards = card_storage.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}, {'relation_type': {'$ne': 'jira'}}]})
         else:
-            cards = card_storage.find()
+            if include_jira:
+                cards = card_storage.find()
+            else:
+                cards = card_storage.find({'relation_type': {'$ne': 'jira'}})
         return cards
 
     def get_all_ideas(self):
@@ -45,16 +51,22 @@ class CardStorage(Storage.Storage):
         cards = card_storage.find({'type': 'fact'})
         return cards
 
-    def search_cards_by_title(self, title):
+    def search_cards_by_title(self, title, include_jira):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find({'title': title})
+        if include_jira:
+            cards = card_storage.find({'title': title})
+        else:
+            cards = card_storage.find({'title': title, 'relation_type': {'$ne': 'jira'}})
         return cards
 
-    def search_cards_fulltext(self, query):
+    def search_cards_fulltext(self, query, include_jira):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find({'$text': {'$search': query}})
+        if include_jira:
+            cards = card_storage.find({'$text': {'$search': query}})
+        else:
+            cards = card_storage.find({'$text': {'$search': query}, 'relation_type': {'$ne': 'jira'}})
         return cards
 
     def search_cards_by_query(self, query):

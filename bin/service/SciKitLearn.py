@@ -20,7 +20,7 @@ class SciKitLearn:
         self.storage = CardStorage.CardStorage()
         self.normal_cache = NormalCache.NormalCache()
 
-    def search(self, query, not_empty=None, cards=None):
+    def search(self, query, not_empty=None, cards=None, include_jira=True):
 
         global context_ids, probabilities
         context_ids = []
@@ -30,13 +30,20 @@ class SciKitLearn:
         if cards is None:
 
             search_profile['load_normalized_cards'] = time.time()
-            documents, card_ids = self.normal_cache.load_normalized_cards(not_empty)
+            if include_jira:
+                documents, card_ids = self.normal_cache.load_normalized_cards(not_empty)
+            else:
+                non_jira_cards = list(self.storage.get_all_cards('title', include_jira))
+                non_jira_card_ids = [d['id'] for d in non_jira_cards]
+                documents, card_ids = self.normal_cache.get_normalized_cards(non_jira_card_ids)
             search_profile['card_count'] = len(documents)
             search_profile['load_normalized_cards'] = time.time() - search_profile['load_normalized_cards']
 
-            search_profile['threaded_search'] = time.time()
-            self.threaded_search(documents, card_ids, query)
-            search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
+            if len(card_ids) > 0 and len(documents) > 0:
+                search_profile['threaded_search'] = time.time()
+                self.threaded_search(documents, card_ids, query)
+                search_profile['context_count'] = len(context_ids)
+                search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
 
             search_profile['get_cards'] = time.time()
             final_cards = self.storage.get_cards(context_ids)
@@ -107,7 +114,7 @@ class SciKitLearn:
             sorted_cards = self.storage.sort_cards(filtered_cards, 6)
             search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
-        """self.logger.add_entry(self.__class__.__name__, search_profile)"""
+        self.logger.add_entry(self.__class__.__name__, search_profile)
 
         return sorted_cards
 
@@ -153,7 +160,7 @@ class SciKitLearn:
             process.join()
 
     @staticmethod
-    def context_search(documents, ids, query, max_results=3):
+    def context_search(documents, ids, query, max_results):
 
         global ready_states, context_ids, probabilities
         docs_new = [query]
@@ -164,21 +171,33 @@ class SciKitLearn:
             ('clf', naive_bayes.MultinomialNB()),
         ])
 
-        for i in range(0, max_results):
-            if len(documents) > 0 and len(ids) > 0 and len(documents) == len(ids):
-                text_context = text_clf.fit(documents, ids)
-                text_id = text_context.predict(docs_new)
-                predicted_probabilities = text_context.predict_proba(docs_new)
-                probability_list = list(predicted_probabilities[0])
-                probability_index = ids.index(text_id)
-                text_probability = probability_list[probability_index]
-                found_id = int(text_id.astype(int))
-                if found_id not in context_ids:
-                    context_ids.append(found_id)
-                    probabilities.append(text_probability)
-                index = ids.index(found_id)
-                del(documents[index])
-                del(ids[index])
+        text_context = text_clf.fit(documents, ids)
+        predicted_probabilities = text_context.predict_proba(docs_new)
+        probability_list = list(predicted_probabilities[0])
+
+        if len(probability_list) > max_results:
+            j = 0
+            while j < max_results:
+                highest_probability = 0.0
+                highest_index = 0
+                for i in range(0, len(probability_list)):
+                    probability = probability_list[i]
+                    card_id = ids[i]
+                    if probability > highest_probability and card_id not in context_ids:
+                        highest_probability = probability
+                        highest_index = i
+                probabilities.append(probability_list[highest_index])
+                context_ids.append(ids[highest_index])
+                j += 1
+        else:
+            probabilities += probability_list
+            context_ids += ids
+
+        predicted_id = int(text_context.predict(docs_new)[0])
+        if predicted_id not in context_ids:
+            predicted_index = ids.index(predicted_id)
+            probabilities.append(probability_list[predicted_index])
+            context_ids.append(predicted_id)
 
         ready_states.append(True)
 

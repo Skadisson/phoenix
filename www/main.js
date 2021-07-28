@@ -708,11 +708,12 @@ PS = (function(window, document, $) {
     function search(card_id=null) {
         $('#auto-complete option').remove();
         self.start_dot_animation();
+        var includeJira = $('#include_jira').is(':checked');
         if(card_id != null) {
-            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(card_id);
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(card_id) + '&includeJira=' + (includeJira ? 'True' : 'False');
         } else {
             var keywords = $('#keywords').val();
-            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(keywords);
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(keywords) + '&includeJira=' + (includeJira ? 'True' : 'False');
         }
         var formContentType = 'application/x-www-form-urlencoded';
         try {
@@ -772,7 +773,6 @@ PS = (function(window, document, $) {
     function render_card(card) {
         var icon = card['type'] == 'fact' ? 'fa-check-circle' : 'fa-question-circle';
         var title = card['title'];
-        var author = !card['author'] ? '-' : card['author'];
         var source_logo = '';
         if(card['relation_type'] == 'confluence') {
             source_logo = 'image/confluence-logo.png';
@@ -801,6 +801,15 @@ PS = (function(window, document, $) {
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
         $('p', $template).attr('data-card-link', external_link);
+        if(typeof card['words'] != 'undefined') {
+            for(const word in card['words']) {
+                if(card['words'][word] > 0) {
+                    $('.words', $template).append('<i>' + word + '</i>');
+                }
+            }
+        } else {
+            $('.words', $template).append('<i>Trending</i>');
+        }
         $('.date', $template).text(date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate());
         $('.title', $template).html(title);
         $('.type .fas', $template).addClass(icon);
@@ -810,7 +819,6 @@ PS = (function(window, document, $) {
             $('.probability').html('');
         }
         $('.keywords', $template).text(keywords);
-        $('.author', $template).text(author);
         $('#link-list').append($template);
         $($template).off('click');
         $($template).on('click', function(event) {
@@ -961,7 +969,6 @@ PS = (function(window, document, $) {
                     var $changed_card = $('[data-card-id=' + card_id + ']');
                     $('.date', $changed_card).text('soeben geändert');
                     $('.title', $changed_card).text(title);
-                    $('.author', $changed_card).text('');
                     $('.keywords', $changed_card).text(keywords);
                 }
                 self.finish_loading();

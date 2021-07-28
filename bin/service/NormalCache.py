@@ -19,8 +19,25 @@ class NormalCache(Storage.Storage):
             normalized_cards = normal_cache.find()
 
         for normalized_card in normalized_cards:
-            card_ids.append(normalized_card['card_id'])
-            documents.append(normalized_card['normal_keyword'] + ' ' + normalized_card['normal_title'] + ' ' + normalized_card['normal_text'])
+            text = normalized_card['normal_keyword'] + ' ' + normalized_card['normal_title'] + ' ' + normalized_card['normal_text']
+            if len(text.split()) > 0:
+                card_ids.append(normalized_card['card_id'])
+                documents.append(text)
+
+        return documents, card_ids
+
+    def get_normalized_cards(self, card_ids):
+        phoenix = self.mongo.phoenix
+        normal_cache = phoenix.normal_cache
+        normal_cards = normal_cache.find({'card_id': {'$in': card_ids}})
+
+        documents = []
+        card_ids = []
+        for normalized_card in normal_cards:
+            text = normalized_card['normal_keyword'] + ' ' + normalized_card['normal_title'] + ' ' + normalized_card['normal_text']
+            if len(text.split()) > 0:
+                card_ids.append(normalized_card['card_id'])
+                documents.append(text)
 
         return documents, card_ids
 

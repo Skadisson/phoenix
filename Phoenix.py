@@ -21,8 +21,9 @@ def phoenix(request):
         response = latest.run()
     elif function == 'Search':
         query = request.args.get('query', None)
+        include_jira = request.args.get('includeJira', 'True')
         search = Search.Search()
-        response = search.run(query)
+        response = search.run(query, include_jira)
     elif function == 'AutoComplete':
         query = request.args.get('query', None)
         auto_complete = AutoComplete.AutoComplete()

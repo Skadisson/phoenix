@@ -1,5 +1,6 @@
 from bin.module import Latest
 from bin.service import ContextSearch, CardStorage, Logger, UserStorage, AchievementStorage
+import re
 
 
 class Search:
@@ -12,10 +13,14 @@ class Search:
         self.user_storage = UserStorage.UserStorage()
         self.achievement_storage = AchievementStorage.AchievementStorage()
 
-    def run(self, query):
+    def run(self, query, include_jira):
 
         if query == '':
             return self.latest.run()
+        if include_jira == 'True':
+            include_jira = True
+        else:
+            include_jira = False
 
         result = {
             'items': [],
@@ -25,16 +30,23 @@ class Search:
         try:
 
             found_cards = []
+            words = None
             if query.isnumeric():
                 card_ids = [int(query)]
                 cards = self.card_storage.get_cards(card_ids)
             else:
                 user = self.user_storage.get_user()
                 self.achievement_storage.track_search_triggered(user['id'])
-                cards = self.search.search(query)
+                cards = self.search.search(query, include_jira)
+                words = str(query).split()
             for card in cards:
                 if '_id' in card:
                     del(card['_id'])
+                card['words'] = {}
+                for word in words:
+                    count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['text']))
+                    count += sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['title']))
+                    card['words'][word] = count
                 if card not in found_cards:
                     found_cards.append(card)
             result['items'].append({

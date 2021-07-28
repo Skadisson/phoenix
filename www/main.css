@@ -203,6 +203,11 @@ input[type=text] {
     overflow: hidden;
     position:relative;
 }
+.link-list p .words i {
+    font-size: 10px;
+    line-height: 10px;
+    margin-right: 5px;
+}
 #link-list p .probability {
     position:absolute;
     right: 50px;
@@ -646,6 +651,20 @@ a:hover > .source-tooltip {
     border-radius: 10px;
     box-shadow: 2px 2px 8px black;
     z-index: 700;
+}
+
+#search #include_jira {
+    position: absolute;
+    top: -20px;
+    right: 36px;
+}
+
+#search label[for=include_jira] {
+    position: absolute;
+    top: -14px;
+    right: 12px;
+    font-size: 10px;
+    line-height: 10px;
 }
 
 #shout-out .fa-times-circle {
