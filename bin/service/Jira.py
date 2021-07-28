@@ -10,6 +10,7 @@ import json
 import os
 import pickle
 import time
+import random
 
 
 class Jira(Storage.Storage):
@@ -44,11 +45,27 @@ class Jira(Storage.Storage):
         self.client = oauth.Client(self.consumer, self.token)
         self.client.set_signature_method(JiraSignature.JiraSignature())
 
+    def get_jira_keys(self):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        return list(jira_storage.distinct('key'))
+
+    def get_jira_ids(self):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        return list(jira_storage.distinct('id'))
+
+    def get_jira_card_ids(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        return list(card_storage.distinct('relation_id', {'relation_type': 'jira'}))
+
     def sync_entries(self, wait=2):
         failed_jira_keys = []
         max_results = 100
         cached_total = 0
 
+        leftover_jira_keys = self.get_jira_keys()
         projects = self.request_service_jira_projects()
         jira_ids = []
         for project in projects:
@@ -58,21 +75,21 @@ class Jira(Storage.Storage):
                 start = float(time.time())
                 clean_cache = {}
                 for jira_id in jira_keys:
-                    exists = self.entry_exists(jira_id)
-                    if exists is True:
-                        continue
                     jira_key = jira_keys[jira_id]
-                    try:
-                        clean_cache, failed_jira_keys = self.add_to_clean_cache(
-                            jira_key,
-                            failed_jira_keys,
-                            clean_cache,
-                            jira_id,
-                            wait
-                        )
-                        jira_ids.append(jira_id)
-                    except Exception as err:
-                        self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
+                    if jira_key in leftover_jira_keys:
+                        leftover_jira_keys.remove(jira_key)
+                    else:
+                        try:
+                            clean_cache, failed_jira_keys = self.add_to_clean_cache(
+                                jira_key,
+                                failed_jira_keys,
+                                clean_cache,
+                                jira_id,
+                                wait
+                            )
+                            jira_ids.append(jira_id)
+                        except Exception as err:
+                            self.logger.add_entry(self.__class__.__name__, str(err) + "; with Ticket " + jira_key)
                 self.store_tickets(clean_cache)
                 cached_current = len(clean_cache)
                 cached_total += cached_current
@@ -82,13 +99,17 @@ class Jira(Storage.Storage):
                 time.sleep(wait)
                 offset += max_results
                 jira_keys, total = self.request_service_jira_keys(offset, max_results, project)
-        self.transfer_entries(jira_ids)
+        self.transfer_entries()
 
-    def transfer_entries(self, jira_ids=None):
-        jira_entries = self.load_tickets(jira_ids)
+    def transfer_entries(self):
+        jira_ids = self.get_jira_ids()
+        jira_card_ids = self.get_jira_card_ids()
+        jira_ids_to_transfer = list(set(jira_ids) - set(jira_card_ids))
+        print('>>> jira transfer started for {} cards'.format(len(jira_ids_to_transfer)))
+        jira_entries = self.load_tickets(jira_ids_to_transfer)
         created_card_ids = self.card_transfer.transfer_jira(jira_entries)
         created_current = len(created_card_ids)
-        print('>>> jira synchronization completed, {} new cards created'.format(created_current))
+        print('>>> jira transfer successful, {} new cards created'.format(created_current))
 
     def entry_exists(self, jira_id):
         phoenix = self.mongo.phoenix

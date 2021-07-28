@@ -42,7 +42,7 @@ class ConfluenceAPI(Storage.Storage):
             seconds = (stop - start)
             print('>>> cached {} confluence entries from space "{}" of {} entries total after {} seconds'.format(cached_current, space_key, cached_total, seconds))
             time.sleep(wait)
-        self.transfer_entries(confluence_ids)
+        self.transfer_entries()
 
     def load_space_keys(self):
         space_keys = []
@@ -54,8 +54,22 @@ class ConfluenceAPI(Storage.Storage):
 
         return space_keys
 
-    def transfer_entries(self, confluence_ids=None):
-        confluence_entries = self.load_cached_entries(confluence_ids)
+    def get_confluence_ids(self):
+        phoenix = self.mongo.phoenix
+        confluence_storage = phoenix.confluence_storage
+        return list(confluence_storage.distinct('id'))
+
+    def get_confluence_card_ids(self):
+        phoenix = self.mongo.phoenix
+        card_storage = phoenix.card_storage
+        return list(card_storage.distinct('relation_id', {'relation_type': 'confluence'}))
+
+    def transfer_entries(self):
+        confluence_ids = self.get_confluence_ids()
+        confluence_card_ids = self.get_confluence_card_ids()
+        confluence_ids_to_transfer = list(set(confluence_ids) - set(confluence_card_ids))
+        print('>>> confluence synchronization started for {} cards'.format(len(confluence_ids_to_transfer)))
+        confluence_entries = self.load_cached_entries(confluence_ids_to_transfer)
         created_card_ids = self.card_transfer.transfer_confluence(confluence_entries)
         created_current = len(created_card_ids)
         print('>>> confluence synchronization completed, {} new cards created'.format(created_current))

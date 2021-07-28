@@ -62,7 +62,7 @@ class CardTransfer:
                 if confluence_card is not None:
                     self.normal_cache.normalize_card(confluence_card)
                 now = time.time()
-                if current % step == 0:
+                if step == 0 or current % step == 0:
                     percentage = round((current / total) * 100)
                     minutes = round((now - start) / 60, ndigits=2)
                     print('>>> transfered {} % of confluence entries after {} minutes ({}/{})'.format(percentage, minutes, current, total))
