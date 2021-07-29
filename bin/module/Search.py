@@ -43,10 +43,11 @@ class Search:
                 if '_id' in card:
                     del(card['_id'])
                 card['words'] = {}
-                for word in words:
-                    count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['text']))
-                    count += sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['title']))
-                    card['words'][word] = count
+                if words is not None:
+                    for word in words:
+                        count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['text']))
+                        count += sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['title']))
+                        card['words'][word] = count
                 if card not in found_cards:
                     found_cards.append(card)
             result['items'].append({
