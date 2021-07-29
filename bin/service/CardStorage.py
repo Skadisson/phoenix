@@ -239,6 +239,9 @@ class CardStorage(Storage.Storage):
         cards_by_date = sorted(cards, key=lambda card: card['changed'], reverse=True)
         cards_by_click = sorted(cards_by_date, key=lambda card: card['clicks'], reverse=True)
         cards_by_type = sorted(cards_by_click, key=lambda card: card['type'], reverse=False)
+        if 'probability' in cards[0]:
+            cards_by_probability = sorted(cards_by_type, key=lambda card: card['probability'], reverse=False)
+            cards_by_type = cards_by_probability
         limited_cards = cards_by_type[:count]
         sorted_cards = []
         for sorted_card in limited_cards:
