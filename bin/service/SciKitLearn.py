@@ -196,8 +196,9 @@ class SciKitLearn:
         predicted_id = int(text_context.predict(docs_new)[0])
         if predicted_id not in context_ids:
             predicted_index = ids.index(predicted_id)
-            probabilities.append(probability_list[predicted_index])
-            context_ids.append(predicted_id)
+            if predicted_index in probability_list:
+                probabilities.append(probability_list[predicted_index])
+                context_ids.append(predicted_id)
 
         ready_states.append(True)
 
