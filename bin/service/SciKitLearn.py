@@ -82,7 +82,7 @@ class SciKitLearn:
             sorted_cards = self.storage.sort_cards(filtered_cards, 6)
             search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
-        self.logger.add_entry(self.__class__.__name__, search_profile)
+        """self.logger.add_entry(self.__class__.__name__, search_profile)"""
 
         return sorted_cards
 
@@ -127,8 +127,7 @@ class SciKitLearn:
         for process in processes:
             process.join()
 
-    @staticmethod
-    def context_search(documents, ids, query):
+    def context_search(self, documents, ids, query):
 
         global ready_states, context_ids, probabilities
         docs_new = [query]
@@ -143,7 +142,11 @@ class SciKitLearn:
         probability_list = list(text_context.predict_proba(docs_new)[0])
         predicted_id = int(text_context.predict(docs_new)[0])
         context_ids.append(predicted_id)
-        probabilities.append(probability_list[ids.index(predicted_id)])
+        predicted_index = ids.index(predicted_id)
+        if predicted_index < len(probability_list):
+            probabilities.append(probability_list[predicted_index])
+        else:
+            probabilities.append(1.0)
 
         ready_states.append(True)
 
