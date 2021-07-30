@@ -44,10 +44,15 @@ class Search:
                     del(card['_id'])
                 card['words'] = {}
                 if words is not None:
+                    i = 0
                     for word in words:
+                        if i > 6:
+                            card['words']['...'] = 0
+                            break
                         count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['text']))
                         count += sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), card['title']))
                         card['words'][word] = count
+                        i += 1
                 if card not in found_cards:
                     found_cards.append(card)
             result['items'].append({

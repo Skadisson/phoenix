@@ -113,3 +113,8 @@ class Environment:
         path = os.path.join("env", f"{name}.yaml")
         file = open(path, "r", encoding='utf8')
         return yaml.load(file, Loader=yaml.FullLoader)
+
+    def store_yaml(self, name, data):
+        path = os.path.join("env", f"{name}.yaml")
+        file = open(path, "w", encoding='utf8')
+        yaml.dump(data, file, Dumper=yaml.Dumper)
