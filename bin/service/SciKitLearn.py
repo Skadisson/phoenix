@@ -102,6 +102,7 @@ class SciKitLearn:
             chunk_size = int(round(total_count / 100))
         else:
             chunk_size = int(round(total_count / 10))
+        self.logger.add_entry(self.__class__.__name__, f"->threaded_search: Searching through {total_count} cards in chunks of {chunk_size}.")
         if chunk_size > 0:
             document_chunks = self.chunks(documents, chunk_size)
             id_chunks = list(self.chunks(ids, chunk_size))
@@ -147,6 +148,7 @@ class SciKitLearn:
             probabilities.append(probability_list[predicted_index])
         else:
             probabilities.append(1.0)
+            self.logger.add_entry(self.__class__.__name__, f"->context_search: Index {predicted_index} not found within {len(probability_list)} probabilities.")
 
         ready_states.append(True)
 
