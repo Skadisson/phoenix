@@ -1,8 +1,5 @@
 from bin.service import Logger, Environment
-import argparse
 import hashlib
-import os
-import time
 import urllib.request
 from webscreenshot.webscreenshot import *
 

@@ -25,6 +25,7 @@ class RegEx:
         self.jira_user = r"\[\~[^]]*\]"
         self.email = r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"
         self.phone = r"[0-9]* +\/ +[0-9 ]*"
+        self.image = r"\.(jpg|jpeg|png|gif)$"
 
     def mask_texts(self, texts):
         masked_texts = []
@@ -58,3 +59,7 @@ class RegEx:
     def mask_phone(self, text):
         masked_text = re.sub(self.phone, '[phone]', text)
         return masked_text
+
+    def is_image(self, url):
+        matches = re.match(self.image, url)
+        return matches is not False

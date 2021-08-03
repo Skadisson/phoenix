@@ -15,6 +15,7 @@ class Card:
         self.clicks = 0
         self.likes = 0
         self.external_link = None
+        self.screenshot = None
 
     def __iter__(self):
         yield 'id', self.id
@@ -31,3 +32,4 @@ class Card:
         yield 'clicks', self.clicks
         yield 'likes', self.likes
         yield 'external_link', self.external_link
+        yield 'screenshot', self.screenshot

@@ -34,7 +34,7 @@ class CardTransfer:
                 if jira_card is not None:
                     self.normal_cache.normalize_card(jira_card)
                 now = time.time()
-                if current % step == 0:
+                if step > 0 and current % step == 0:
                     percentage = round((current / total) * 100)
                     minutes = round((now - start) / 60, ndigits=2)
                     print('>>> transfered {} % of jira entries after {} minutes ({}/{})'.format(percentage, minutes, current, total))
@@ -107,6 +107,7 @@ class CardTransfer:
         jira_card.changed = self.timestamp_from_atlassian_time(ticket['updated'])
         jira_card.text = ''
         jira_card.external_link = ''
+        jira_card.screenshot = ''
         if 'key' in ticket and ticket['key'] is not None:
             jira_card.external_link = 'https://jira.konmedia.com/browse/' + ticket['key']
         if 'title' in ticket and ticket['title'] is not None:
@@ -117,6 +118,8 @@ class CardTransfer:
             jira_card.text += ' ' + ' '.join(ticket['comments'])
         if 'keywords' in ticket and ticket['keywords'] is list:
             jira_card.keywords = ticket['keywords']
+        if 'screenshot' in ticket and ticket['screenshot'] != '':
+            jira_card.screenshot = ticket['screenshot']
 
         return dict(jira_card)
 

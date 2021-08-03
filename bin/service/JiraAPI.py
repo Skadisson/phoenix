@@ -64,7 +64,7 @@ class JiraAPI(Storage.Storage):
             cached_total += cached_current
             stop = float(time.time())
             seconds = (stop - start)
-            print('>>> cached {} jira entries of {} entries total in project "{}" after {} seconds'.format(cached_current, cached_total, project, seconds))
+            print('>>> cached {} jira entries from project "{}" of {} entries total after {} seconds'.format(cached_current, project, cached_total, seconds))
             time.sleep(wait)
         self.transfer_entries()
 
@@ -105,7 +105,8 @@ class JiraAPI(Storage.Storage):
                 'created': ticket_data['fields']['created'],
                 'updated': ticket_data['fields']['updated'],
                 'keywords': ticket_data['fields']['labels'],
-                'comments': []
+                'comments': [],
+                'screenshot': self.get_screenshot(ticket_data)
             }
             if ticket_data['fields']['description'] is not None:
                 ticket['body'] = self.regex.mask_text(ticket_data['fields']['description'])
@@ -120,6 +121,16 @@ class JiraAPI(Storage.Storage):
         if ticket is not None:
             clean_cache[str(ticket['id'])] = ticket
         return clean_cache, failed_jira_keys
+
+    def get_screenshot(self, ticket_data):
+        url = None
+        if 'attachment' in ticket_data:
+            for attachment in ticket_data['attachment']:
+                if attachment['size'] > 4096 and self.regex.is_image(attachment['content']):
+                    url = attachment['content']
+                    break
+
+        return url
 
     def load_cached_ticket(self, jira_id):
         phoenix = self.mongo.phoenix
@@ -138,7 +149,18 @@ class JiraAPI(Storage.Storage):
         return self.jira.issue(jira_key)
 
     def request_service_jira_keys(self, project='SERVICE'):
-        return self.jira.get_project_issuekey_all(project)
+        index = 0
+        limit = 50
+        all_keys = []
+        while True:
+            jql_request = f"project = {project} ORDER BY issuekey"
+            result_keys = self.jira.jql(jql_request, ['key'], index, limit)
+            if result_keys is None or len(result_keys['issues']) == 0:
+                break
+            for issue in result_keys['issues']:
+                all_keys.append(issue['key'])
+            index += limit
+        return all_keys
 
     def request_service_jira_projects(self):
         projects = []

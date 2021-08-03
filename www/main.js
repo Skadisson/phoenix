@@ -802,6 +802,9 @@ PS = (function(window, document, $) {
         $('p', $template).attr('data-card-id', card['id']);
         $('p', $template).attr('data-card-type', card['type']);
         $('p', $template).attr('data-card-link', external_link);
+        if(typeof card['screenshot'] != 'undefined') {
+            $('p', $template).attr('data-screen-shot', card['screenshot']);
+        }
         if(typeof card['words'] != 'undefined') {
             for(const word in card['words']) {
                 if(card['words'][word] > 0) {
@@ -907,7 +910,9 @@ PS = (function(window, document, $) {
 
     function render_screenshot(card_id) {
         var $screenshotCard = $('p[data-card-id=' + card_id + ']');
-        var url = "" + $screenshotCard.data('card-link');
+        var url = "" + $screenshotCard.data('screen-shot');
+        if(url == '')
+            url = "" + $screenshotCard.data('card-link');
         if(url == '')
             return;
 
