@@ -39,6 +39,7 @@
     <form id="search" action="" method="GET" autocomplete="off" onsubmit="main.search();return false;">
         <input type="text" name="keywords" id="keywords" placeholder="" value="" list="auto-complete" onkeyup="main.autoComplete(event);" />
         <input type="checkbox" name="include_jira" id="include_jira" value="1" checked="checked" /><label for="include_jira">+Jira</label>
+        <input type="checkbox" name="render_screenshots" id="render_screenshots" value="1" checked="checked" /><label for="render_screenshots">+Screenshots</label>
         <datalist id="auto-complete"></datalist>
         <button type="submit" class="fa fa-search"></button>
         <div id="link-list" class="link-list"></div>

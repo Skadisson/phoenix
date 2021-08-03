@@ -7,14 +7,20 @@ class AutoComplete:
         self.info = Info.Info()
         self.logger = Logger.Logger()
 
-    def run(self, query):
+    def run(self, query, include_jira):
+
+        if include_jira == 'True':
+            include_jira = True
+        else:
+            include_jira = False
+
         result = {
             'items': [],
             'success': True,
             'error': None
         }
         try:
-            suggestions = self.info.get_query_suggestions(query)
+            suggestions = self.info.get_query_suggestions(query, include_jira)
             result['items'].append({
                 'suggestions': suggestions
             })

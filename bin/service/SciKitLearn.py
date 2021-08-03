@@ -25,17 +25,18 @@ class SciKitLearn:
         global context_ids, probabilities
         context_ids = []
         probabilities = []
+        max_results = 6
 
         search_profile = {}
         if cards is None:
 
             search_profile['load_normalized_cards'] = time.time()
             if include_jira:
-                documents, card_ids = self.normal_cache.load_normalized_cards(not_empty)
+                documents, card_ids = self.normal_cache.load_normalized_cards(not_empty, True)
             else:
                 non_jira_cards = list(self.storage.get_all_cards('title', include_jira))
                 non_jira_card_ids = [d['id'] for d in non_jira_cards]
-                documents, card_ids = self.normal_cache.get_normalized_cards(non_jira_card_ids)
+                documents, card_ids = self.normal_cache.get_normalized_cards(non_jira_card_ids, True)
             search_profile['card_count'] = len(documents)
             search_profile['load_normalized_cards'] = time.time() - search_profile['load_normalized_cards']
 
@@ -44,6 +45,10 @@ class SciKitLearn:
                 self.threaded_search(documents, card_ids, query)
                 search_profile['context_count'] = len(context_ids)
                 search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
+
+                search_profile['wrap_up_search'] = time.time()
+                self.wrap_up_search(query, max_results)
+                search_profile['wrap_up_search'] = time.time() - search_profile['wrap_up_search']
 
             search_profile['get_cards'] = time.time()
             final_cards = self.storage.get_cards(context_ids)
@@ -55,7 +60,7 @@ class SciKitLearn:
             search_profile['filter_cards'] = time.time() - search_profile['filter_cards']
 
             search_profile['sort_cards'] = time.time()
-            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
+            sorted_cards = self.storage.sort_cards(filtered_cards, max_results)
             search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
         else:
@@ -69,6 +74,10 @@ class SciKitLearn:
             self.threaded_search(documents, card_ids, query)
             search_profile['threaded_search'] = time.time() - search_profile['threaded_search']
 
+            search_profile['wrap_up_search'] = time.time()
+            self.wrap_up_search(query, max_results)
+            search_profile['wrap_up_search'] = time.time() - search_profile['wrap_up_search']
+
             search_profile['get_cards'] = time.time()
             final_cards = self.storage.get_cards(context_ids)
             self.add_probabilities(final_cards)
@@ -79,7 +88,7 @@ class SciKitLearn:
             search_profile['filter_cards'] = time.time() - search_profile['filter_cards']
 
             search_profile['sort_cards'] = time.time()
-            sorted_cards = self.storage.sort_cards(filtered_cards, 6)
+            sorted_cards = self.storage.sort_cards(filtered_cards, max_results)
             search_profile['sort_cards'] = time.time() - search_profile['sort_cards']
 
         """self.logger.add_entry(self.__class__.__name__, search_profile)"""
@@ -151,6 +160,35 @@ class SciKitLearn:
             self.logger.add_entry(self.__class__.__name__, f"->context_search: Index {predicted_index} not found within {len(probability_list)} probabilities.")
 
         ready_states.append(True)
+
+    def wrap_up_search(self, query, chunk_count=6):
+
+        global context_ids, probabilities, ready_states
+        chunk_size = int(round(len(context_ids) / chunk_count))
+        documents, card_ids = self.normal_cache.get_normalized_cards(context_ids)
+        if chunk_size > 0:
+            document_chunks = self.chunks(documents, chunk_size)
+            id_chunks = list(self.chunks(card_ids, chunk_size))
+        else:
+            document_chunks = [documents]
+            id_chunks = [card_ids]
+
+        context_ids = []
+        probabilities = []
+        processes = []
+        ready_states = []
+
+        i = 0
+        for document_chunk in document_chunks:
+            id_chunk = id_chunks[i]
+            processes.append(threading.Thread(target=self.context_search, args=(document_chunk, id_chunk, query)))
+            i += 1
+        for process in processes:
+            process.start()
+        while len(ready_states) < len(processes):
+            pass
+        for process in processes:
+            process.join()
 
     @staticmethod
     def chunks(lst, n):

@@ -69,10 +69,13 @@ class CardStorage(Storage.Storage):
             cards = card_storage.find({'$text': {'$search': query}, 'relation_type': {'$ne': 'jira'}})
         return cards
 
-    def search_cards_by_query(self, query):
+    def search_cards_by_query(self, query, include_jira):
         phoenix = self.mongo.phoenix
         card_storage = phoenix.card_storage
-        cards = card_storage.find({'title': {'$regex': str(query)}})
+        if include_jira:
+            cards = card_storage.find({'title': {'$regex': str(query)}})
+        else:
+            cards = card_storage.find({'title': {'$regex': str(query)}, 'relation_type': {'$ne': 'jira'}})
         return cards
 
     def get_jira_confluence_and_phoenix_cards(self, not_empty=None):
@@ -236,10 +239,11 @@ class CardStorage(Storage.Storage):
 
     @staticmethod
     def sort_cards(cards, count):
+        cards = list(cards)
         cards_by_date = sorted(cards, key=lambda card: card['changed'], reverse=True)
         cards_by_click = sorted(cards_by_date, key=lambda card: card['clicks'], reverse=True)
         cards_by_type = sorted(cards_by_click, key=lambda card: card['type'], reverse=False)
-        if 'probability' in cards[0]:
+        if len(cards) > 0 and 'probability' in cards[0]:
             cards_by_probability = sorted(cards_by_type, key=lambda card: card['probability'], reverse=False)
             cards_by_type = cards_by_probability
         limited_cards = cards_by_type[:count]

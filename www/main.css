@@ -667,6 +667,20 @@ a:hover > .source-tooltip {
     line-height: 10px;
 }
 
+#search #render_screenshots {
+    position: absolute;
+    top: -20px;
+    right: 136px;
+}
+
+#search label[for=render_screenshots] {
+    position: absolute;
+    top: -14px;
+    right: 68px;
+    font-size: 10px;
+    line-height: 10px;
+}
+
 #shout-out .fa-times-circle {
     color:black;
     cursor:pointer;

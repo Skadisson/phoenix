@@ -1,5 +1,6 @@
 from bin.service import Storage
 import time
+import random
 
 
 class NormalCache(Storage.Storage):
@@ -7,16 +8,19 @@ class NormalCache(Storage.Storage):
     def __init__(self):
         super().__init__()
 
-    def load_normalized_cards(self, not_empty=None):
+    def load_normalized_cards(self, not_empty=None, shuffle=False):
         documents = []
         card_ids = []
 
         phoenix = self.mongo.phoenix
         normal_cache = phoenix.normal_cache
         if not_empty is not None:
-            normalized_cards = normal_cache.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]})
+            normalized_cards = list(normal_cache.find({'$and': [{not_empty: {'$ne': None}}, {not_empty: {'$ne': []}}]}))
         else:
-            normalized_cards = normal_cache.find()
+            normalized_cards = list(normal_cache.find())
+
+        if shuffle is True:
+            random.shuffle(normalized_cards)
 
         for normalized_card in normalized_cards:
             text = normalized_card['normal_keyword'] + ' ' + normalized_card['normal_title'] + ' ' + normalized_card['normal_text']
@@ -26,10 +30,12 @@ class NormalCache(Storage.Storage):
 
         return documents, card_ids
 
-    def get_normalized_cards(self, card_ids):
+    def get_normalized_cards(self, card_ids, shuffle=False):
         phoenix = self.mongo.phoenix
         normal_cache = phoenix.normal_cache
-        normal_cards = normal_cache.find({'card_id': {'$in': card_ids}})
+        normal_cards = list(normal_cache.find({'card_id': {'$in': card_ids}}))
+        if shuffle is True:
+            random.shuffle(normal_cards)
 
         documents = []
         card_ids = []

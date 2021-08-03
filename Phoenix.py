@@ -26,8 +26,9 @@ def phoenix(request):
         response = search.run(query, include_jira)
     elif function == 'AutoComplete':
         query = request.args.get('query', None)
+        include_jira = request.args.get('includeJira', 'True')
         auto_complete = AutoComplete.AutoComplete()
-        response = auto_complete.run(query)
+        response = auto_complete.run(query, include_jira)
     elif function == 'Click':
         card_id = int(request.args.get('card_id', 0))
         loading_seconds = int(request.args.get('loading_seconds', 0))

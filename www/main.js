@@ -415,7 +415,8 @@ PS = (function(window, document, $) {
                 clearTimeout(autocomplete_timeout);
             autocomplete_timeout = setTimeout(function() {
 
-                var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=AutoComplete';
+                var includeJira = $('#include_jira').is(':checked');
+                var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=AutoComplete&includeJira=' + (includeJira ? 'True' : 'False');
                 var formContentType = 'application/x-www-form-urlencoded';
                 var query = $('#keywords').val();
                 getUrl += '&query=' + query;
@@ -814,7 +815,7 @@ PS = (function(window, document, $) {
         $('.title', $template).html(title);
         $('.type .fas', $template).addClass(icon);
         if(card['probability']) {
-            $('.probability').html('<i class="fas fa-bullseye"></i> ' + (Math.round(card['probability'] * 10000)) + ' %');
+            $('.probability').html('<i class="fas fa-bullseye"></i> ' + (Math.round(card['probability'] * 100)) + ' %');
         } else {
             $('.probability').html('');
         }
@@ -890,12 +891,18 @@ PS = (function(window, document, $) {
     };
 
     function render_screenshots() {
-        $('p[data-card-id]').each(function() {
-            var card_id = $(this).data('card-id');
-            if(parseInt(card_id) > 0) {
-                self.render_screenshot(card_id);
-            }
-        });
+        if(self.do_render_screenshots()) {
+            $('p[data-card-id]').each(function() {
+                var card_id = $(this).data('card-id');
+                if(parseInt(card_id) > 0) {
+                    self.render_screenshot(card_id);
+                }
+            });
+        }
+    };
+
+    function do_render_screenshots() {
+        return $('#render_screenshots').is(':checked');
     };
 
     function render_screenshot(card_id) {
@@ -1088,7 +1095,8 @@ PS = (function(window, document, $) {
         autoComplete: autoComplete,
         change_username: change_username,
         randomize_tips: randomize_tips,
-        flash_new_achievements: flash_new_achievements
+        flash_new_achievements: flash_new_achievements,
+        do_render_screenshots: do_render_screenshots
     };
 
     return construct;
