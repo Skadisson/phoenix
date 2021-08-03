@@ -124,8 +124,8 @@ class JiraAPI(Storage.Storage):
 
     def get_screenshot(self, ticket_data):
         url = None
-        if 'attachment' in ticket_data:
-            for attachment in ticket_data['attachment']:
+        if 'attachment' in ticket_data['fields']:
+            for attachment in ticket_data['fields']['attachment']:
                 if attachment['size'] > 4096 and self.regex.is_image(attachment['content']):
                     url = attachment['content']
                     break
