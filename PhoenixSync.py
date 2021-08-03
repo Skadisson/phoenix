@@ -3,12 +3,13 @@ from bin.service import Gitlab
 from bin.service import JiraAPI
 from bin.service import Logger
 from bin.service import Environment
+from bin.service import SciKitLearn
 import threading
 
 logger = Logger.Logger()
 environment = Environment.Environment()
 try:
-
+    
     confluence_done = False
     jira_done = False
     git_done = False
@@ -54,6 +55,10 @@ try:
         confluence_process.join()
         jira_process.join()
 
+    print('--- training started ---')
+    scikit = SciKitLearn.SciKitLearn()
+    scikit.train()
 
 except Exception as e:
+    print(e)
     logger.add_entry('PhoenixSync', e)

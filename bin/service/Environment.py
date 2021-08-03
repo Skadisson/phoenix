@@ -33,6 +33,10 @@ class Environment:
         path_yaml = self.load_yaml('path')
         return path_yaml['log']
 
+    def get_path_clf(self):
+        path_yaml = self.load_yaml('path')
+        return path_yaml['clf']
+
     def get_endpoint_git_projects(self):
         service_yaml = self.load_yaml('endpoint')
         return service_yaml['git_projects']

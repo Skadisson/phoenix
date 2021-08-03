@@ -1,8 +1,10 @@
 from sklearn import naive_bayes, feature_extraction, pipeline
-from bin.service import Logger, Environment, CardStorage, NormalCache
+from bin.service import Logger, Environment, CardStorage, NormalCache, SciKitPipeline
 import threading
 import re
 import time
+import pickle
+import os
 
 
 ready_states = []
@@ -142,12 +144,23 @@ class SciKitLearn:
         global ready_states, context_ids, probabilities
         docs_new = [query]
 
+        """clf_path = self.environment.get_path_clf()
+        if os.path.exists(clf_path):
+            file = open(clf_path, "rb")
+            text_context = pickle.load(file)
+        else:
+            text_clf = pipeline.Pipeline([
+                ('vect', feature_extraction.text.CountVectorizer()),
+                ('tfidf', feature_extraction.text.TfidfTransformer()),
+                ('clf', naive_bayes.MultinomialNB()),
+            ])
+            text_context = text_clf.fit(documents, ids)"""
+
         text_clf = pipeline.Pipeline([
             ('vect', feature_extraction.text.CountVectorizer()),
             ('tfidf', feature_extraction.text.TfidfTransformer()),
             ('clf', naive_bayes.MultinomialNB()),
         ])
-
         text_context = text_clf.fit(documents, ids)
         probability_list = list(text_context.predict_proba(docs_new)[0])
         predicted_id = int(text_context.predict(docs_new)[0])
@@ -209,3 +222,40 @@ class SciKitLearn:
                     filtered_cards.append(card)
                     break
         return filtered_cards
+
+    def train(self):
+
+        chunk_size = 1000
+        start = float(time.time())
+        card_documents, card_ids = self.normal_cache.load_normalized_cards()
+        print(f">>> training with {len(card_documents)} cards and chunk size of {chunk_size} cards each")
+
+        document_chunks = list(self.chunks(card_documents, chunk_size))
+        id_chunks = list(self.chunks(card_ids, chunk_size))
+
+        text_clf = SciKitPipeline.SciKitPipeline([
+            ('vect', feature_extraction.text.CountVectorizer()),
+            ('tfidf', feature_extraction.text.TfidfTransformer()),
+            ('clf', naive_bayes.MultinomialNB()),
+        ])
+
+        chunks_total = len(document_chunks)
+        index = 0
+        while index < chunks_total:
+            start_chunk = float(time.time())
+            ids = id_chunks[index]
+            documents = document_chunks[index]
+            text_clf.partial_fit(documents, ids, card_ids)
+            stop_chunk = float(time.time())
+            chunk_seconds = (start_chunk - stop_chunk)
+            index += 1
+            print(f">>> completed training of chunk {index}/{chunks_total} after {chunk_seconds} seconds")
+
+        clf_path = self.environment.get_path_clf()
+        file = open(clf_path, "wb")
+        pickle.dump(text_clf, file)
+        model_volume = os.stat(clf_path).st_size
+
+        stop = float(time.time())
+        seconds = (stop - start)
+        print(f">>> training successful after {seconds} seconds with a size of {model_volume} bytes")
