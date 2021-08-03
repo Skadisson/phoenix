@@ -901,6 +901,11 @@ PS = (function(window, document, $) {
                     self.render_screenshot(card_id);
                 }
             });
+            $('.screenshot', '#link-list').show();
+            $('.words, .date, .title, .keywords', '#link-list').css({'margin-left': '32%'});
+        } else {
+            $('.screenshot', '#link-list').hide();
+            $('.words, .date, .title, .keywords', '#link-list').css({'margin-left': '0'});
         }
     };
 
