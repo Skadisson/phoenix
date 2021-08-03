@@ -1,6 +1,6 @@
 from bin.service import ConfluenceAPI
 from bin.service import Gitlab
-from bin.service import Jira
+from bin.service import JiraAPI
 from bin.service import Logger
 from bin.service import Environment
 import threading
@@ -23,7 +23,7 @@ try:
     def jira_thread():
         global jira_done
         print('--- jira thread started ---')
-        jira = Jira.Jira()
+        jira = JiraAPI.JiraAPI()
         jira.transfer_entries()
         jira_done = True
 
