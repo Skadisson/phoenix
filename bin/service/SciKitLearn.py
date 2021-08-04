@@ -255,8 +255,8 @@ class SciKitLearn:
         file = open(clf_path, "wb")
         pickle.dump(text_clf, file)
         model_volume = os.stat(clf_path).st_size
-        model_volume_mb = round(model_volume / 1024 / 1024)
+        model_volume_gb = round(model_volume / 1024 / 1024 / 1024)
 
         stop = float(time.time())
         seconds = (stop - start)
-        print(f">>> training successful after {seconds} seconds with a size of {model_volume_mb} MB")
+        print(f">>> training successful after {seconds} seconds with a size of {model_volume_gb} GB")
