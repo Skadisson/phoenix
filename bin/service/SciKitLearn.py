@@ -161,9 +161,9 @@ class SciKitLearn:
             ('tfidf', feature_extraction.text.TfidfTransformer()),
             ('clf', naive_bayes.MultinomialNB()),
         ])
-        text_context = text_clf.fit(documents, ids)
-        probability_list = list(text_context.predict_proba(docs_new)[0])
-        predicted_id = int(text_context.predict(docs_new)[0])
+        text_clf.fit(documents, ids)
+        probability_list = list(text_clf.predict_proba(docs_new)[0])
+        predicted_id = int(text_clf.predict(docs_new)[0])
         context_ids.append(predicted_id)
         predicted_index = ids.index(predicted_id)
         if predicted_index < len(probability_list):

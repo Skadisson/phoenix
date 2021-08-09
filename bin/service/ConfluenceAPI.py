@@ -48,7 +48,7 @@ class ConfluenceAPI(Storage.Storage):
         space_keys = []
 
         spaces = self.confluence.get_all_spaces()
-        for space in spaces:
+        for space in spaces['results']:
             if space['key'] not in space_keys:
                 space_keys.append(space['key'])
 
