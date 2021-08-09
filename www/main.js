@@ -712,6 +712,7 @@ PS = (function(window, document, $) {
         var includeJira = $('#include_jira').is(':checked');
         if(card_id != null) {
             var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(card_id) + '&includeJira=' + (includeJira ? 'True' : 'False');
+            $('#keywords').val('');
         } else {
             var keywords = $('#keywords').val();
             var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Search&query=' + encodeURIComponent(keywords) + '&includeJira=' + (includeJira ? 'True' : 'False');
