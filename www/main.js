@@ -19,6 +19,7 @@ PS = (function(window, document, $) {
     var host_protocol = 'http';
     var host_port = '8110';
     var tip_interval = 0;
+    var quest_list = [];
 
     var construct = function() {
         self = this;
@@ -63,6 +64,7 @@ PS = (function(window, document, $) {
 
     function register_events() {
         $('body').off('click');
+        $('body').on('click', '.tutorial', self.start_quest);
         $('body').on('click', '.user-name', self.change_username);
         $('body').on('click', '.fa-bullseye', self.suggest_keywords);
         $('body').on('click', '.fa-external-link-square-alt', self.open_external_link);
@@ -86,6 +88,7 @@ PS = (function(window, document, $) {
                         self.finish_loading();
                         var result = JSON.parse(xhr.responseText);
                         if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                            self.track_quest('shoutout');
                             if(result.items[0].is_added) {
                                 self.render_notification('Shout Out erfolgreich');
                                 self.shout_outs();
@@ -204,6 +207,7 @@ PS = (function(window, document, $) {
             self.start_loading();
             xhr.onreadystatechange = function() {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                    self.track_quest('username');
                     self.finish_loading();
                     var result = JSON.parse(xhr.responseText);
                     if(typeof result.message != 'undefined') {
@@ -240,7 +244,10 @@ PS = (function(window, document, $) {
     function toggle_analytics() {
         if($('#analytics').is(':not(:hidden)')) {
             $('#analytics').hide();
+            $('span[title=Analytics]').removeClass('active');
             return;
+        } else {
+            $('span[title=Analytics]').addClass('active');
         }
         var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Analytics';
         var formContentType = 'application/x-www-form-urlencoded';
@@ -299,7 +306,10 @@ PS = (function(window, document, $) {
     function toggle_achievements() {
         if($('#achievements').is(':not(:hidden)')) {
             $('#achievements').hide();
+            $('span[title=Achievements]').removeClass('active');
             return;
+        } else {
+            $('span[title=Achievements]').addClass('active');
         }
         var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=Achievements';
         var formContentType = 'application/x-www-form-urlencoded';
@@ -354,8 +364,9 @@ PS = (function(window, document, $) {
                             $newAchievement.hide();
                             $newAchievement.fadeIn();
                             setTimeout(function() {
-                                $newAchievement.fadeOut();
-                            }, 6000);
+                                $('.new-achievement').fadeOut();
+                            }, 10000);
+                            self.toggle_achievements();
                         }
                     }
                 }
@@ -563,6 +574,7 @@ PS = (function(window, document, $) {
                 if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
                     self.finish_loading();
                     self.render_notification('Favoriten aktualisiert');
+                    self.track_quest('favourite');
                     var result = JSON.parse(xhr.responseText);
                     if(result.items.length > 0 && typeof result.items[0].favourite != 'undefined' && typeof result.items[0].is_added != 'undefined') {
                         self.favourites();
@@ -738,6 +750,7 @@ PS = (function(window, document, $) {
                         }
                         self.stop_dot_animation(result.items[0].count);
                         self.render_shout_outs();
+                        self.track_quest('search');
                         if(result.items[0].count == 0) {
                             $('.nothing-found').show();
                         } else {
@@ -836,6 +849,7 @@ PS = (function(window, document, $) {
             xhr.send();
             var external_link = $('p', $template).attr('data-card-link');
             if(external_link != '') {
+                self.track_quest('open');
                 window.open(external_link);
             }
             self.flash_new_achievements();
@@ -952,6 +966,7 @@ PS = (function(window, document, $) {
 
         var card_id = 0;
         if(func == 'edit') {
+            self.track_quest('edit');
             var title = $('[name=title]', '#edit').val();
             var text = $('[name=text]', '#edit').val();
             var keywords = $('[name=keywords]', '#edit').val();
@@ -963,6 +978,7 @@ PS = (function(window, document, $) {
                         + '&text=' + encodeURIComponent(text)
                         + '&external_link=' + encodeURIComponent(external_link);
         } else {
+            self.track_quest('create');
             var title = $('[name=title]', '#create').val();
             var text = $('[name=text]', '#create').val();
             var keywords = $('[name=keywords]', '#create').val();
@@ -991,6 +1007,7 @@ PS = (function(window, document, $) {
                 }
                 self.finish_loading();
                 self.render_notification('Karte gespeichert');
+                self.track_quest('save');
                 if(card_id > 0) {
                     self.search(card_id);
                     $('#keywords').val('');
@@ -1069,6 +1086,79 @@ PS = (function(window, document, $) {
         });
     };
 
+    function track_quest(quest_name) {
+        return;
+        console.log('Completed quest: ' + quest_name);
+        if(self.quest_list.length > 0) {
+            self.trigger_quest();
+        } else {
+            self.end_quest();
+        }
+    };
+
+    function end_quest() {
+        return;
+        self.quest_visible = false;
+        self.cleanup_quest();
+    };
+
+    function start_quest() {
+        return;
+        self.quest_visible = true;
+        self.quest_list = [
+            'username',
+            'search',
+            'open',
+            'edit',
+            'favourite',
+            'shoutout',
+            'save',
+            'create'
+        ];
+        self.trigger_quest();
+    };
+
+    function trigger_quest() {
+        return;
+        var quest_css = {'border': '2px solid #FD5A2F'};
+        self.cleanup_quest();
+        if(self.quest_visible && self.quest_list.length > 0) {
+            var current_quest = self.quest_list.shift();
+            console.log('Started quest: ' + current_quest);
+            if(current_quest == 'username') {
+                $('.user-name', 'body').css(quest_css);
+            } else if(current_quest == 'search') {
+                $('#keywords', 'body').css(quest_css);
+            } else if(current_quest == 'open') {
+                $('#link-list a:nth-child(1)', 'body').css(quest_css);
+            } else if(current_quest == 'edit') {
+                $('.edit', 'body').css(quest_css);
+            } else if(current_quest == 'favourite') {
+                $('.fa-star', 'body').css(quest_css);
+            } else if(current_quest == 'shoutout') {
+                $('.fa-bullhorn', 'body').css(quest_css);
+            } else if(current_quest == 'save') {
+                $('.edit', 'body').css(quest_css);
+                $('.save', 'body').css(quest_css);
+            } else if(current_quest == 'create') {
+                $('.plus', 'body').css(quest_css);
+            }
+        }
+    };
+
+    function cleanup_quest() {
+        return;
+        var cleanup_css = {'border': '0px solid transparent'};
+        $('.user-name', 'body').css(cleanup_css);
+        $('#keywords', 'body').css(cleanup_css);
+        $('#link-list a', 'body').css(cleanup_css);
+        $('.edit', 'body').css(cleanup_css);
+        $('.fa-bullhorn', 'body').css(cleanup_css);
+        $('.fa-star', 'body').css(cleanup_css);
+        $('.save', 'body').css(cleanup_css);
+        $('.plus', 'body').css(cleanup_css);
+    }
+
     construct.prototype = {
         init: init,
         search: search,
@@ -1107,7 +1197,12 @@ PS = (function(window, document, $) {
         change_username: change_username,
         randomize_tips: randomize_tips,
         flash_new_achievements: flash_new_achievements,
-        do_render_screenshots: do_render_screenshots
+        do_render_screenshots: do_render_screenshots,
+        track_quest: track_quest,
+        start_quest: start_quest,
+        end_quest: end_quest,
+        trigger_quest: trigger_quest,
+        cleanup_quest: cleanup_quest
     };
 
     return construct;

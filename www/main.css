@@ -152,6 +152,10 @@ input[type=text] {
     line-height:14px;
     text-align:left;
 }
+body #phoenix-info .active {
+    color: black;
+    text-shadow-color: black;
+}
 .link-list {
     padding-bottom: 10px;
     flex-direction: row;
@@ -304,6 +308,17 @@ a:hover > .source-tooltip {
     display:inline-block;
 }
 .link-list .plus {
+    font-size: 32px;
+    line-height: 32px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+}
+.link-list .book {
     font-size: 32px;
     line-height: 32px;
     position: absolute;
@@ -848,7 +863,8 @@ a:hover > .source-tooltip {
 }
 
 .edit i.fas:hover,
-.plus i.fas:hover {
+.plus i.fas:hover,
+.book i.fas:hover {
     text-shadow:0 0 5px white;
 }
 
