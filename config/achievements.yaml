@@ -148,3 +148,8 @@ refreshing:
   type: "Silber"
   description: "Hat sich an einem Tag 100 mal eingeloggt"
   requirement: "logged_in_today >= 100"
+questmaster:
+  title: "Quest Master"
+  type: "Silber"
+  description: "Hat alle Quests abgeschlossen"
+  requirement: "quests_completed >= 1"

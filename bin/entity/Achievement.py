@@ -22,6 +22,7 @@ class Achievement:
         self.shout_outs_created_today = 0
         self.searches_triggered = 0
         self.searches_triggered_today = 0
+        self.quests_completed = 0
         self.labels = []
 
     def __iter__(self):
@@ -46,4 +47,5 @@ class Achievement:
         yield 'shout_outs_created_today', self.shout_outs_created_today
         yield 'searches_triggered', self.searches_triggered
         yield 'searches_triggered_today', self.searches_triggered_today
+        yield 'quests_completed', self.quests_completed
         yield 'labels', self.labels
