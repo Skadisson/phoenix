@@ -242,6 +242,10 @@ PS = (function(window, document, $) {
     };
 
     function toggle_analytics() {
+        if($('#achievements').is(':not(:hidden)')) {
+            $('#achievements').hide();
+            $('span[title=Achievements]').removeClass('active');
+        }
         if($('#analytics').is(':not(:hidden)')) {
             $('#analytics').hide();
             $('span[title=Analytics]').removeClass('active');
@@ -304,6 +308,10 @@ PS = (function(window, document, $) {
     };
 
     function toggle_achievements() {
+        if($('#analytics').is(':not(:hidden)')) {
+            $('#analytics').hide();
+            $('span[title=Analytics]').removeClass('active');
+        }
         if($('#achievements').is(':not(:hidden)')) {
             $('#achievements').hide();
             $('span[title=Achievements]').removeClass('active');
