@@ -64,22 +64,22 @@ pragmatic:
   description: "Hat 10 Ideen zu Fakten gemacht"
   requirement: "ideas_edited >= 10"
 who_tested_it:
-  title: "Wer hat's getestet?"
+  title: "QS Spezialist"
   type: "Silber"
-  description: "Hat 10 QA Tickets geöffnet"
+  description: "Hat 10 QS Tickets geöffnet"
   requirement: "qa_tickets_clicked >= 10"
 is_the_server_running:
-  title: "Läuft der Server noch?"
+  title: "Server Geek"
   type: "Silber"
   description: "Hat 10 DevOps Tickets geöffnet"
   requirement: "devops_tickets_clicked >= 10"
 what_are_they_doing:
-  title: "Was machen die so?"
+  title: "Produkt Champion"
   type: "Silber"
   description: "Hat 10 Produkt Tickets geöffnet"
   requirement: "product_tickets_clicked >= 10"
 go_make_a_service_ticket:
-  title: "Erstell ein Service-Ticket"
+  title: "Service Champion"
   type: "Silber"
   description: "Hat 10 Service Tickets geöffnet"
   requirement: "service_tickets_clicked >= 10"
