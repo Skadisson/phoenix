@@ -54,7 +54,7 @@ power_user:
   description: "Hat 1000 Suchen gestartet"
   requirement: "searches_triggered >= 1000"
 man_of_the_hour:
-  title: "Frau/Mann der Stunde"
+  title: "Mitarbeiter/in der Stunde"
   type: "Gold"
   description: "Hat 100 Suchen an einem Tag gestartet"
   requirement: "searches_triggered_today >= 100"
