@@ -1,5 +1,5 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot, Achievements
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot, Achievements, CompleteQuest
 from bin.service import Environment, UserStorage
 import json
 
@@ -81,6 +81,9 @@ def phoenix(request):
     elif function == 'Achievements':
         achievements = Achievements.Achievements()
         response = achievements.run()
+    elif function == 'CompleteQuest':
+        complete_quest = CompleteQuest.CompleteQuest()
+        response = complete_quest.run()
     else:
         response = {'error': 'unknown function'}
 

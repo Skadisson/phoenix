@@ -38,12 +38,13 @@ class AchievementStorage(Storage.Storage):
         new_achievements = []
         for label in achievements:
             requirement = str(achievements[label]['requirement']).split(' >= ')
-            if requirement[0] not in achievement:
-                raise Exception(f"Requirement for {label} in {self.achievements_path} is missing or faulty.")
-            if achievement[requirement[0]] >= int(requirement[1]) and label not in achievement['labels']:
-                new_achievements.append(achievements[label])
-                achievement['labels'].append(label)
-                self.update_achievement(user_id, achievement)
+            if requirement[0] in achievement:
+                if achievement[requirement[0]] >= int(requirement[1]) and label not in achievement['labels']:
+                    new_achievements.append(achievements[label])
+                    achievement['labels'].append(label)
+                    self.update_achievement(user_id, achievement)
+            else:
+                self.logger.add_entry(self.__class__.__name__, f"Attribute {requirement[0]} for {label} in {self.achievements_path} is missing or faulty.")
 
         current_achievements = self.read_achievements_for_labels(achievement['labels'])
         return current_achievements, new_achievements
@@ -111,6 +112,12 @@ class AchievementStorage(Storage.Storage):
         if achievement is not None:
             achievement['searches_triggered'] += 1
             achievement['searches_triggered_today'] += 1
+            self.update_achievement(user_id, achievement)
+
+    def track_quest_completed(self, user_id):
+        achievement = self.get_achievement(user_id)
+        if achievement is not None:
+            achievement['quests_completed'] = 1
             self.update_achievement(user_id, achievement)
 
     def update_achievement(self, user_id, achievement):

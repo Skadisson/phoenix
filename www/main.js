@@ -374,6 +374,8 @@ PS = (function(window, document, $) {
                             setTimeout(function() {
                                 $('.new-achievement').fadeOut();
                             }, 10000);
+                        }
+                        if(achievement_count > 0) {
                             self.toggle_achievements();
                         }
                     }
@@ -1095,23 +1097,50 @@ PS = (function(window, document, $) {
     };
 
     function track_quest(quest_name) {
-        return;
-        console.log('Completed quest: ' + quest_name);
-        if(self.quest_list.length > 0) {
-            self.trigger_quest();
-        } else {
-            self.end_quest();
+        console.log('Quest completed: ' + quest_name);
+        if(typeof self.quest_list != 'undefined') {
+            var index = self.quest_list.indexOf(quest_name);
+            if(index > -1) {
+                self.quest_list.splice(index, 1);
+                if(self.quest_list.length > 0) {
+                    self.trigger_quest();
+                } else {
+                    self.end_quest();
+                }
+            }
         }
     };
 
     function end_quest() {
-        return;
         self.quest_visible = false;
         self.cleanup_quest();
+        self.complete_quest();
+    };
+
+    function complete_quest() {
+        var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=CompleteQuest';
+        var formContentType = 'application/x-www-form-urlencoded';
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', getUrl, true);
+            xhr.setRequestHeader('Content-type', formContentType);
+            self.start_loading();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    self.finish_loading();
+                    self.render_notification('Tutorial Done');
+                    self.flash_new_achievements();
+                }
+            };
+            xhr.send();
+        } catch(e) {
+            self.finish_loading();
+            self.render_notification('Fehler', true);
+            console.log(e.message);
+        }
     };
 
     function start_quest() {
-        return;
         self.quest_visible = true;
         self.quest_list = [
             'username',
@@ -1127,11 +1156,10 @@ PS = (function(window, document, $) {
     };
 
     function trigger_quest() {
-        return;
         var quest_css = {'border': '2px solid #FD5A2F'};
         self.cleanup_quest();
         if(self.quest_visible && self.quest_list.length > 0) {
-            var current_quest = self.quest_list.shift();
+            var current_quest = self.quest_list[0];
             console.log('Started quest: ' + current_quest);
             if(current_quest == 'username') {
                 $('.user-name', 'body').css(quest_css);
@@ -1142,9 +1170,11 @@ PS = (function(window, document, $) {
             } else if(current_quest == 'edit') {
                 $('.edit', 'body').css(quest_css);
             } else if(current_quest == 'favourite') {
-                $('.fa-star', 'body').css(quest_css);
+                $('.edit', 'body').css(quest_css);
+                $('#detail .fa-star', 'body').css(quest_css);
             } else if(current_quest == 'shoutout') {
-                $('.fa-bullhorn', 'body').css(quest_css);
+                $('.edit', 'body').css(quest_css);
+                $('#detail .fa-bullhorn', 'body').css(quest_css);
             } else if(current_quest == 'save') {
                 $('.edit', 'body').css(quest_css);
                 $('.save', 'body').css(quest_css);
@@ -1155,14 +1185,13 @@ PS = (function(window, document, $) {
     };
 
     function cleanup_quest() {
-        return;
         var cleanup_css = {'border': '0px solid transparent'};
         $('.user-name', 'body').css(cleanup_css);
         $('#keywords', 'body').css(cleanup_css);
         $('#link-list a', 'body').css(cleanup_css);
         $('.edit', 'body').css(cleanup_css);
-        $('.fa-bullhorn', 'body').css(cleanup_css);
-        $('.fa-star', 'body').css(cleanup_css);
+        $('#detail .fa-bullhorn', 'body').css(cleanup_css);
+        $('#detail .fa-star', 'body').css(cleanup_css);
         $('.save', 'body').css(cleanup_css);
         $('.plus', 'body').css(cleanup_css);
     }
@@ -1210,7 +1239,8 @@ PS = (function(window, document, $) {
         start_quest: start_quest,
         end_quest: end_quest,
         trigger_quest: trigger_quest,
-        cleanup_quest: cleanup_quest
+        cleanup_quest: cleanup_quest,
+        complete_quest: complete_quest
     };
 
     return construct;
