@@ -1130,6 +1130,10 @@ PS = (function(window, document, $) {
                     self.finish_loading();
                     self.render_notification('Tutorial Done');
                     self.flash_new_achievements();
+                    var $newQuest = $('<p class="quest"><span class="info">Abgeschlossen<br /></span><span class="fas fa-check"> </span><span class="label">Tutorial abgeschlossen</span></p>');
+                    $('body').append($newQuest);
+                    $newQuest.fadeOut(6000);
+                    $('a.tutorial').fadeOut();
                 }
             };
             xhr.send();
@@ -1163,28 +1167,45 @@ PS = (function(window, document, $) {
             console.log('Started quest: ' + current_quest);
             if(current_quest == 'username') {
                 $('.user-name', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Username<br /></span><span class="fas fa-address-card"> </span><span class="label">Ändere den Namen mit dem Du arbeiten möchtest</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'search') {
                 $('#keywords', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Suche<br /></span><span class="fas fa-search"> </span><span class="label">Starte eine Suche und warte auf das Ergebnis</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'open') {
                 $('#link-list a:nth-child(1)', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Aufruf<br /></span><span class="fas fa-envelope-open"> </span><span class="label">Klicke auf die Ergebnis Karte um den Link zu öffnen</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'edit') {
                 $('.edit', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Bearbeiten<br /></span><span class="fas fa-pencil-alt"> </span><span class="label">Bearbeite eine Karte und speichere sie</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'favourite') {
-                $('.edit', 'body').css(quest_css);
+                $('#link-list .edit', 'body').css(quest_css);
                 $('#detail .fa-star', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Favorisieren<br /></span><span class="fas fa-star"> </span><span class="label">Bearbeite eine Karte und favorisiere sie</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'shoutout') {
-                $('.edit', 'body').css(quest_css);
+                $('#link-list .edit', 'body').css(quest_css);
                 $('#detail .fa-bullhorn', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Shout Out<br /></span><span class="fas fa-bullhorn"> </span><span class="label">Bearbeite eine Karte und poste einen Shout Out</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'save') {
                 $('.edit', 'body').css(quest_css);
                 $('.save', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Speichern<br /></span><span class="fas fa-save"> </span><span class="label">Bearbeite eine Karte und speichere sie</span></p>');
+                $('body').append($newQuest);
             } else if(current_quest == 'create') {
                 $('.plus', 'body').css(quest_css);
+                var $newQuest = $('<p class="quest"><span class="info">Erstellen<br /></span><span class="fas fa-plus"> </span><span class="label">Erstelle eine neue Karte und speichere sie</span></p>');
+                $('body').append($newQuest);
             }
         }
     };
 
     function cleanup_quest() {
+        $('.quest').remove();
         var cleanup_css = {'border': '0px solid transparent'};
         $('.user-name', 'body').css(cleanup_css);
         $('#keywords', 'body').css(cleanup_css);
