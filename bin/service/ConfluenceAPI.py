@@ -21,7 +21,7 @@ class ConfluenceAPI(Storage.Storage):
         self.card_transfer = CardTransfer.CardTransfer()
         self.regex = RegEx.RegEx()
 
-    def sync_entries(self, wait=2):
+    def sync_entries(self, wait, sync):
         cached_total = 0
         space_keys = self.load_space_keys()
         confluence_ids = []
@@ -29,8 +29,10 @@ class ConfluenceAPI(Storage.Storage):
             start = float(time.time())
             confluence_entries = {}
             space_entries = self.load_entries_from_space(space_key)
+            sync.add_total(len(space_entries))
             for confluence_id in space_entries:
                 exists = self.entry_exists(confluence_id)
+                sync.add_current(1)
                 if exists is True:
                     continue
                 confluence_ids.append(confluence_id)

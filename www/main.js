@@ -20,6 +20,7 @@ PS = (function(window, document, $) {
     var host_port = '8110';
     var tip_interval = 0;
     var quest_list = [];
+    var sync_state_interval = 0;
 
     var construct = function() {
         self = this;
@@ -246,6 +247,11 @@ PS = (function(window, document, $) {
             $('#achievements').hide();
             $('span[title=Achievements]').removeClass('active');
         }
+        if($('#sync').is(':not(:hidden)')) {
+            $('#sync').hide();
+            $('span[title=Sync]').removeClass('active');
+            clearInterval(sync_state_interval);
+        }
         if($('#analytics').is(':not(:hidden)')) {
             $('#analytics').hide();
             $('span[title=Analytics]').removeClass('active');
@@ -307,10 +313,81 @@ PS = (function(window, document, $) {
         }
     };
 
+    function toggle_sync_state() {
+        if($('#analytics').is(':not(:hidden)')) {
+            $('#analytics').hide();
+            $('span[title=Analytics]').removeClass('active');
+        }
+        if($('#achievements').is(':not(:hidden)')) {
+            $('#achievements').hide();
+            $('span[title=Achievements]').removeClass('active');
+        }
+        if($('#sync').is(':not(:hidden)')) {
+            $('#sync').hide();
+            $('span[title=Sync]').removeClass('active');
+            clearInterval(sync_state_interval);
+            return;
+        } else {
+            $('span[title=Sync]').addClass('active');
+            $('#sync p').remove();
+            $('#sync').append('<p>Lädt ...</p>');
+            $('#sync').show();
+        }
+
+        var getUrlStart = host_protocol + '://' + host_name + ':' + host_port + '/?function=SyncRun';
+        var xhrStart = new XMLHttpRequest();
+        xhrStart.open('GET', getUrlStart, true);
+        xhrStart.send();
+
+        sync_state_interval = setInterval(function() {
+            var getUrl = host_protocol + '://' + host_name + ':' + host_port + '/?function=SyncState';
+            var formContentType = 'application/x-www-form-urlencoded';
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', getUrl, true);
+                xhr.setRequestHeader('Content-type', formContentType);
+                self.start_loading();
+                xhr.onreadystatechange = function() {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && xhr.responseText) {
+                        self.finish_loading();
+                        self.render_notification('Sync Status');
+                        $('#sync p').remove();
+                        var result = JSON.parse(xhr.responseText);
+                        console.log(result);
+                        if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
+                            var sync_state = result.items[0];
+                            if(sync_state['running'] && sync_state['total'] > 0) {
+                                $('#sync').append(
+                                    '<p>' +
+                                        '<progress value="' + sync_state['current'] + '" max="' + sync_state['total'] + '" /><br/>' +
+                                        'Prozentual: ' + ((sync_state['current'] / sync_state['total']) * 100) + ' %<br />' +
+                                        'Karten: ' + sync_state['current'] + ' von ' + sync_state['total'] +
+                                    '</p>'
+                                );
+                            } else {
+                                $('#sync').append('<p>Synchronisation abgeschlossen</p>');
+                            }
+                        }
+                    }
+                };
+                xhr.send();
+            } catch(e) {
+                self.finish_loading();
+                self.render_notification('Fehler', true);
+                console.log(e.message);
+            }
+        }, 10000);
+    };
+
     function toggle_achievements() {
         if($('#analytics').is(':not(:hidden)')) {
             $('#analytics').hide();
             $('span[title=Analytics]').removeClass('active');
+        }
+        if($('#sync').is(':not(:hidden)')) {
+            $('#sync').hide();
+            $('span[title=Sync]').removeClass('active');
+            clearInterval(sync_state_interval);
         }
         if($('#achievements').is(':not(:hidden)')) {
             $('#achievements').hide();
@@ -1036,9 +1113,11 @@ PS = (function(window, document, $) {
     function fill_popout_headers() {
         var $analyticsHeader = $('#analytics .header');
         var $achievementsHeader = $('#achievements .header');
+        var $syncHeader = $('#sync .header');
         for(var i = 0; i<996; i++) {
             $analyticsHeader.append('<div class="analytics-dot" />');
             $achievementsHeader.append('<div class="achievements-dot" />');
+            $syncHeader.append('<div class="achievements-dot" />');
         }
     };
 
@@ -1245,6 +1324,7 @@ PS = (function(window, document, $) {
         randomize: randomize,
         toggle_analytics: toggle_analytics,
         toggle_achievements: toggle_achievements,
+        toggle_sync_state: toggle_sync_state,
         fill_popout_headers: fill_popout_headers,
         shout_outs: shout_outs,
         render_shout_outs: render_shout_outs,

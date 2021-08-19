@@ -1,5 +1,6 @@
 from werkzeug.wrappers import Request, Response
-from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, ShoutOuts, Notifications, AutoComplete, Name, Screenshot, Achievements, CompleteQuest
+from bin.module import Ping, Latest, Search, Click, Store, Keywords, Favourite, Favourites, Analytics, ShoutOut, \
+    ShoutOuts, Notifications, AutoComplete, Name, Screenshot, Achievements, CompleteQuest, SyncState, SyncRun
 from bin.service import Environment, UserStorage
 import json
 
@@ -84,6 +85,12 @@ def phoenix(request):
     elif function == 'CompleteQuest':
         complete_quest = CompleteQuest.CompleteQuest()
         response = complete_quest.run()
+    elif function == 'SyncState':
+        sync_state = SyncState.SyncState()
+        response = sync_state.run()
+    elif function == 'SyncRun':
+        sync_run = SyncRun.SyncRun()
+        response = sync_run.run()
     else:
         response = {'error': 'unknown function'}
 
