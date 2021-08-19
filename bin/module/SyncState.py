@@ -17,6 +17,8 @@ class SyncState:
         try:
 
             data = self.sync.load_yaml()
+            if data is None:
+                data = {'last': 0, 'running': False, 'current': 0, 'total': 0}
             result['items'].append(data)
 
         except Exception as e:

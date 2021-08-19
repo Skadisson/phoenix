@@ -7,6 +7,7 @@ from bin.service import SciKitLearn
 import threading
 import yaml
 import os
+import time
 
 confluence_done = False
 jira_done = False
@@ -20,11 +21,11 @@ class Sync:
         self.logger = Logger.Logger()
         self.environment = Environment.Environment()
 
-    def run(self):
+    def run(self, override=False):
 
-        if self.is_running():
+        if self.is_running() and override is False:
             return
-        self.store_yaml({'running': True, 'current': 0, 'total': 0})
+        self.store_yaml({'last': time.time(), 'running': True, 'current': 0, 'total': 0})
 
         global confluence_done, jira_done, git_done, sync
         sync = self
@@ -85,22 +86,33 @@ class Sync:
 
     def set_running(self, running=True):
         state = self.load_yaml()
-        state['running'] = running
-        self.store_yaml(state)
+        if state is not None:
+            state['running'] = running
+            self.store_yaml(state)
 
     def add_total(self, total=1):
         state = self.load_yaml()
-        state['total'] += total
-        self.store_yaml(state)
+        if state is not None:
+            state['total'] += total
+            self.store_yaml(state)
 
     def add_current(self, current=1):
         state = self.load_yaml()
-        state['current'] += current
-        self.store_yaml(state)
+        if state is not None:
+            state['current'] += current
+            self.store_yaml(state)
 
     def is_running(self):
         state = self.load_yaml()
-        return state['running']
+        runs = True
+        if state is not None:
+            is_running = state['running']
+            half_a_day = 60 * 60 * 12
+            got_time = state['last'] != 0
+            is_in_range = time.time() - state['last'] <= half_a_day
+            runs = is_running and got_time and is_in_range
+
+        return runs
 
     def load_yaml(self):
         sync_path = self.environment.get_path_sync_state()
@@ -109,14 +121,11 @@ class Sync:
             file = open(sync_path, "r", encoding='utf8')
             data = yaml.load(file, Loader=yaml.FullLoader)
 
-        if data is None:
-            data = {'running': False, 'current': 0, 'total': 0}
-
         return data
 
     def store_yaml(self, data):
         if data is None:
-            data = {'running': False, 'current': 0, 'total': 0}
+            data = {'last': 0, 'running': False, 'current': 0, 'total': 0}
         sync_path = self.environment.get_path_sync_state()
         file = open(sync_path, "w", encoding='utf8')
         yaml.dump(data, file, Dumper=yaml.Dumper)
