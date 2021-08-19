@@ -19,6 +19,9 @@ progress[value] {
     z-index: 10;
     background-color:#1A1E1F;
 }
+#sync progress {
+    height:2px;
+}
 progress[value]::-webkit-progress-value {
     background-color: #16BAE7;
 }
