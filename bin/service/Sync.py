@@ -8,11 +8,11 @@ import threading
 import yaml
 import os
 import time
+import numpy
 
 confluence_done = False
 jira_done = False
 git_done = False
-sync = None
 
 
 class Sync:
@@ -25,32 +25,33 @@ class Sync:
 
         if self.is_running() and override is False:
             return
-        self.store_yaml({'last': time.time(), 'running': True, 'current': 0, 'total': 0})
+        self.set_running(True)
+        self.set_last(time.time())
+        start = time.time()
 
-        global confluence_done, jira_done, git_done, sync
-        sync = self
+        global confluence_done, jira_done, git_done
 
         try:
 
             def confluence_thread():
-                global confluence_done, sync
+                global confluence_done
                 print('--- confluence thread started ---')
                 confluence = ConfluenceAPI.ConfluenceAPI()
-                confluence.sync_entries(0, sync)
+                confluence.sync_entries(0)
                 confluence_done = True
 
             def jira_thread():
-                global jira_done, sync
+                global jira_done
                 print('--- jira thread started ---')
                 jira = JiraAPI.JiraAPI()
-                jira.sync_entries(0, sync)
+                jira.sync_entries(0)
                 jira_done = True
 
             def git_thread():
-                global git_done, sync
+                global git_done
                 print('--- git thread started ---')
                 gitlab = Gitlab.Gitlab()
-                gitlab.sync_commits(0, sync)
+                gitlab.sync_commits(0)
                 git_done = True
 
             confluence_process = threading.Thread(target=confluence_thread)
@@ -77,6 +78,8 @@ class Sync:
             scikit = SciKitLearn.SciKitLearn()
             scikit.train()
 
+            end = time.time()
+            self.add_runtime((end-start))
             self.set_running(False)
 
         except Exception as e:
@@ -90,16 +93,17 @@ class Sync:
             state['running'] = running
             self.store_yaml(state)
 
-    def add_total(self, total=1):
+    def set_last(self, last):
         state = self.load_yaml()
         if state is not None:
-            state['total'] += total
+            state['last'] = last
             self.store_yaml(state)
 
-    def add_current(self, current=1):
+    def add_runtime(self, runtime):
         state = self.load_yaml()
         if state is not None:
-            state['current'] += current
+            state['runtimes'].append(runtime)
+            state['average'] = float(numpy.average(state['runtimes']))
             self.store_yaml(state)
 
     def is_running(self):
@@ -120,12 +124,14 @@ class Sync:
         if os.path.exists(sync_path):
             file = open(sync_path, "r", encoding='utf8')
             data = yaml.load(file, Loader=yaml.FullLoader)
+        if data is None:
+            data = {'last': time.time(), 'average': 0, 'runtimes': [], 'running': False}
 
         return data
 
     def store_yaml(self, data):
         if data is None:
-            data = {'last': 0, 'running': False, 'current': 0, 'total': 0}
+            data = {'last': time.time(), 'average': 0, 'runtimes': [], 'running': False}
         sync_path = self.environment.get_path_sync_state()
         file = open(sync_path, "w", encoding='utf8')
         yaml.dump(data, file, Dumper=yaml.Dumper)

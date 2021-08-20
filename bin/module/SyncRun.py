@@ -17,8 +17,8 @@ class SyncRun:
         }
         try:
 
-            """confluence_process = threading.Thread(target=self.sync.run)
-            confluence_process.start()"""
+            confluence_process = threading.Thread(target=self.sync.run)
+            confluence_process.start()
 
         except Exception as e:
             result['error'] = str(e)

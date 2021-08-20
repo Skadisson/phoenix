@@ -36,7 +36,7 @@ class JiraAPI(Storage.Storage):
         card_storage = phoenix.card_storage
         return list(card_storage.distinct('relation_id', {'relation_type': 'jira'}))
 
-    def sync_entries(self, wait, sync):
+    def sync_entries(self, wait):
         failed_jira_keys = []
         cached_total = 0
 
@@ -44,11 +44,9 @@ class JiraAPI(Storage.Storage):
         projects = self.request_service_jira_projects()
         for project in projects:
             jira_keys = self.request_service_jira_keys(project)
-            sync.add_total(len(jira_keys))
             start = float(time.time())
             clean_cache = {}
             for jira_key in jira_keys:
-                sync.add_current(1)
                 if jira_key in leftover_jira_keys:
                     leftover_jira_keys.remove(jira_key)
                 else:

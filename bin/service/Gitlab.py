@@ -15,7 +15,7 @@ class Gitlab:
         self.logger = Logger.Logger()
         self.card_transfer = CardTransfer.CardTransfer()
 
-    def sync_commits(self, wait, sync):
+    def sync_commits(self, wait):
         private_token = self.environment.get_endpoint_git_private_token()
         url = self.environment.get_endpoint_git_projects()
         git_ids = []
@@ -35,9 +35,7 @@ class Gitlab:
                     except Exception as err:
                         self.logger.add_entry(self.__class__.__name__, str(err) + "; with space " + project['id'])
                         project_commits = []
-                    sync.add_total(len(project_commits))
                     for project_commit in project_commits:
-                        sync.add_current(1)
                         exists = self.commit_exists(project_commit['id'])
                         if exists is True:
                             continue

@@ -356,16 +356,24 @@ PS = (function(window, document, $) {
                         console.log(result);
                         if(typeof result.items[0] != 'undefined' && typeof result.items[0] != 'undefined') {
                             var sync_state = result.items[0];
-                            if(sync_state['running'] && sync_state['total'] > 0) {
+                            var last_date = new Date(sync_state['last'] * 1000);
+                            var diff_seconds = Math.round(((new Date().getTime()) / 1000) - sync_state['last']);
+                            if(sync_state['running']) {
                                 $('#sync').append(
                                     '<p>' +
-                                        '<progress value="' + sync_state['current'] + '" max="' + sync_state['total'] + '" /><br/>' +
-                                        'Prozentual: ' + ((sync_state['current'] / sync_state['total']) * 100) + ' %<br />' +
-                                        'Karten: ' + sync_state['current'] + ' von ' + sync_state['total'] +
+                                        '<progress value="' + diff_seconds + '" max="' + sync_state['average'] + '" /><br/>' +
+                                        'Synchronisation seit ' + last_date.getFullYear() + '/' + (last_date.getMonth()+1) + '/' + last_date.getDate() + ' ' + last_date.getHours() + ':' + last_date.getMinutes() + ':' + last_date.getSeconds() + ' aktiv.<br />' +
+                                        '<br />Es wird ungefähr ' + Math.round(sync_state['average'] / 60) + ' Minuten dauern.' +
                                     '</p>'
                                 );
                             } else {
-                                $('#sync').append('<p>Synchronisation abgeschlossen</p>');
+                                $('#sync').append(
+                                    '<p>' +
+                                        '<progress value="100" max="100" /><br/>' +
+                                        'Die Synchronisation wurde das letzte mal ' + last_date.getFullYear() + '/' + (last_date.getMonth()+1) + '/' + last_date.getDate() + ' ' + last_date.getHours() + ':' + last_date.getMinutes() + ':' + last_date.getSeconds() + ' ausgeführt.<br/>' +
+                                        '<br/>Eine Synchronisation dauert ungefähr ' + Math.round(sync_state['average'] / 60) + ' Minuten.' +
+                                    '</p>'
+                                );
                             }
                         }
                     }

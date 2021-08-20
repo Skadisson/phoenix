@@ -1,4 +1,5 @@
 from bin.service import Info, Logger, Sync
+import time
 
 
 class SyncState:
@@ -18,7 +19,7 @@ class SyncState:
 
             data = self.sync.load_yaml()
             if data is None:
-                data = {'last': 0, 'running': False, 'current': 0, 'total': 0}
+                data = {'last': time.time(), 'average': 0, 'runtimes': [], 'running': False}
             result['items'].append(data)
 
         except Exception as e:
