@@ -114,7 +114,7 @@ class Sync:
             half_a_day = 60 * 60 * 12
             got_time = state['last'] != 0
             is_in_range = time.time() - state['last'] <= half_a_day
-            runs = is_running and got_time and is_in_range
+            runs = is_running or (got_time and is_in_range)
 
         return runs
 
