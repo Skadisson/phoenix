@@ -106,8 +106,11 @@ class JiraAPI(Storage.Storage):
                 'updated': ticket_data['fields']['updated'],
                 'keywords': ticket_data['fields']['labels'],
                 'comments': [],
+                'organization': '',
                 'screenshot': self.get_screenshot(ticket_data)
             }
+            if 'customfield_10400' in ticket_data['fields']:
+                ticket['organization'] = ticket_data['fields']['customfield_10400']
             if ticket_data['fields']['description'] is not None:
                 ticket['body'] = self.regex.mask_text(ticket_data['fields']['description'])
             comments = ticket_data['fields']['comment']['comments']

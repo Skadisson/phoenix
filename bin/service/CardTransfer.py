@@ -112,6 +112,8 @@ class CardTransfer:
             jira_card.external_link = 'https://jira.konmedia.com/browse/' + ticket['key']
         if 'title' in ticket and ticket['title'] is not None:
             jira_card.title = ticket['title']
+        if 'organization' in ticket and ticket['organization'] is not None and ticket['organization'] != '':
+            jira_card.text += ticket['organization'] + ' '
         if 'body' in ticket and ticket['body'] is not None:
             jira_card.text += ticket['body']
         if 'comments' in ticket and ticket['comments'] is list:
