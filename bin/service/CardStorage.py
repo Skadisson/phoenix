@@ -1,3 +1,5 @@
+import re
+
 from bin.service import FavouriteStorage, ShoutOutStorage, UserStorage, Storage
 from bin.entity import Card
 import time
@@ -273,3 +275,25 @@ class CardStorage(Storage.Storage):
         self.store_card(dict(card))
 
         return card.id
+
+    def get_jira_key_for_card_id(self, card_id):
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+
+        key = None
+        card = self.get_card(card_id)
+        if card['relation_type'] == 'jira' and card['relation_id'] is not None:
+            jira_card = jira_storage.find_one({'id': card['relation_id']})
+            if 'key' in jira_card:
+                key = jira_card['key']
+
+        return key
+
+    def delete_jira_entries_of_board(self, jira_board):
+        if jira_board == '' or jira_board is None or jira_board is False:
+            raise Exception(f"CardStorage.delete_jira_entries_of_board requires a jira_board identifier.")
+        phoenix = self.mongo.phoenix
+        jira_storage = phoenix.jira_storage
+        jira_storage.delete_many({'key': {'$regex': f"{jira_board}-[0-9]*"}})
+        card_storage = phoenix.card_storage
+        card_storage.delete_many({'external_link': {'$regex': f".*{jira_board}-[0-9]*.*"}})

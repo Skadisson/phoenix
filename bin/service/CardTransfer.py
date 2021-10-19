@@ -8,8 +8,6 @@ import datetime
 class CardTransfer:
 
     def __init__(self):
-        self.jira_tickets = []
-        self.confluence_entries = []
         self.storage = CardStorage.CardStorage()
         self.normal_cache = NormalCache.NormalCache()
 

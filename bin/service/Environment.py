@@ -29,6 +29,10 @@ class Environment:
         service_yaml = self.load_yaml('service')
         return service_yaml['shout_out_liftime_days']
 
+    def get_service_deleted_jira_boards(self):
+        service_yaml = self.load_yaml('service')
+        return service_yaml['deleted_jira_boards']
+
     def get_path_log(self):
         path_yaml = self.load_yaml('path')
         return path_yaml['log']

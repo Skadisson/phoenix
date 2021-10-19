@@ -1,5 +1,5 @@
 from bin.module import Latest
-from bin.service import ContextSearch, CardStorage, Logger, UserStorage, AchievementStorage
+from bin.service import ContextSearch, CardStorage, Logger, UserStorage, AchievementStorage, JiraAPI
 import re
 
 
@@ -43,6 +43,10 @@ class Search:
             if '_id' in card:
                 del(card['_id'])
             card['words'] = {}
+            if card['relation_type'] == 'jira':
+                key = self.card_storage.get_jira_key_for_card_id(card['id'])
+                if key not in card['title']:
+                    card['title'] = f"{key} - {card['title']}"
             if words is not None:
                 i = 0
                 for word in words:

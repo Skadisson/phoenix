@@ -1,6 +1,7 @@
 from bin.service import Environment
 from bin.service import Logger
 from bin.service import CardTransfer
+from bin.service import CardStorage
 from bin.service import RegEx
 from bin.service import Storage
 from atlassian import Jira
@@ -20,6 +21,7 @@ class JiraAPI(Storage.Storage):
         )
         self.regex = RegEx.RegEx()
         self.card_transfer = CardTransfer.CardTransfer()
+        self.card_storage = CardStorage.CardStorage()
 
     def get_jira_keys(self):
         phoenix = self.mongo.phoenix
@@ -39,6 +41,8 @@ class JiraAPI(Storage.Storage):
     def sync_entries(self, wait):
         failed_jira_keys = []
         cached_total = 0
+
+        self.remove_deleted_jira_boards()
 
         leftover_jira_keys = self.get_jira_keys()
         projects = self.request_service_jira_projects()
@@ -174,3 +178,9 @@ class JiraAPI(Storage.Storage):
                 projects.append(project['key'])
 
         return projects
+
+    def remove_deleted_jira_boards(self):
+        deleted_jira_boards = self.environment.get_service_deleted_jira_boards()
+        if len(deleted_jira_boards) > 0:
+            for jira_board in deleted_jira_boards:
+                self.card_storage.delete_jira_entries_of_board(jira_board)
