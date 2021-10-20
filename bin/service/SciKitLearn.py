@@ -97,13 +97,13 @@ class SciKitLearn:
 
         return sorted_cards
 
-    @staticmethod
-    def add_probabilities(final_cards):
+    def add_probabilities(self, final_cards):
         global context_ids, probabilities
         for final_card in final_cards:
-            card_id = final_card['id']
-            probability_index = context_ids.index(card_id)
-            final_card['probability'] = probabilities[probability_index]
+            if final_card is not None and 'id' in final_card:
+                card_id = final_card['id']
+                probability_index = context_ids.index(card_id)
+                final_card['probability'] = probabilities[probability_index]
 
     def threaded_search(self, documents, ids, query):
 
@@ -213,14 +213,15 @@ class SciKitLearn:
         filtered_cards = []
         words = query.split(' ')
         for card in cards:
-            text = str(card['title']) + " " + str(card['text'])
-            if card['keywords'] is not None:
-                text += " " + str(' '.join(card['keywords']))
-            for word in words:
-                count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), text))
-                if count > 0:
-                    filtered_cards.append(card)
-                    break
+            if card is not None:
+                text = str(card['title']) + " " + str(card['text'])
+                if card['keywords'] is not None:
+                    text += " " + str(' '.join(card['keywords']))
+                for word in words:
+                    count = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(word), text))
+                    if count > 0:
+                        filtered_cards.append(card)
+                        break
         return filtered_cards
 
     def train(self):
