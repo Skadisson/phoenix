@@ -113,8 +113,10 @@ class CardTransfer:
         if 'organization' in ticket and ticket['organization'] is not None and ticket['organization'] != '':
             if ticket['organization'] is list:
                 organization = ' '.join(ticket['organization']) + ' '
-            else:
+            elif ticket['organization'] is str:
                 organization = ticket['organization'] + ' '
+            else:
+                organization = ''
             jira_card.text += str(organization)
         if 'body' in ticket and ticket['body'] is not None:
             jira_card.text += ticket['body']
